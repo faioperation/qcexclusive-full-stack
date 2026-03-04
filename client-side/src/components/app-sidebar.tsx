@@ -1,8 +1,12 @@
+"use client";
+
 import * as React from "react";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
@@ -15,14 +19,15 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 
-import { 
-  LayoutDashboard, 
-  Users, 
-  Inbox, 
-  CalendarDays, 
-  Settings, 
-  Link as LinkIcon, 
-  UserPlus 
+import {
+  LayoutDashboard,
+  Users,
+  Inbox,
+  CalendarDays,
+  Settings,
+  Link as LinkIcon,
+  UserPlus,
+  LogOut,
 } from "lucide-react";
 
 // This is sample data.
@@ -49,11 +54,6 @@ const data = {
       url: "/calendar",
     },
     {
-      title: "Config",
-      icon: <Settings size={20} />,
-      url: "/config",
-    },
-    {
       title: "Docs link",
       icon: <LinkIcon size={20} />,
       url: "/docs-link",
@@ -67,6 +67,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -93,20 +95,46 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url} className="font-medium">
-                    {item.icon}
-                    {item.title}
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {data.navMain.map((item) => {
+              const isActive = pathname === item.url || (item.url !== "/" && pathname.startsWith(item.url));
+              
+              return (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive}
+                    className={`py-6 transition-all rounded-r-md rounded-l-none border-l-[3px] ${
+                      isActive 
+                        ? "bg-[#E5F6EC] text-[#00A651] border-[#00A651] hover:bg-[#D1EEDB] hover:text-[#00A651]" 
+                        : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                    }`}
+                  >
+                    <a href={item.url} className="font-medium text-[15px] flex items-center">
+                      {item.icon}
+                      <span className="ml-1">{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarRail />
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer text-gray-500 font-medium"
+            >
+              <a href="/login" className="py-6">
+                <LogOut size={20} />
+                <span className="ml-1 text-[15px]">Logout</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }

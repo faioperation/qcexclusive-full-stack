@@ -2,6 +2,17 @@
 
 import React, { useState } from "react";
 import { Search, Filter, Download, MessageSquare, Trash2, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Modal } from "@/components/ui/modal";
+import { useForm } from "react-hook-form";
+
+interface CampaignForm {
+  campaignName: string;
+  niche: string;
+  country: string;
+  language: string;
+  followerSize: string;
+  platform: string;
+}
 
 // Mock data to match the UI state perfectly
 const MOCK_LEADS = [
@@ -17,6 +28,14 @@ const MOCK_LEADS = [
 
 export function LeadsPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const { register, handleSubmit, reset } = useForm<CampaignForm>();
+
+  const onSaveCampaign = (data: CampaignForm) => {
+    console.log("Saving new campaign:", data);
+    reset();
+    setIsCreateOpen(false);
+  };
 
   const getPlatformStyle = (platform: string) => {
     switch(platform) {
@@ -63,7 +82,10 @@ export function LeadsPage() {
             <Download size={18} />
             Export CSV
           </button>
-          <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 h-10 bg-[#00A651] hover:bg-[#009345] text-white text-sm font-semibold rounded-[8px] transition-colors whitespace-nowrap">
+          <button 
+            onClick={() => setIsCreateOpen(true)}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 h-10 bg-[#00A651] hover:bg-[#009345] text-white text-sm font-semibold rounded-[8px] transition-colors whitespace-nowrap"
+          >
             <Plus size={18} />
             Create Campaign
           </button>
@@ -150,6 +172,86 @@ export function LeadsPage() {
           </div>
         </div>
       </div>
+
+      {/* Create Campaign Modal */}
+      <Modal 
+        isOpen={isCreateOpen} 
+        onClose={() => { reset(); setIsCreateOpen(false); }} 
+        title="Create Campaign" 
+        width="max-w-2xl"
+      >
+        <form onSubmit={handleSubmit(onSaveCampaign)} className="space-y-4">
+          {/* Main Campaign Section */}
+          <div className="bg-[#FAFBFD] p-5 rounded-[12px] border border-gray-100">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Campaign Name</label>
+            <input 
+              {...register("campaignName", { required: true })}
+              placeholder="Enter name"
+              className="w-full h-12 px-4 bg-white border border-gray-200 rounded-[10px] text-sm focus:outline-none focus:border-[#000] transition-colors"
+            />
+          </div>
+
+          {/* Scraping Logic Section */}
+          <div className="bg-[#FAFBFD] p-5 rounded-[12px] border border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Scraping Logic</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                <input 
+                  {...register("country", { required: true })}
+                  placeholder="Set Location"
+                  className="w-full h-12 px-4 bg-white border border-gray-200 rounded-[10px] text-sm focus:outline-none focus:border-[#000] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Industry</label>
+                <input 
+                  {...register("niche", { required: true })}
+                  placeholder="Enter industry"
+                  className="w-full h-12 px-4 bg-white border border-gray-200 rounded-[10px] text-sm focus:outline-none focus:border-[#000] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Followers</label>
+                <input 
+                  {...register("followerSize", { required: true })}
+                  placeholder="Enter followers"
+                  className="w-full h-12 px-4 bg-white border border-gray-200 rounded-[10px] text-sm focus:outline-none focus:border-[#000] transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Specification</label>
+                <input 
+                  {...register("platform", { required: true })}
+                  placeholder="Enter specification"
+                  className="w-full h-12 px-4 bg-white border border-gray-200 rounded-[10px] text-sm focus:outline-none focus:border-[#000] transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Message Section */}
+          <div className="bg-[#FAFBFD] p-5 rounded-[12px] border border-gray-100">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">First Message</label>
+            <textarea 
+               {...register("language", { required: true })}
+               rows={5}
+               placeholder="Type message"
+               className="w-full p-4 bg-white border border-gray-200 rounded-[10px] text-sm resize-none focus:outline-none focus:border-[#000] transition-colors"
+            ></textarea>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button 
+              type="submit"
+              className="px-8 py-3 bg-[#00A651] hover:bg-[#009345] text-white text-[15px] font-bold rounded-[8px] transition-colors shadow-sm"
+            >
+              Start Campaign
+            </button>
+          </div>
+        </form>
+      </Modal>
+
     </div>
   );
 }

@@ -33,7 +33,7 @@ export function InboxPage() {
   const activeContact = conversations.find(c => c.active) || conversations[0];
 
   return (
-    <div className="flex h-[calc(100vh-72px)] bg-[#f5f5f5] p-6 gap-6 w-full max-w-[1500px] mx-auto overflow-hidden">
+    <div className="flex h-[calc(100vh-72px)]  p-6 gap-6 w-full max-w-[1500px] mx-auto overflow-hidden">
       
       {/* Left Panel - Conversation List */}
       <div className="w-[380px] bg-white rounded-[16px] border border-gray-100 flex flex-col shadow-sm shrink-0 overflow-hidden hidden md:flex">
@@ -139,30 +139,8 @@ export function InboxPage() {
           })}
         </div>
 
-        {/* Chat Input */}
-        <div className="p-4 bg-white border-t border-gray-100 shrink-0">
-          <div className="flex items-center gap-3 w-full h-[56px] bg-[#F8F9FA] rounded-[12px] px-4 border border-gray-200 focus-within:border-[#00A651] transition-colors">
-            <input 
-              type="text" 
-              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-800 placeholder-gray-400 h-full"
-              placeholder="Write a message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            />
-            <div className="flex items-center gap-2">
-              <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100">
-                <Paperclip size={20} />
-              </button>
-              <button 
-                onClick={handleSend}
-                className="w-10 h-10 bg-[#00A651] hover:bg-[#009345] text-white rounded-[8px] flex items-center justify-center transition-colors shadow-sm"
-              >
-                <Send size={18} className="translate-x-[1px]" />
-              </button>
-            </div>
-          </div>
-        </div>
+        
+        
 
       </div>
     </div>
