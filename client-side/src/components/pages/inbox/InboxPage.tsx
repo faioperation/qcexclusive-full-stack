@@ -138,10 +138,6 @@ export function InboxPage() {
             );
           })}
         </div>
-
-        
-        
-
       </div>
     </div>
   );
