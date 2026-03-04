@@ -1,5 +1,4 @@
 import * as React from "react";
-import { LayoutDashboard } from "lucide-react";
 
 import {
   Sidebar,
@@ -16,28 +15,53 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 
+import { 
+  LayoutDashboard, 
+  Users, 
+  Inbox, 
+  CalendarDays, 
+  Settings, 
+  Link as LinkIcon, 
+  UserPlus 
+} from "lucide-react";
+
 // This is sample data.
 const data = {
   navMain: [
     {
       title: "Dashboard",
-      icon: <LayoutDashboard />,
+      icon: <LayoutDashboard size={20} />,
       url: "/",
     },
     {
-      title: "Dashboard",
-      icon: <LayoutDashboard />,
-      url: "/",
+      title: "Leads",
+      icon: <Users size={20} />,
+      url: "/leads",
     },
     {
-      title: "Dashboard",
-      icon: <LayoutDashboard />,
-      url: "/",
+      title: "Inbox",
+      icon: <Inbox size={20} />,
+      url: "/inbox",
     },
     {
-      title: "Dashboard",
-      icon: <LayoutDashboard />,
-      url: "/",
+      title: "Calender",
+      icon: <CalendarDays size={20} />,
+      url: "/calendar",
+    },
+    {
+      title: "Config",
+      icon: <Settings size={20} />,
+      url: "/config",
+    },
+    {
+      title: "Docs link",
+      icon: <LinkIcon size={20} />,
+      url: "/docs-link",
+    },
+    {
+      title: "Add Admin",
+      icon: <UserPlus size={20} />,
+      url: "/add-admin",
     },
   ],
 };
