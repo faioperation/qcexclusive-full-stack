@@ -1,0 +1,9 @@
+model AIPromptConfig {
+    id         String   @id @default(uuid())
+    name       String
+    promptType String
+    promptText String
+    isActive   Boolean  @default(true)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}

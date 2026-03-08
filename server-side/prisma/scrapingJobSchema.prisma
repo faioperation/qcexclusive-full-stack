@@ -1,0 +1,15 @@
+model ScrapingJob {
+    id             String              @id @default(uuid())
+    campaignId     String
+    campaign       Campaign            @relation(fields: [campaignId], references: [id])
+    platform       EPlatform
+    status         EScrapingJobStatus  @default(Pending)
+    targetQuery    String?
+    leadsFound     Int                 @default(0)
+    leadsExtracted Int                 @default(0)
+    startedAt      DateTime?
+    completedAt    DateTime?
+    errorLog       String?
+    leads          Lead[]
+    createdAt      DateTime            @default(now())
+}

@@ -1,12 +1,14 @@
 model User {
-    id        String   @id @default(uuid())
-    name      String
-    email     String   @unique
-    role      ERole    @default(User)
-    password  String
-    contactNo String
-    photo     String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    isBlocked Boolean  @default(false)
+    id         String     @id @default(uuid())
+    name       String
+    email      String     @unique
+    role       ERole      @default(User)
+    password   String
+    contactNo  String
+    photo      String?
+    address    String?
+    createdAt  DateTime   @default(now())
+    updatedAt  DateTime   @updatedAt
+    isBlocked  Boolean    @default(false)
+    campaigns  Campaign[]
 }
