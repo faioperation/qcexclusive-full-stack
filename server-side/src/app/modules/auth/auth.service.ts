@@ -9,6 +9,7 @@ import { redisClient } from "../../config/redisConfig";
 
 const db = prisma as any;
 
+// Login
 const loginUser = async (payload: { email: string; password: string }) => {
   const { email, password } = payload;
 
@@ -30,114 +31,45 @@ const loginUser = async (payload: { email: string; password: string }) => {
   return user;
 };
 
-// const registerCustomer = async (payload: {
-//   name: string;
-//   email: string;
-//   password: string;
-//   contactNo: string;
- 
-// }) => {
-//   const result = await prisma.$transaction(async (tx) => {
-//     const existingUser = await tx.user.findUnique({
-//       where: { email: payload.email },
-//       select: { id: true },
-//     });
-//     if (existingUser) {
-//       throw new ApiError(httpStatus.CONFLICT, "User email already exists");
-//     }
+// Register User (Admin creates users)
+const registerUser = async (payload: {
+  name: string;
+  email: string;
+  password: string;
+  contactNo: string;
+  role?: string;
+}) => {
+  const existingUser = await db.user.findUnique({
+    where: { email: payload.email },
+    select: { id: true },
+  });
+  if (existingUser) {
+    throw new ApiError(httpStatus.CONFLICT, "Email already exists");
+  }
 
-//     const existingCustomer = await tx.customer.findUnique({
-//       where: { email: payload.email },
-//       select: { id: true },
-//     });
-//     if (existingCustomer) {
-//       throw new ApiError(httpStatus.CONFLICT, "Customer email already exists");
-//     }
+  const hashed = await bcrypt.hash(payload.password, 8);
 
-//     const hashed = await bcrypt.hash(payload.password, 8);
+  const user = await db.user.create({
+    data: {
+      name: payload.name,
+      email: payload.email,
+      password: hashed,
+      contactNo: payload.contactNo,
+      role: payload.role || "User",
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+  });
 
-//     const user = await tx.user.create({
-//       data: {
-//         name: payload.name,
-//         email: payload.email,
-//         password: hashed,
-//         contactNo: payload.contactNo,
-//         isBlocked: false,
-//       },
-//     });
-
-//     const customer = await tx.customer.create({
-//       data: {
-//         name: payload.name,
-//         email: payload.email,
-//         contactNumber:  payload.contactNo,
-//       },
-//     });
-
-//     return { user, customer };
-//   });
-
-//   return result;
-// };
-
-
-// const registerEmployee = async (payload: {
-//   name: string;
-//   email: string;
-//   password: string;
-//   contactNo: string;
-//   position?: string;
-//   department?: string;
-//   avatar?: string;
-// }) => {
-//   const result = await prisma.$transaction(async (tx) => {
-//     const existingUser = await tx.user.findUnique({
-//       where: { email: payload.email },
-//       select: { id: true },
-//     });
-//     if (existingUser) {
-//       throw new ApiError(httpStatus.CONFLICT, "User email already exists");
-//     }
-
-//     const existingEmployee = await tx.employee.findUnique({
-//       where: { email: payload.email },
-//       select: { id: true },
-//     });
-//     if (existingEmployee) {
-//       throw new ApiError(httpStatus.CONFLICT, "Employee email already exists");
-//     }
-
-//     const hashed = await bcrypt.hash(payload.password, 8);
-
-//     const user = await tx.user.create({
-//       data: {
-//         name: payload.name,
-//         email: payload.email,
-//         password: hashed,
-//         contactNo: payload.contactNo,
-//         isBlocked: false,
-//       },
-//     });
-
-//     const employee = await tx.employee.create({
-//       data: {
-//         name: payload.name,
-//         email: payload.email,
-//         phone:  payload.contactNo,
-//         position: payload.position,
-//         department: payload.department,
-//         avatar: payload.avatar,
-//       },
-//     });
-
-//     return { user, employee };
-//   });
-
-//   return result;
-// };
+  return user;
+};
 
 // Forget Password
-
 const generateOtp = (length = 6) => {
   const otp = crypto.randomInt(10 ** (length - 1), 10 ** length).toString();
   return otp;
@@ -153,7 +85,6 @@ const forgotPassword_sendPassword = async (email: string) => {
   }
 
   const otp = generateOtp();
-
   const redisKey = `otp:${email}`;
 
   await redisClient.set(redisKey, otp, {
@@ -184,7 +115,6 @@ const verifyOTP = async (email: string, otp: string) => {
   }
 
   const redisKey = `otp:${email}`;
-
   const savedOtp = await redisClient.get(redisKey);
 
   if (!savedOtp) {
@@ -199,7 +129,6 @@ const verifyOTP = async (email: string, otp: string) => {
 };
 
 const changePassword = async (newPassword: string, email: string) => {
-  // 1️⃣ Find user
   const user = await db.user.findUnique({
     where: { email },
   });
@@ -212,10 +141,8 @@ const changePassword = async (newPassword: string, email: string) => {
     throw new ApiError(httpStatus.UNAUTHORIZED, "New password is not found");
   }
 
-  // 3️⃣ Hash new password
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  // 4️⃣ Update password using Prisma
   await db.user.update({
     where: { email },
     data: {
@@ -231,7 +158,7 @@ const changePassword = async (newPassword: string, email: string) => {
 
 export const authServices = {
   loginUser,
-
+  registerUser,
   forgotPassword_sendPassword,
   verifyOTP,
   changePassword,
