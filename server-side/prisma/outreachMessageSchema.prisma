@@ -1,0 +1,16 @@
+model OutreachMessage {
+    id            String        @id @default(uuid())
+    leadId        String
+    lead          Lead          @relation(fields: [leadId], references: [id])
+    campaignId    String
+    campaign      Campaign      @relation(fields: [campaignId], references: [id])
+    type          EOutreachType
+    subject       String?
+    body          String
+    sentAt        DateTime?
+    replyStatus   EReplyStatus  @default(NoReply)
+    replyContent  String?
+    isFollowUp    Boolean       @default(false)
+    followUpCount Int           @default(0)
+    createdAt     DateTime      @default(now())
+}

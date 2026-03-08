@@ -1,0 +1,54 @@
+enum ERole {
+    Admin
+    User
+}
+
+enum EPlatform {
+    Facebook
+    Instagram
+    LinkedIn
+    Indeed
+}
+
+enum ELeadStatus {
+    New
+    Contacted
+    Interested
+    NotInterested
+    Scheduled
+    Converted
+}
+
+enum EOutreachType {
+    Email
+    InstagramDM
+    FacebookDM
+}
+
+enum EReplyStatus {
+    NoReply
+    Interested
+    NotInterested
+    Neutral
+}
+
+enum ECampaignStatus {
+    Draft
+    Active
+    Paused
+    Completed
+}
+
+enum EScrapingJobStatus {
+    Pending
+    Running
+    Completed
+    Failed
+}
+
+enum EMeetingStatus {
+    Scheduled
+    Completed
+    Cancelled
+    NoShow
+}

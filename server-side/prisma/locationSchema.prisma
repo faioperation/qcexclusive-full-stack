@@ -1,0 +1,13 @@
+model Location {
+    id        String     @id @default(uuid())
+    city      String
+    state     String?
+    country   String     @default("US")
+    isActive  Boolean    @default(true)
+    leads     Lead[]
+    campaigns Campaign[]
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+
+    @@unique([city, state, country])
+}
