@@ -78,9 +78,7 @@ export function AddAdminPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-3">
-                      <button className="text-gray-400 hover:text-blue-500 transition-colors">
-                         <span className="text-sm border border-gray-200 px-2 py-1 rounded-md text-blue-500 hover:bg-blue-50">Details</span>
-                      </button>
+                    
                       <button className="text-gray-400 hover:text-red-500 transition-colors bg-red-50 hover:bg-red-100 p-1.5 rounded-md">
                         <Trash2 size={16} className="text-red-500" />
                       </button>
