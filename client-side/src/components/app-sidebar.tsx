@@ -30,6 +30,7 @@ import {
   LogOut,
   TableConfig
 } from "lucide-react";
+import Link from "next/link";
 
 // This is sample data.
 const data = {
@@ -115,10 +116,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                     }`}
                   >
-                    <a href={item.url} className="font-medium text-[15px] flex items-center">
+                    <Link href={item.url} className="font-medium text-[15px] flex items-center">
                       {item.icon}
                       <span className="ml-1">{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );
