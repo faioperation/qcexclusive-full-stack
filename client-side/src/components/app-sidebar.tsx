@@ -28,6 +28,7 @@ import {
   Link as LinkIcon,
   UserPlus,
   LogOut,
+  TableConfig
 } from "lucide-react";
 
 // This is sample data.
@@ -52,6 +53,11 @@ const data = {
       title: "Calender",
       icon: <CalendarDays size={20} />,
       url: "/calendar",
+    },
+    {
+      title: "Config",
+      icon: <TableConfig size={20} />,
+      url: "/config",
     },
     {
       title: "Docs link",
