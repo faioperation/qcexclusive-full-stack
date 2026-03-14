@@ -7,7 +7,7 @@ import { authValidation } from "./auth.validation";
 const router = Router()
 
 router.post("/login", validateRequest(authValidation.loginZodSchema), authControllers.userLogin)
-router.post("/register", auth("Admin"), validateRequest(authValidation.registerUserZodSchema), authControllers.registerUser)
+router.post("/register", validateRequest(authValidation.registerUserZodSchema), authControllers.registerUser)
 router.post("/logout", authControllers.userLogout)
 router.post("/forgot-password", validateRequest(authValidation.forgotPasswordZodSchema), authControllers.userForgotPassword)
 router.post("/verify-otp", validateRequest(authValidation.verifyOtpZodSchema), authControllers.userVerifyOTP)
