@@ -1,21 +1,29 @@
 model Campaign {
-    id                 String              @id @default(uuid())
-    name               String
-    description        String?
-    status             ECampaignStatus     @default(Draft)
-    platform           EPlatform
-    followerThreshold  Int                 @default(1000)
-    aiSpecification    String?
-    targetIndustryId   String?
-    targetIndustry     Industry?           @relation(fields: [targetIndustryId], references: [id])
-    targetLocationId   String?
-    targetLocation     Location?           @relation(fields: [targetLocationId], references: [id])
-    createdById        String
-    createdBy          User                @relation(fields: [createdById], references: [id])
-    leads              Lead[]
-    outreachMessages   OutreachMessage[]
-    scrapingJobs       ScrapingJob[]
-    meetings           Meeting[]
-    createdAt          DateTime            @default(now())
-    updatedAt          DateTime            @updatedAt
+    id                   String              @id @default(uuid())
+    name                 String
+    description          String?
+    firstMessage         String?             // template email sent to all leads on Start Campaign
+    apifyDatasetId       String?             // Central Apify dataset ID for scrape results
+    status               ECampaignStatus     @default(Draft)
+    platform             EPlatform           @default(Instagram)
+    
+    // ── Scraping Logic (Figma Modal Fields)
+    location             String?
+    industry             String?
+    followerThreshold    Int                 @default(0)
+    specification        String?
+    
+    // ── Relations & Meta
+    targetIndustryId     String?
+    targetIndustry       Industry?           @relation(fields: [targetIndustryId], references: [id])
+    targetLocationId     String?
+    targetLocation       Location?           @relation(fields: [targetLocationId], references: [id])
+    createdById          String
+    createdBy            User                @relation(fields: [createdById], references: [id])
+    leads                Lead[]
+    outreachMessages     OutreachMessage[]
+    scrapingJobs         ScrapingJob[]
+    meetings             Meeting[]
+    createdAt            DateTime            @default(now())
+    updatedAt            DateTime            @updatedAt
 }

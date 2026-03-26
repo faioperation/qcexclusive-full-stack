@@ -21,4 +21,5 @@ export default {
   RedisPassword: process.env.RedisPassword,
   RedisHost: process.env.RedisHost,
   RedisPort: process.env.RedisPort,
+  APIFY_TOKEN: process.env.APIFY_TOKEN,
 };
