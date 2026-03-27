@@ -8,10 +8,16 @@ enum EPlatform {
     Instagram
     LinkedIn
     Indeed
+    Twitter
+    TikTok
+    YouTube
+    GoogleMaps
 }
 
 enum ELeadStatus {
     New
+    Running
+    Completed
     Contacted
     Interested
     NotInterested
@@ -51,4 +57,9 @@ enum EMeetingStatus {
     Completed
     Cancelled
     NoShow
+}
+
+enum EMessageSender {
+    Admin
+    Lead
 }

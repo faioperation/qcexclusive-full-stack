@@ -5,6 +5,7 @@ model OutreachMessage {
     campaignId    String
     campaign      Campaign      @relation(fields: [campaignId], references: [id])
     type          EOutreachType
+    senderType    EMessageSender @default(Admin)
     subject       String?
     body          String
     sentAt        DateTime?
@@ -12,5 +13,6 @@ model OutreachMessage {
     replyContent  String?
     isFollowUp    Boolean       @default(false)
     followUpCount Int           @default(0)
+    gmailThreadId String?
     createdAt     DateTime      @default(now())
 }

@@ -9,7 +9,7 @@ const router = Router();
 router.get("/me", auth("Admin", "User"), userControllers.getMyProfile);
 router.patch(
     "/me",
-    auth("Admin"),
+    auth("Admin", "User"),
     validateRequest(userValidation.updateProfileZodSchema),
     userControllers.updateMyProfile
 );

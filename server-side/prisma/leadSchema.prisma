@@ -8,6 +8,10 @@ model Lead {
     profileUsername   String?
     followerCount    Int                @default(0)
     bio              String?
+    imageUrl         String?            // business logo / profile picture from scraper
+    website          String?            // business website URL
+    totalScore       Float?             // Google Maps star rating (0-5)
+    role             String?            // Job role (e.g. Marketer, Developer)
     status           ELeadStatus        @default(New)
     industryId       String?
     industry         Industry?          @relation(fields: [industryId], references: [id])
@@ -19,6 +23,7 @@ model Lead {
     scrapingJob      ScrapingJob?       @relation(fields: [scrapingJobId], references: [id])
     outreachMessages OutreachMessage[]
     meetings         Meeting[]
+    gmailThreadId    String?            @unique
     createdAt        DateTime           @default(now())
     updatedAt        DateTime           @updatedAt
 }

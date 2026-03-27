@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= subject %></title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #2d3748;
+    }
+    .wrapper {
+      max-width: 620px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .header {
+      background: linear-gradient(135deg, #1a7a4a 0%, #25a366 100%);
+      padding: 36px 40px;
+      text-align: center;
+    }
+    .header-logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+    .header-logo span {
+      color: #a8f5c9;
+    }
+    .body {
+      padding: 40px;
+    }
+    .greeting {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a7a4a;
+      margin-bottom: 20px;
+    }
+    .message-content {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #4a5568;
+      background: #f8fffe;
+      border-left: 4px solid #25a366;
+      padding: 20px 24px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 32px;
+      white-space: pre-line;
+    }
+    .divider {
+      height: 1px;
+      background: #e2e8f0;
+      margin: 32px 0;
+    }
+    .reply-note {
+      font-size: 13px;
+      color: #718096;
+      background: #f7fafc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .reply-note strong {
+      color: #2d3748;
+    }
+    .footer {
+      background: #f7fafc;
+      padding: 24px 40px;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+    }
+    .footer p {
+      font-size: 12px;
+      color: #a0aec0;
+      line-height: 1.6;
+    }
+    .footer .brand {
+      font-weight: 700;
+      color: #1a7a4a;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-logo">QC<span>Exclusive</span></div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <p class="greeting">Hi <%= leadName %> 👋</p>
+
+      <div class="message-content"><%= body %></div>
+
+      <div class="reply-note">
+        <strong>How to reply:</strong> Simply reply to this email and we'll get back to you promptly.
+        We're here to help and look forward to hearing from you.
+      </div>
+
+      <div class="divider"></div>
+
+      <p style="font-size: 14px; color: #718096;">
+        This message was sent to you from the QCExclusive outreach team.
+        If you believe you received this by mistake, you can safely ignore it.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        &copy; <%= new Date().getFullYear() %> <span class="brand">QCExclusive</span>. All rights reserved.<br />
+        AI-Powered Lead Generation &amp; Outreach
+      </p>
+    </div>
+  </div>
+</body>
+</html>
