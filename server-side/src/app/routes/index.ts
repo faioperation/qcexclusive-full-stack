@@ -6,6 +6,7 @@ import { userRouter } from "../modules/user/user.routes";
 import { leadRouter } from "../modules/lead/lead.routes";
 import { inboxRouter } from "../modules/inbox/inbox.routes";
 import { campaignRouter } from "../modules/campaign/campaign.routes";
+import { docsLinkRouter } from "../modules/docs-link/docs-link.routes";
 
 
 export const rootRoute = Router()
@@ -17,6 +18,7 @@ const modelRoutes = [
     { path: "/campaign", element: campaignRouter },
     { path: "/lead", element: leadRouter },
     { path: "/inbox", element: inboxRouter },
+    { path: "/docs-link", element: docsLinkRouter },
 ]
 
 modelRoutes.forEach((route) => {

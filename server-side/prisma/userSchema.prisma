@@ -11,4 +11,5 @@ model User {
     updatedAt  DateTime   @updatedAt
     isBlocked  Boolean    @default(false)
     campaigns  Campaign[]
+    docsLinks  DocsLink[]
 }

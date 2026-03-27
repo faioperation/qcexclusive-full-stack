@@ -1,0 +1,18 @@
+model MediaPost {
+    id          String          @id @default(uuid())
+    heading     String
+    body        String
+    postTime    DateTime        @default(now())
+    status      EMediaPostStatus @default(Draft)
+    docsLinkId  String
+    docsLink    DocsLink        @relation(fields: [docsLinkId], references: [id], onDelete: Cascade)
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @updatedAt
+
+    @@map("media_posts")
+}
+
+enum EMediaPostStatus {
+    Posted
+    Draft
+}

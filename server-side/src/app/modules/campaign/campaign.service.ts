@@ -317,8 +317,22 @@ const getSingleCampaignFromDB = async (id: string) => {
   return campaign;
 };
 
+const deleteCampaignFromDB = async (id: string) => {
+  const campaign = await db.campaign.findUnique({ where: { id } });
+  if (!campaign) throw new ApiError(httpStatus.NOT_FOUND, "Campaign not found");
+
+  // Delete child records first to avoid FK constraint issues
+  await db.scrapingJob.deleteMany({ where: { campaignId: id } });
+  await db.outreachMessage.deleteMany({ where: { campaignId: id } });
+  await db.lead.deleteMany({ where: { campaignId: id } });
+  await db.campaign.delete({ where: { id } });
+
+  return campaign;
+};
+
 export const CampaignService = {
   createCampaignInDB,
   getAllCampaignsFromDB,
   getSingleCampaignFromDB,
+  deleteCampaignFromDB,
 };
