@@ -4,6 +4,7 @@ import { userServices } from "./user.service";
 
 const getMyProfile = catchAsync(async (req: any, res, next) => {
     const userId = req.user.id;
+    console.log(req.user.id)
     const user = await userServices.getMyProfile(userId);
     sendResponse(res, {
         success: true,

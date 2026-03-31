@@ -7,7 +7,9 @@ import { verifyToken } from "../utils/jwt";
 const auth = (...roles: string[]) => {
     return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
         try {
-            const token = req.cookies.accessToken;
+              const token =
+                req.cookies?.accessToken ||
+                req.headers?.authorization?.split(" ")[1];
 
             if (!token) {
                 throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized!")

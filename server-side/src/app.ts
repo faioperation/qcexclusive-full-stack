@@ -8,7 +8,20 @@ import { rootRoute } from "./app/routes";
 const app: Application = express();
 app.use(express.json());
 app.use(cors({
-  origin: config.FRONTEND_URL || true,
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      config.FRONTEND_URL,
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://172.252.13.90:8042"
+    ].filter(Boolean) as string[];
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
+  },
   credentials: true,
 }));
 app.use(cookieParser());
