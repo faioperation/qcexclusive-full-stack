@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from "express"; 
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import config from "./app/config";
 import cookieParser from "cookie-parser";
@@ -13,7 +13,8 @@ app.use(cors({
       config.FRONTEND_URL,
       "http://localhost:3000",
       "http://localhost:5173",
-      "http://172.252.13.90:8042"
+      "http://172.252.13.90:8042",
+      "http://172.252.13.90",
     ].filter(Boolean) as string[];
 
     if (!origin || allowedOrigins.includes(origin)) {
@@ -34,7 +35,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-app.use("/api/v1",rootRoute)
+app.use("/api/v1", rootRoute)
 
 // app.use("/api/v1",rootRoute)
 app.use(globalErrorHandler);
