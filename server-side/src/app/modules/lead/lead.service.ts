@@ -1,4 +1,4 @@
-import { Prisma, ELeadStatus, EPlatform } from "../../../generated/prisma/client";
+import { Prisma, ELeadStatus, EPlatform } from "../../../../generated/prisma";
 import { prisma } from "../../db_connection/prisma";
 import { QueryBuilder, TQueryInput, TRelationConfig, TSearchConfig } from "../../utils/QueryBuilder";
 import httpStatus from "http-status";

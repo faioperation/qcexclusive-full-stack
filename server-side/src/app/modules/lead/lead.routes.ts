@@ -3,7 +3,7 @@ import { LeadController } from "./lead.controller";
 import auth from "../../middlewares/checkAuth";
 import validateRequest from "../../middlewares/validateRequest";
 import { LeadValidation } from "./lead.validation";
-import { ERole } from "../../../generated/prisma/client";
+import { ERole } from "../../../../generated/prisma";
 
 const router = Router();
 

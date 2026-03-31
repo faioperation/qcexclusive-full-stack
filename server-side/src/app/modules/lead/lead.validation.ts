@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Prisma, ELeadStatus, EPlatform } from "../../../generated/prisma/client";
+import { Prisma, ELeadStatus, EPlatform } from "../../../../generated/prisma";
 
 const createLeadZodSchema = z.object({
   body: z.object({

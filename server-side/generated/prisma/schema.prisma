@@ -1,0 +1,271 @@
+model AIPromptConfig {
+  id         String   @id @default(uuid())
+  name       String
+  promptType String
+  promptText String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Campaign {
+  id             String          @id @default(uuid())
+  name           String
+  description    String?
+  firstMessage   String? // template email sent to all leads on Start Campaign
+  apifyDatasetId String? // Central Apify dataset ID for scrape results
+  status         ECampaignStatus @default(Draft)
+  platform       EPlatform       @default(Instagram)
+
+  // ── Scraping Logic (Figma Modal Fields)
+  location          String?
+  industry          String?
+  followerThreshold Int     @default(0)
+  specification     String?
+
+  // ── Relations & Meta
+  targetIndustryId String?
+  targetIndustry   Industry?         @relation(fields: [targetIndustryId], references: [id])
+  targetLocationId String?
+  targetLocation   Location?         @relation(fields: [targetLocationId], references: [id])
+  createdById      String
+  createdBy        User              @relation(fields: [createdById], references: [id])
+  leads            Lead[]
+  outreachMessages OutreachMessage[]
+  scrapingJobs     ScrapingJob[]
+  meetings         Meeting[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model DocsLink {
+  id           String      @id @default(uuid())
+  name         String
+  projectName  String
+  docsLink     String
+  prompt       String?
+  postGenerate Int         @default(1)
+  createdById  String
+  createdBy    User        @relation(fields: [createdById], references: [id])
+  posts        MediaPost[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("docs_links")
+}
+
+enum ERole {
+  Admin
+  User
+}
+
+enum EPlatform {
+  Facebook
+  Instagram
+  LinkedIn
+  Indeed
+  Twitter
+  TikTok
+  YouTube
+  GoogleMaps
+}
+
+enum ELeadStatus {
+  New
+  Running
+  Completed
+  Contacted
+  Interested
+  NotInterested
+  Scheduled
+  Converted
+}
+
+enum EOutreachType {
+  Email
+  InstagramDM
+  FacebookDM
+}
+
+enum EReplyStatus {
+  NoReply
+  Interested
+  NotInterested
+  Neutral
+}
+
+enum ECampaignStatus {
+  Draft
+  Active
+  Paused
+  Completed
+}
+
+enum EScrapingJobStatus {
+  Pending
+  Running
+  Completed
+  Failed
+}
+
+enum EMeetingStatus {
+  Scheduled
+  Completed
+  Cancelled
+  NoShow
+}
+
+enum EMessageSender {
+  Admin
+  Lead
+}
+
+model Industry {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  isActive    Boolean    @default(true)
+  leads       Lead[]
+  campaigns   Campaign[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Lead {
+  id               String            @id @default(uuid())
+  name             String
+  email            String?
+  phone            String?
+  platform         EPlatform
+  platformUrl      String?
+  profileUsername  String?
+  followerCount    Int               @default(0)
+  bio              String?
+  imageUrl         String? // business logo / profile picture from scraper
+  website          String? // business website URL
+  totalScore       Float? // Google Maps star rating (0-5)
+  role             String? // Job role (e.g. Marketer, Developer)
+  status           ELeadStatus       @default(New)
+  industryId       String?
+  industry         Industry?         @relation(fields: [industryId], references: [id])
+  locationId       String?
+  location         Location?         @relation(fields: [locationId], references: [id])
+  campaignId       String?
+  campaign         Campaign?         @relation(fields: [campaignId], references: [id])
+  scrapingJobId    String?
+  scrapingJob      ScrapingJob?      @relation(fields: [scrapingJobId], references: [id])
+  outreachMessages OutreachMessage[]
+  meetings         Meeting[]
+  gmailThreadId    String?           @unique
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Location {
+  id        String     @id @default(uuid())
+  city      String
+  state     String?
+  country   String     @default("US")
+  isActive  Boolean    @default(true)
+  leads     Lead[]
+  campaigns Campaign[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([city, state, country])
+}
+
+model MediaPost {
+  id         String           @id @default(uuid())
+  heading    String
+  body       String
+  postTime   DateTime         @default(now())
+  status     EMediaPostStatus @default(Draft)
+  docsLinkId String
+  docsLink   DocsLink         @relation(fields: [docsLinkId], references: [id], onDelete: Cascade)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@map("media_posts")
+}
+
+enum EMediaPostStatus {
+  Posted
+  Draft
+}
+
+model Meeting {
+  id          String         @id @default(uuid())
+  title       String
+  leadId      String
+  lead        Lead           @relation(fields: [leadId], references: [id])
+  campaignId  String?
+  campaign    Campaign?      @relation(fields: [campaignId], references: [id])
+  startTime   DateTime
+  endTime     DateTime
+  meetingLink String?
+  status      EMeetingStatus @default(Scheduled)
+  notes       String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model OutreachMessage {
+  id            String         @id @default(uuid())
+  leadId        String
+  lead          Lead           @relation(fields: [leadId], references: [id])
+  campaignId    String
+  campaign      Campaign       @relation(fields: [campaignId], references: [id])
+  type          EOutreachType
+  senderType    EMessageSender @default(Admin)
+  subject       String?
+  body          String
+  sentAt        DateTime?
+  replyStatus   EReplyStatus   @default(NoReply)
+  replyContent  String?
+  isFollowUp    Boolean        @default(false)
+  followUpCount Int            @default(0)
+  gmailThreadId String?
+  createdAt     DateTime       @default(now())
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ScrapingJob {
+  id             String             @id @default(uuid())
+  campaignId     String
+  campaign       Campaign           @relation(fields: [campaignId], references: [id])
+  platform       EPlatform
+  status         EScrapingJobStatus @default(Pending)
+  targetQuery    String?
+  leadsFound     Int                @default(0)
+  leadsExtracted Int                @default(0)
+  startedAt      DateTime?
+  completedAt    DateTime?
+  errorLog       String?
+  leads          Lead[]
+  createdAt      DateTime           @default(now())
+}
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  role      ERole      @default(User)
+  password  String
+  contactNo String
+  photo     String?
+  address   String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  isBlocked Boolean    @default(false)
+  campaigns Campaign[]
+  docsLinks DocsLink[]
+}

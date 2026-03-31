@@ -13,23 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CampaignService = void 0;
-const client_1 = require("../../../generated/prisma/client");
-const prisma_1 = require("../../db_connection/prisma");
+const prisma_1 = require("../../../../generated/prisma");
+const prisma_2 = require("../../db_connection/prisma");
 const apify_1 = require("../../utils/apify");
 const sendEmail_1 = require("../../utils/sendEmail");
 const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const http_status_1 = __importDefault(require("http-status"));
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
-const db = prisma_1.prisma;
+const db = prisma_2.prisma;
 // ─── Map campaign.platform string → EPlatform enum + Apify platform key ──────
 const resolvePlatform = (campaignPlatform) => {
     const p = (campaignPlatform !== null && campaignPlatform !== void 0 ? campaignPlatform : "").toLowerCase();
     if (p === "instagram")
-        return { apifyPlatform: "Instagram", dbPlatform: client_1.EPlatform.Instagram };
+        return { apifyPlatform: "Instagram", dbPlatform: prisma_1.EPlatform.Instagram };
     if (p === "facebook")
-        return { apifyPlatform: "Facebook", dbPlatform: client_1.EPlatform.Facebook };
+        return { apifyPlatform: "Facebook", dbPlatform: prisma_1.EPlatform.Facebook };
     // Default → GoogleMaps (also handles "googlemaps", "google_maps", etc.)
-    return { apifyPlatform: "GoogleMaps", dbPlatform: client_1.EPlatform.GoogleMaps };
+    return { apifyPlatform: "GoogleMaps", dbPlatform: prisma_1.EPlatform.GoogleMaps };
 };
 // ─── Strip backtick decorations ───────────────────────────────────────────────
 const strip = (v) => typeof v === "string" ? v.replace(/[`]/g, "").trim() || null : null;
@@ -91,7 +91,7 @@ const mapItemToLead = (item, platform) => {
 // ─── Create Campaign ──────────────────────────────────────────────────────────
 const createCampaignInDB = (payload, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const campaign = yield db.campaign.create({
-        data: Object.assign(Object.assign({}, payload), { createdById: userId, status: client_1.ECampaignStatus.Active }),
+        data: Object.assign(Object.assign({}, payload), { createdById: userId, status: prisma_1.ECampaignStatus.Active }),
     });
     // ✅ Read the platform FROM the campaign, don't hardcode GoogleMaps
     const { apifyPlatform, dbPlatform } = resolvePlatform(campaign.platform);
@@ -115,7 +115,7 @@ const createCampaignInDB = (payload, userId) => __awaiter(void 0, void 0, void 0
             data: {
                 campaignId: campaign.id,
                 platform: dbPlatform, // ✅ use resolved platform
-                status: client_1.EScrapingJobStatus.Running,
+                status: prisma_1.EScrapingJobStatus.Running,
                 targetQuery: [campaign.industry, campaign.specification, campaign.location]
                     .filter(Boolean).join(" in "),
                 startedAt: new Date(),
@@ -142,7 +142,7 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
             if (!(campaignRecord === null || campaignRecord === void 0 ? void 0 : campaignRecord.apifyDatasetId)) {
                 yield db.scrapingJob.update({
                     where: { id: jobId },
-                    data: { status: client_1.EScrapingJobStatus.Failed, errorLog: `Run status: ${runResult.status}`, completedAt: new Date() },
+                    data: { status: prisma_1.EScrapingJobStatus.Failed, errorLog: `Run status: ${runResult.status}`, completedAt: new Date() },
                 });
                 return;
             }
@@ -168,7 +168,7 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
             console.warn(`[Job ${jobId}] 0 items returned. Check actor inputs for ${apifyPlatform}.`);
             yield db.scrapingJob.update({
                 where: { id: jobId },
-                data: { status: client_1.EScrapingJobStatus.Completed, leadsFound: 0, leadsExtracted: 0, completedAt: new Date() },
+                data: { status: prisma_1.EScrapingJobStatus.Completed, leadsFound: 0, leadsExtracted: 0, completedAt: new Date() },
             });
             return;
         }
@@ -218,7 +218,7 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
                         imageUrl: mapped.imageUrl,
                         website: mapped.website,
                         totalScore: mapped.totalScore,
-                        status: client_1.ELeadStatus.Completed,
+                        status: prisma_1.ELeadStatus.Completed,
                         campaignId,
                         scrapingJobId: jobId,
                         industryId,
@@ -247,7 +247,7 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
                         });
                         yield db.lead.update({
                             where: { id: lead.id },
-                            data: { status: client_1.ELeadStatus.Contacted },
+                            data: { status: prisma_1.ELeadStatus.Contacted },
                         });
                     }
                     catch (mailErr) {
@@ -262,7 +262,7 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
         yield db.scrapingJob.update({
             where: { id: jobId },
             data: {
-                status: client_1.EScrapingJobStatus.Completed,
+                status: prisma_1.EScrapingJobStatus.Completed,
                 leadsFound,
                 leadsExtracted,
                 completedAt: new Date(),
@@ -274,7 +274,7 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
         console.error(`[Job ${jobId}] Fatal:`, error.message);
         yield db.scrapingJob.update({
             where: { id: jobId },
-            data: { status: client_1.EScrapingJobStatus.Failed, errorLog: error.message, completedAt: new Date() },
+            data: { status: prisma_1.EScrapingJobStatus.Failed, errorLog: error.message, completedAt: new Date() },
         });
     }
 });

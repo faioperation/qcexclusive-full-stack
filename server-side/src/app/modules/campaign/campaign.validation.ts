@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EPlatform } from "../../../generated/prisma/client";
+import { EPlatform } from "../../../../generated/prisma";
 
 const createCampaignZodSchema = z.object({
   body: z.object({

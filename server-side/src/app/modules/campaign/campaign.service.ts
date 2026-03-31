@@ -1,6 +1,6 @@
 import {
   ECampaignStatus, EScrapingJobStatus, ELeadStatus, EPlatform,
-} from "../../../generated/prisma/client";
+} from "../../../../generated/prisma";
 import { prisma } from "../../db_connection/prisma";
 import { triggerApifyScraper, waitForApifyRun, getDatasetItems } from "../../utils/apify";
 import { sendEmail } from "../../utils/sendEmail";
