@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useSyncExternalStore } from "react";
 import { X } from "lucide-react";
 import { createPortal } from "react-dom";
 
@@ -10,11 +10,16 @@ interface ModalProps {
   width?: string;
 }
 
+const emptySubscribe = () => () => {};
+
 export function Modal({ isOpen, onClose, title, children, width = "w-full max-w-xl" }: ModalProps) {
-  const [mounted, setMounted] = useState(false);
+  const isMounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   useEffect(() => {
-    setMounted(true);
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -25,7 +30,7 @@ export function Modal({ isOpen, onClose, title, children, width = "w-full max-w-
     };
   }, [isOpen]);
 
-  if (!mounted || !isOpen) return null;
+  if (!isMounted || !isOpen) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

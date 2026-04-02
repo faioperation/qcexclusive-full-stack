@@ -63,7 +63,13 @@ export function Header() {
 
   const displayName = user?.name ?? "User";
   const displayRole = user?.role ?? "";
-  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=E5E7EB&color=374151`;
+
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  };
+  const initials = getInitials(displayName);
 
   return (
     <header className="h-[72px] bg-white border-b border-gray-100 px-6 flex items-center justify-between shrink-0 relative z-20">
@@ -120,14 +126,14 @@ export function Header() {
             onClick={() => { setIsProfileOpen(!isProfileOpen); setIsNotifOpen(false); }}
             className="flex items-center gap-3 cursor-pointer select-none"
           >
-            <div className="w-10 h-10 rounded-full bg-[#f0f0f0] overflow-hidden flex-shrink-0 border border-gray-200">
-              <img
-                src={avatarUrl}
-                alt="User"
-                className="w-full h-full object-cover"
-              />
+            {/* Avatar with Initials */}
+            <div className="w-10 h-10 rounded-full bg-[#E5F6EC] flex-shrink-0 border border-[#b6e8cf] flex items-center justify-center">
+              <span className="text-sm font-semibold text-[#00A651] leading-none">
+                {initials}
+              </span>
             </div>
-            <div className="flex flex-col hidden sm:flex">
+
+            <div className="flex-col hidden sm:flex">
               <span className="text-sm font-semibold text-gray-900">{displayName}</span>
               <span className="text-xs text-gray-500 font-medium">{displayRole}</span>
             </div>
@@ -135,9 +141,17 @@ export function Header() {
 
           {isProfileOpen && (
             <div className="absolute right-0 mt-3 w-56 bg-white rounded-[16px] shadow-lg border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2">
-              <div className="p-4 border-b border-gray-100 bg-[#FAFBFD]">
-                <p className="text-sm font-bold text-gray-900">{displayName}</p>
-                <p className="text-xs text-gray-500">{user?.email ?? ""}</p>
+              <div className="p-4 border-b border-gray-100 bg-[#FAFBFD] flex items-center gap-3">
+                {/* Mini avatar inside dropdown */}
+                <div className="w-9 h-9 rounded-full bg-[#E5F6EC] border border-[#b6e8cf] flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs font-semibold text-[#00A651] leading-none">
+                    {initials}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">{displayName}</p>
+                  <p className="text-xs text-gray-500">{user?.email ?? ""}</p>
+                </div>
               </div>
               <div className="p-2 flex flex-col gap-1">
                 <Link

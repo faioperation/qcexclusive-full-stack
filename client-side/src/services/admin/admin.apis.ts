@@ -4,26 +4,7 @@ import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export interface IAdmin {
-  id: string;
-  name: string;
-  email: string;
-  contactNo: string | null;
-  photo: string | null;
-  address?: string | null;
-  isBlocked: boolean;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-export interface ICreateAdminPayload {
-  name: string;
-  email: string;
-  password: string;
-  contactNo: string;
-}
+import { ICreateAdminPayload } from "./admin.types";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

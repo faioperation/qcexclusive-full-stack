@@ -1,6 +1,7 @@
 "use client";
 
-import { getCurrentUser, IUser } from "@/services/auth/auth.apis";
+import { getCurrentUser } from "@/services/auth/auth.apis";
+import { IUser } from "@/services/auth/auth.types";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface IUserProvider {

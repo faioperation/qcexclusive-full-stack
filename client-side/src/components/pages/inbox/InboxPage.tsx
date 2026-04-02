@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Search, MoreVertical, Paperclip, Send, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { getAllConversations } from "@/services/inbox/inbox.apis";
 
 interface Conversation {
@@ -49,7 +50,7 @@ export function InboxPage() {
     } finally {
       setIsLoadingConvs(false);
     }
-  }, [searchTerm, selectedConv]);
+  }, [selectedConv]);
 
   useEffect(() => {
     fetchConversations();
@@ -127,10 +128,11 @@ export function InboxPage() {
                   }`}
                 >
                   <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
-                    <img
+                    <Image
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(chat.lead?.name || "U")}&background=random`}
                       alt={chat.lead?.name}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -164,11 +166,12 @@ export function InboxPage() {
             {/* Chat Header */}
             <div className="h-[76px] px-6 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-100">
-                  <img
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-100 relative">
+                  <Image
                     src={`https://ui-avatars.com/api/?name=${encodeURIComponent(activeContact.lead?.name || "U")}&background=random`}
                     alt={activeContact.lead?.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
                 <div>

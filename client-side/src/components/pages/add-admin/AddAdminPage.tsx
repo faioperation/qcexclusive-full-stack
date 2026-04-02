@@ -1,16 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Plus, Trash2, Loader2 } from "lucide-react";
+import Swal from "sweetalert2";
 import { Modal } from "@/components/ui/modal";
-import {
-  getAllAdmins,
-  createAdmin,
-  deleteAdmin,
-  toggleBlockAdmin,
-  IAdmin,
-} from "@/services/admin/admin.apis";
+import { createAdmin, deleteAdmin, getAllAdmins, toggleBlockAdmin } from "@/services/admin/admin.apis";
+import { IAdmin } from "@/services/admin/admin.types";
+import { ERole } from "@/services/auth/auth.types";
+import { useUser } from "@/context/UserContext";
 
 interface AdminForm {
   name: string;
@@ -20,6 +19,8 @@ interface AdminForm {
 }
 
 export function AddAdminPage() {
+  const router = useRouter();
+  const { user } = useUser();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [admins, setAdmins] = useState<IAdmin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +33,14 @@ export function AddAdminPage() {
     reset,
     formState: { errors },
   } = useForm<AdminForm>();
+
+  const isAdmin = user?.role === ERole.Admin;
+
+  useEffect(() => {
+    if (user && user.role !== ERole.Admin) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   const fetchAdmins = useCallback(async () => {
     setIsLoading(true);
@@ -48,8 +57,10 @@ export function AddAdminPage() {
   }, []);
 
   useEffect(() => {
-    fetchAdmins();
-  }, [fetchAdmins]);
+    if (isAdmin) {
+      fetchAdmins();
+    }
+  }, [isAdmin, fetchAdmins]);
 
   const onAddAdmin = async (data: AdminForm) => {
     setCreateError(null);
@@ -65,23 +76,38 @@ export function AddAdminPage() {
         reset();
         setIsAddOpen(false);
         fetchAdmins();
+        Swal.fire("Success!", "Admin created successfully.", "success");
       } else {
         setCreateError(result?.message || "Failed to create admin.");
       }
-    } catch {
-      setCreateError("Something went wrong. Please try again.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setCreateError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (adminId: string) => {
-    if (!confirm("Are you sure you want to delete this admin?")) return;
-    try {
-      await deleteAdmin(adminId);
-      fetchAdmins();
-    } catch {
-      alert("Failed to delete admin.");
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteAdmin(adminId);
+        fetchAdmins();
+        Swal.fire("Deleted!", "Admin has been deleted.", "success");
+      } catch {
+        Swal.fire("Error!", "Failed to delete admin.", "error");
+      }
     }
   };
 
@@ -90,9 +116,13 @@ export function AddAdminPage() {
       await toggleBlockAdmin(adminId);
       fetchAdmins();
     } catch {
-      alert("Failed to update admin status.");
+      Swal.fire("Error!", "Failed to update admin status.", "error");
     }
   };
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <div className="p-6 md:p-8 w-full max-w-[1200px] mx-auto">

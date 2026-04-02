@@ -20,7 +20,6 @@ import {
   Users,
   Inbox,
   CalendarDays,
-  Settings,
   Link as LinkIcon,
   UserPlus,
   LogOut,
@@ -29,6 +28,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { logoutUser } from "@/services/auth/auth.apis";
+import { ERole } from "@/services/auth/auth.types";
 import { useUser } from "@/context/UserContext";
 
 const data = {
@@ -40,14 +40,15 @@ const data = {
     { title: "Config", icon: <TableProperties size={20} />, url: "/config" },
     { title: "Docs Link", icon: <LinkIcon size={20} />, url: "/docs-link" },
     { title: "Media Post", icon: <ImagePlay size={20} />, url: "/media-post" },
-    { title: "Add Admin", icon: <UserPlus size={20} />, url: "/add-admin" },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const router = useRouter();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
+
+  const isAdmin = user?.role === ERole.Admin;
 
   const handleLogout = async () => {
     try {
@@ -60,13 +61,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   };
 
+  const navItems = isAdmin
+    ? [
+        ...data.navMain,
+        { title: "Add Admin", icon: <UserPlus size={20} />, url: "/add-admin" },
+      ]
+    : data.navMain;
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/">
+              <Link href="/">
                 <Image
                   src={"/logo.png"}
                   alt="QC Exclusive"
@@ -78,7 +86,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     LoGo
                   </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -87,7 +95,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => {
+            {navItems.map((item) => {
               const isActive =
                 pathname === item.url ||
                 (item.url !== "/" && pathname.startsWith(item.url));

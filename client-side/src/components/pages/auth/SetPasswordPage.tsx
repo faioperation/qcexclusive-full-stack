@@ -21,11 +21,9 @@ export function SetPasswordPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<SetPasswordFormValues>();
-
-  const newPassword = watch("newPassword");
 
   const onSubmit = async (data: SetPasswordFormValues) => {
     setServerError(null);
@@ -80,7 +78,7 @@ export function SetPasswordPage() {
           {...register("confirmPassword", {
             required: "Confirm password is required",
             validate: (value) =>
-              value === newPassword || "Passwords do not match",
+              value === getValues("newPassword") || "Passwords do not match",
           })}
           error={errors.confirmPassword?.message}
         />
