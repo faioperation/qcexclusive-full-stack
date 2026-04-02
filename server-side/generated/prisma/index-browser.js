@@ -149,6 +149,14 @@ exports.Prisma.CampaignScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.DocsLinkScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -362,6 +370,7 @@ exports.ERole = exports.$Enums.ERole = {
 exports.Prisma.ModelName = {
   AIPromptConfig: 'AIPromptConfig',
   Campaign: 'Campaign',
+  Config: 'Config',
   DocsLink: 'DocsLink',
   Industry: 'Industry',
   Lead: 'Lead',

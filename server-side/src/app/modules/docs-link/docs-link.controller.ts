@@ -46,9 +46,21 @@ const deleteDocsLink = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllPosts = catchAsync(async (req: Request, res: Response) => {
+  const result = await DocsLinkService.getAllPostsFromDB(req.query as any);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All posts fetched successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const DocsLinkController = {
   createDocsLink,
   getAllDocsLinks,
   getPostsByDocsLinkId,
+  getAllPosts,
   deleteDocsLink,
 };

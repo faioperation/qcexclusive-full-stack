@@ -38,6 +38,16 @@ model Campaign {
   updatedAt        DateTime          @updatedAt
 }
 
+model Config {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("configs")
+}
+
 model DocsLink {
   id           String      @id @default(uuid())
   name         String

@@ -21,6 +21,13 @@ router.get(
   DocsLinkController.getAllDocsLinks
 );
 
+// Get all posts across all docs links (for MediaPostsPage pagination & search)
+router.get(
+  "/posts/all",
+  auth("Admin", "User"),
+  DocsLinkController.getAllPosts
+);
+
 // Get all posts for a specific docs link (eye button view)
 // Supports ?status=All|Posted|Draft
 router.get(

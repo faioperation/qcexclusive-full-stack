@@ -23,8 +23,8 @@ const getSingleAdmin = catchAsync(async (req, res, next) => {
     });
 });
 
-const createAdmin = catchAsync(async (req, res, next) => {
-    const admin = await adminServices.createAdmin(req.body);
+const createAdmin = catchAsync(async (req: Request & { user?: any }, res, next) => {
+    const admin = await adminServices.createAdmin(req.body, req.user.role);
     sendResponse(res, {
         success: true,
         message: "Admin created successfully",

@@ -53,7 +53,12 @@ const createAdmin = async (payload: {
     email: string;
     password: string;
     contactNo: string;
-}) => {
+}, requestingUserRole: string) => {
+    // Only Admin can create other admins
+    if (requestingUserRole !== "Admin") {
+        throw new ApiError(httpStatus.FORBIDDEN, "Only Admin can create other admins");
+    }
+
     const existingUser = await db.user.findUnique({
         where: { email: payload.email },
         select: { id: true },

@@ -91,9 +91,38 @@ const deleteDocsLinkFromDB = async (id: string) => {
   return docsLink;
 };
 
+// Get all posts across all docs links (for MediaPostsPage pagination & search)
+const getAllPostsFromDB = async (query: TQueryInput) => {
+  const qb = new QueryBuilder(query)
+    .search(["heading", "body"])
+    .filter()
+    .sort()
+    .paginate();
+
+  const [result, total] = await Promise.all([
+    db.mediaPost.findMany({
+      ...qb.build(),
+      include: {
+        docsLink: {
+          select: {
+            id: true,
+            name: true,
+            projectName: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    db.mediaPost.count({ where: qb.where }),
+  ]);
+
+  return { meta: qb.getMeta(total), data: result };
+};
+
 export const DocsLinkService = {
   createDocsLinkInDB,
   getAllDocsLinksFromDB,
   getPostsByDocsLinkIdFromDB,
+  getAllPostsFromDB,
   deleteDocsLinkFromDB,
 };
