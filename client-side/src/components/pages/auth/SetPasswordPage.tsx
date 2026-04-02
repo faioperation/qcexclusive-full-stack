@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { AuthCard } from "@/components/ui/auth-card";
 import { Logo } from "@/components/ui/logo";
 import { AuthInput } from "@/components/ui/auth-input";
 import { AuthButton } from "@/components/ui/auth-button";
+import { changePassword } from "@/services/auth/auth.apis";
 
 interface SetPasswordFormValues {
   newPassword: string;
@@ -15,6 +16,8 @@ interface SetPasswordFormValues {
 
 export function SetPasswordPage() {
   const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -25,10 +28,19 @@ export function SetPasswordPage() {
   const newPassword = watch("newPassword");
 
   const onSubmit = async (data: SetPasswordFormValues) => {
-    console.log("Set password data:", data);
-    // TODO: API call to set new password
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    router.push("/password-success");
+    setServerError(null);
+    try {
+      const email = sessionStorage.getItem("reset_email") || "";
+      const result = await changePassword({ email, newPassword: data.newPassword });
+      if (result?.success) {
+        sessionStorage.removeItem("reset_email");
+        router.push("/password-success");
+      } else {
+        setServerError(result?.message || "Failed to update password. Please try again.");
+      }
+    } catch {
+      setServerError("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -39,6 +51,12 @@ export function SetPasswordPage() {
         Set Password
       </h1>
       <p className="text-sm text-gray-400 mb-8">Start with new journey</p>
+
+      {serverError && (
+        <div className="w-full mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-[10px] text-sm text-red-600 font-medium">
+          {serverError}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <AuthInput

@@ -1,51 +1,104 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Plus, Trash2, Edit } from "lucide-react";
+import { Plus, Trash2, Loader2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
+import {
+  getAllAdmins,
+  createAdmin,
+  deleteAdmin,
+  toggleBlockAdmin,
+  IAdmin,
+} from "@/services/admin/admin.apis";
 
 interface AdminForm {
   name: string;
   email: string;
-  phone: string;
-  password?: string;
+  contactNo: string;
+  password: string;
 }
-
-const MOCK_ADMINS = [
-  { id: 1, name: "Istiak Ahmed", email: "istiak@gmail.com", phone: "+880155225566", status: "Active" },
-  { id: 2, name: "Rony Hasan", email: "rony@gmail.com", phone: "+880155225588", status: "Active" },
-  { id: 3, name: "Sojol Hossen", email: "sojol@gmail.com", phone: "+880155225562", status: "Active" },
-  { id: 4, name: "Abirul Islam", email: "abirul@gmail.com", phone: "+880155225599", status: "Active" },
-];
 
 export function AddAdminPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [admins, setAdmins] = useState(MOCK_ADMINS);
-  
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<AdminForm>();
+  const [admins, setAdmins] = useState<IAdmin[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onAddAdmin = (data: AdminForm) => {
-    console.log("Saving new admin:", data);
-    setAdmins([
-      ...admins,
-      {
-        id: admins.length + 1,
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AdminForm>();
+
+  const fetchAdmins = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const result = await getAllAdmins();
+      if (result?.success) {
+        setAdmins(result.data?.data ?? result.data ?? []);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAdmins();
+  }, [fetchAdmins]);
+
+  const onAddAdmin = async (data: AdminForm) => {
+    setCreateError(null);
+    setIsSubmitting(true);
+    try {
+      const result = await createAdmin({
         name: data.name,
         email: data.email,
-        phone: data.phone,
-        status: "Active"
+        contactNo: data.contactNo,
+        password: data.password,
+      });
+      if (result?.success) {
+        reset();
+        setIsAddOpen(false);
+        fetchAdmins();
+      } else {
+        setCreateError(result?.message || "Failed to create admin.");
       }
-    ]);
-    reset();
-    setIsAddOpen(false);
+    } catch {
+      setCreateError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (adminId: string) => {
+    if (!confirm("Are you sure you want to delete this admin?")) return;
+    try {
+      await deleteAdmin(adminId);
+      fetchAdmins();
+    } catch {
+      alert("Failed to delete admin.");
+    }
+  };
+
+  const handleToggleBlock = async (adminId: string) => {
+    try {
+      await toggleBlockAdmin(adminId);
+      fetchAdmins();
+    } catch {
+      alert("Failed to update admin status.");
+    }
   };
 
   return (
     <div className="p-6 md:p-8 w-full max-w-[1200px] mx-auto">
       <div className="flex justify-end mb-6">
         <button
-          onClick={() => setIsAddOpen(true)}
+          onClick={() => { setCreateError(null); setIsAddOpen(true); }}
           className="flex items-center gap-2 px-5 py-2.5 bg-[#00A651] hover:bg-[#009345] text-white text-sm font-semibold rounded-[8px] transition-colors shadow-sm cursor-pointer"
         >
           <Plus size={18} />
@@ -67,89 +120,135 @@ export function AddAdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 bg-white">
-              {admins.map((admin, idx) => (
-                <tr key={admin.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900">{String(idx + 1).padStart(2, "0")}</td>
-                  <td className="px-6 py-4 font-medium text-gray-900">{admin.name}</td>
-                  <td className="px-6 py-4 text-gray-500">{admin.email}</td>
-                  <td className="px-6 py-4 text-gray-500">{admin.phone}</td>
-                  <td className="px-6 py-4">
-                    <span className="text-[#00A651] font-semibold">{admin.status}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-center gap-3">
-                    
-                      <button className="text-gray-400 hover:text-red-500 transition-colors bg-red-50 hover:bg-red-100 p-1.5 rounded-md">
-                        <Trash2 size={16} className="text-red-500" />
-                      </button>
-                    </div>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-16 text-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#00A651] mx-auto" />
                   </td>
                 </tr>
-              ))}
+              ) : admins.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-16 text-center text-gray-400 font-medium">
+                    No admins found.
+                  </td>
+                </tr>
+              ) : (
+                admins.map((admin, idx) => (
+                  <tr key={admin.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-gray-900">{String(idx + 1).padStart(2, "0")}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{admin.name}</td>
+                    <td className="px-6 py-4 text-gray-500">{admin.email}</td>
+                    <td className="px-6 py-4 text-gray-500">{admin.contactNo ?? "—"}</td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleToggleBlock(admin.id)}
+                        className={`text-sm font-semibold transition-colors ${
+                          admin.isBlocked
+                            ? "text-red-500 hover:text-red-700"
+                            : "text-[#00A651] hover:text-[#009345]"
+                        }`}
+                      >
+                        {admin.isBlocked ? "Blocked" : "Active"}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-3">
+                        <button
+                          onClick={() => handleDelete(admin.id)}
+                          className="text-gray-400 hover:text-red-500 transition-colors bg-red-50 hover:bg-red-100 p-1.5 rounded-md"
+                        >
+                          <Trash2 size={16} className="text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-        {admins.length === 0 && (
-          <div className="text-center py-12 text-gray-500">No admins found.</div>
-        )}
+        {!isLoading && admins.length === 0 && null}
       </div>
 
       {/* Add Admin Modal */}
-      <Modal isOpen={isAddOpen} onClose={() => { reset(); setIsAddOpen(false); }} title="Add Admin" width="max-w-md">
+      <Modal
+        isOpen={isAddOpen}
+        onClose={() => { reset(); setIsAddOpen(false); setCreateError(null); }}
+        title="Add Admin"
+        width="max-w-md"
+      >
         <form onSubmit={handleSubmit(onAddAdmin)} className="space-y-4">
+          {createError && (
+            <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-[10px] text-sm text-red-600 font-medium">
+              {createError}
+            </div>
+          )}
+
           <div>
             <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Name</label>
-            <input 
+            <input
               {...register("name", { required: "Name is required" })}
               placeholder="Enter name"
-              className={`w-full h-11 px-4 border ${errors.name ? 'border-red-500' : 'border-gray-200'} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
+              className={`w-full h-11 px-4 border ${errors.name ? "border-red-500" : "border-gray-200"} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
             />
+            {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
           </div>
+
           <div>
             <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Email</label>
-            <input 
-              {...register("email", { 
+            <input
+              {...register("email", {
                 required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email address"
-                }
+                  message: "Invalid email address",
+                },
               })}
               type="email"
               placeholder="Enter email"
-              className={`w-full h-11 px-4 border ${errors.email ? 'border-red-500' : 'border-gray-200'} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
+              className={`w-full h-11 px-4 border ${errors.email ? "border-red-500" : "border-gray-200"} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
             />
+            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
           </div>
+
           <div>
-            <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Number</label>
-            <input 
-              {...register("phone", { required: "Number is required" })}
-              placeholder="Enter number"
-              className={`w-full h-11 px-4 border ${errors.phone ? 'border-red-500' : 'border-gray-200'} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
+            <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Contact Number</label>
+            <input
+              {...register("contactNo", { required: "Contact number is required" })}
+              placeholder="Enter phone number"
+              className={`w-full h-11 px-4 border ${errors.contactNo ? "border-red-500" : "border-gray-200"} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
             />
+            {errors.contactNo && <p className="mt-1 text-xs text-red-500">{errors.contactNo.message}</p>}
           </div>
+
           <div>
-             <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Set Password</label>
-            <input 
-              {...register("password", { required: "Password is required", minLength: 6 })}
-              placeholder="********"
+            <label className="block text-[13px] font-medium text-gray-700 mb-1.5">Set Password</label>
+            <input
+              {...register("password", {
+                required: "Password is required",
+                minLength: { value: 6, message: "Minimum 6 characters" },
+              })}
+              placeholder="••••••••"
               type="password"
-              className={`w-full h-11 px-4 border ${errors.password ? 'border-red-500' : 'border-gray-200'} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
+              className={`w-full h-11 px-4 border ${errors.password ? "border-red-500" : "border-gray-200"} rounded-[8px] text-sm focus:outline-none focus:border-[#00A651] focus:ring-1 focus:ring-[#00A651] transition-colors`}
             />
+            {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
           </div>
 
           <div className="flex justify-end gap-3 pt-6 pb-2">
-             <button 
-              type="button" 
-              onClick={() => { reset(); setIsAddOpen(false); }}
+            <button
+              type="button"
+              onClick={() => { reset(); setIsAddOpen(false); setCreateError(null); }}
               className="px-6 py-2 border border-red-500 text-red-500 hover:bg-red-50 text-sm font-medium rounded-[8px] transition-colors cursor-pointer"
             >
               Cancel
             </button>
-            <button 
+            <button
               type="submit"
-              className="px-6 py-2 bg-[#00A651] hover:bg-[#009345] text-white text-sm font-medium rounded-[8px] transition-colors cursor-pointer"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-[#00A651] hover:bg-[#009345] text-white text-sm font-medium rounded-[8px] transition-colors cursor-pointer disabled:opacity-60 flex items-center gap-2"
             >
+              {isSubmitting && <Loader2 size={16} className="animate-spin" />}
               Save Admin
             </button>
           </div>
