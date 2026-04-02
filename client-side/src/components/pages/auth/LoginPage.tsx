@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { AuthCard } from "@/components/ui/auth-card";
@@ -8,6 +8,8 @@ import { Logo } from "@/components/ui/logo";
 import { AuthInput } from "@/components/ui/auth-input";
 import { AuthButton } from "@/components/ui/auth-button";
 import Link from "next/link";
+import { userLogin } from "@/services/auth/auth.apis";
+import { useUser } from "@/context/UserContext";
 
 interface LoginFormValues {
   email: string;
@@ -16,6 +18,9 @@ interface LoginFormValues {
 
 export function LoginPage() {
   const router = useRouter();
+  const { refetchUser } = useUser();
+  const [serverError, setServerError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -23,10 +28,19 @@ export function LoginPage() {
   } = useForm<LoginFormValues>();
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log("Login data:", data);
-    // TODO: API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    router.push("/");
+    setServerError(null);
+    try {
+      const result = await userLogin(data);
+      if (result?.success) {
+        await refetchUser();
+        router.push("/");
+        router.refresh();
+      } else {
+        setServerError(result?.message || "Invalid credentials. Please try again.");
+      }
+    } catch {
+      setServerError("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -37,6 +51,12 @@ export function LoginPage() {
         Login your Profile
       </h1>
       <p className="text-sm text-gray-400 mb-8">Start with new journey</p>
+
+      {serverError && (
+        <div className="w-full mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-[10px] text-sm text-red-600 font-medium">
+          {serverError}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <AuthInput
@@ -67,7 +87,13 @@ export function LoginPage() {
           error={errors.password?.message}
         />
 
-        <div className="w-full flex justify-end mb-4">
+        <div className="w-full flex justify-between items-center mb-4">
+          <Link
+            href="/register"
+            className="text-sm text-[#00A651] hover:underline font-medium transition-colors"
+          >
+            Create account
+          </Link>
           <Link
             href="/forgot-password"
             className="text-sm text-gray-500 hover:text-gray-700 transition-colors"

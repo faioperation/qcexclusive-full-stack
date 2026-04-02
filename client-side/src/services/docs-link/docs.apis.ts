@@ -32,7 +32,7 @@ export type EPostStatus = "All" | "Posted" | "Draft";
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const getAuthHeader = async () => ({
-  Authorization: (await cookies()).get("accessToken")!.value,
+  Authorization: `Bearer ${(await cookies()).get("accessToken")!.value}`,
 });
 
 // ─── Create Docs Link ─────────────────────────────────────────────────────────

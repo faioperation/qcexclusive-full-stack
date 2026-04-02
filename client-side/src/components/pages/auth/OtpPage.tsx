@@ -6,6 +6,7 @@ import { AuthCard } from "@/components/ui/auth-card";
 import { Logo } from "@/components/ui/logo";
 import { OtpInput } from "@/components/ui/otp-input";
 import { AuthButton } from "@/components/ui/auth-button";
+import { verifyOtp } from "@/services/auth/auth.apis";
 
 export function OtpPage() {
   const router = useRouter();
@@ -25,12 +26,15 @@ export function OtpPage() {
     setIsSubmitting(true);
 
     try {
-      console.log("OTP data:", otp);
-      // TODO: API call to verify OTP
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      router.push("/set-password");
+      const email = sessionStorage.getItem("reset_email") || "";
+      const result = await verifyOtp({ email, otp });
+      if (result?.success) {
+        router.push("/set-password");
+      } else {
+        setError(result?.message || "Invalid verification code. Please try again.");
+      }
     } catch {
-      setError("Invalid verification code");
+      setError("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -42,7 +46,7 @@ export function OtpPage() {
 
       <h1 className="text-xl font-bold text-gray-800 mt-6 mb-1">OTP</h1>
       <p className="text-sm text-gray-400 mb-8 text-center leading-relaxed">
-        We sent a code to your email address . Please check
+        We sent a code to your email address. Please check
         <br />
         your email for the 6 digit code.
       </p>

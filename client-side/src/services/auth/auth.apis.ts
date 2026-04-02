@@ -83,7 +83,7 @@ export const logoutUser = async () => {
     await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/auth/logout`, {
       method: "POST",
       headers: {
-        Authorization: (await cookies()).get("accessToken")?.value ?? "",
+        Authorization: `Bearer ${(await cookies()).get("accessToken")?.value ?? ""}`,
       },
     });
     (await cookies()).delete("accessToken");

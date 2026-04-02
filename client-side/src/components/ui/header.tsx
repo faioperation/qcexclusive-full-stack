@@ -5,10 +5,13 @@ import { Bell, ArrowLeft, LogOut, User, Settings as SettingsIcon } from "lucide-
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useUser } from "@/context/UserContext";
+import { logoutUser } from "@/services/auth/auth.apis";
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const { user, setUser } = useUser();
 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -30,35 +33,45 @@ export function Header() {
   }, []);
 
   let title = "Dashboard";
-  if (pathname.includes("config")) title = "Add Admin"; 
+  if (pathname.includes("config")) title = "Config";
   if (pathname.includes("profile")) title = "Profile";
   if (pathname.includes("docs-link")) title = "Docs Link";
   if (pathname.includes("leads")) title = "Leads";
   if (pathname.includes("inbox")) title = "Inbox";
-  if (pathname.includes("calendar")) title = "Calender";
+  if (pathname.includes("calendar")) title = "Calendar";
   if (pathname.includes("add-admin")) title = "Add Admin";
   if (pathname.includes("media-post")) title = "Media Post";
 
   const showBack = pathname !== "/";
 
   const notifications = [
-    { id: 1, title: "New Lead Added", desc: "Sojol Hossen joined as a lead.", time: "2 min ago" },
-    { id: 2, title: "Meeting Scheduled", desc: "You have a meeting with Client Sync.", time: "1 hour ago" },
-    { id: 3, title: "Message Received", desc: "I recently noticed your channel...", time: "Yesterday" }
+    { id: 1, title: "New Lead Added", desc: "A new lead has been scraped.", time: "2 min ago" },
+    { id: 2, title: "Meeting Scheduled", desc: "You have an upcoming meeting.", time: "1 hour ago" },
+    { id: 3, title: "Message Received", desc: "A lead replied to your outreach.", time: "Yesterday" },
   ];
 
-  const handleLogout = () => {
-    // Basic routing to login page for now
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setUser(null);
+      router.push("/login");
+      router.refresh();
+    } catch {
+      router.push("/login");
+    }
   };
+
+  const displayName = user?.name ?? "User";
+  const displayRole = user?.role ?? "";
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=E5E7EB&color=374151`;
 
   return (
     <header className="h-[72px] bg-white border-b border-gray-100 px-6 flex items-center justify-between shrink-0 relative z-20">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="-ml-1 lg:hidden" />
         {showBack && (
-          <button 
-            onClick={() => router.back()} 
+          <button
+            onClick={() => router.back()}
             className="text-gray-800 hover:text-black transition-colors"
           >
             <ArrowLeft size={24} />
@@ -68,17 +81,17 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-6">
-        
+
         {/* Notifications Dropdown */}
         <div className="relative" ref={notifRef}>
-          <button 
+          <button
             onClick={() => { setIsNotifOpen(!isNotifOpen); setIsProfileOpen(false); }}
             className="relative text-gray-600 hover:text-gray-900 transition-colors p-1"
           >
             <Bell size={24} />
             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
-          
+
           {isNotifOpen && (
             <div className="absolute -right-12 sm:right-0 mt-3 w-[290px] sm:w-80 bg-white rounded-[16px] shadow-xl border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 z-50">
               <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-[#FAFBFD]">
@@ -86,7 +99,7 @@ export function Header() {
                 <span className="text-xs text-[#00A651] font-semibold bg-[#E5F6EC] px-2 py-1 rounded-[6px]">3 New</span>
               </div>
               <div className="max-h-[300px] overflow-y-auto">
-                {notifications.map(notif => (
+                {notifications.map((notif) => (
                   <div key={notif.id} className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer">
                     <p className="text-sm font-semibold text-gray-900 mb-0.5">{notif.title}</p>
                     <p className="text-xs text-gray-500 mb-1">{notif.desc}</p>
@@ -103,40 +116,40 @@ export function Header() {
 
         {/* Profile Dropdown */}
         <div className="relative" ref={profileRef}>
-          <div 
+          <div
             onClick={() => { setIsProfileOpen(!isProfileOpen); setIsNotifOpen(false); }}
             className="flex items-center gap-3 cursor-pointer select-none"
           >
             <div className="w-10 h-10 rounded-full bg-[#f0f0f0] overflow-hidden flex-shrink-0 border border-gray-200">
-              <img 
-                src="https://ui-avatars.com/api/?name=Akash+Rohman&background=E5E7EB&color=374151" 
-                alt="User" 
-                className="w-full h-full object-cover" 
+              <img
+                src={avatarUrl}
+                alt="User"
+                className="w-full h-full object-cover"
               />
             </div>
             <div className="flex flex-col hidden sm:flex">
-              <span className="text-sm font-semibold text-gray-900">Akash Rohman</span>
-              <span className="text-xs text-gray-500 font-medium">Admin</span>
+              <span className="text-sm font-semibold text-gray-900">{displayName}</span>
+              <span className="text-xs text-gray-500 font-medium">{displayRole}</span>
             </div>
           </div>
 
           {isProfileOpen && (
             <div className="absolute right-0 mt-3 w-56 bg-white rounded-[16px] shadow-lg border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2">
               <div className="p-4 border-b border-gray-100 bg-[#FAFBFD]">
-                <p className="text-sm font-bold text-gray-900">Akash Rohman</p>
-                <p className="text-xs text-gray-500">algoridomai@gmail.com</p>
+                <p className="text-sm font-bold text-gray-900">{displayName}</p>
+                <p className="text-xs text-gray-500">{user?.email ?? ""}</p>
               </div>
               <div className="p-2 flex flex-col gap-1">
-                <Link 
-                  href="/profile" 
+                <Link
+                  href="/profile"
                   onClick={() => setIsProfileOpen(false)}
                   className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-[8px] text-sm font-medium text-gray-700 transition-colors"
                 >
                   <User size={16} className="text-gray-400" />
                   My Profile
                 </Link>
-                <Link 
-                  href="/config" 
+                <Link
+                  href="/config"
                   onClick={() => setIsProfileOpen(false)}
                   className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-[8px] text-sm font-medium text-gray-700 transition-colors"
                 >
@@ -145,7 +158,7 @@ export function Header() {
                 </Link>
               </div>
               <div className="p-2 border-t border-gray-100">
-                <button 
+                <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-red-50 rounded-[8px] text-sm font-medium text-red-600 transition-colors"
                 >
@@ -156,7 +169,7 @@ export function Header() {
             </div>
           )}
         </div>
-        
+
       </div>
     </header>
   );

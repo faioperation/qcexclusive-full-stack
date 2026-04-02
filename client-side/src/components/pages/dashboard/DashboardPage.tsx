@@ -1,38 +1,36 @@
 "use client";
 
-import React from "react";
-import { 
-  Users, 
-  Send, 
-  Calendar as CalendarIcon, 
-  UserPlus, 
-  TrendingUp,
-  TrendingDown,
+import React, { useEffect, useState } from "react";
+import {
+  Users,
+  Send,
+  Calendar as CalendarIcon,
+  UserPlus,
   MoreVertical,
-  ArrowUpRight,
-  Video
+  Video,
 } from "lucide-react";
-import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell 
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell,
 } from "recharts";
+import { getAllMeetings } from "@/services/meeting/meeting.apis";
 
-// Mock Data
+// Mock Chart Data
 const LINE_DATA = [
-  { name: '1 Jan', current: 150, previous: 100 },
-  { name: '5 Jan', current: 210, previous: 180 },
-  { name: '10 Jan', current: 170, previous: 220 },
-  { name: '15 Jan', current: 250, previous: 190 },
-  { name: '20 Jan', current: 480, previous: 170 },
-  { name: '25 Jan', current: 350, previous: 380 },
-  { name: '30 Jan', current: 420, previous: 500 },
+  { name: "1 Jan", current: 150, previous: 100 },
+  { name: "5 Jan", current: 210, previous: 180 },
+  { name: "10 Jan", current: 170, previous: 220 },
+  { name: "15 Jan", current: 250, previous: 190 },
+  { name: "20 Jan", current: 480, previous: 170 },
+  { name: "25 Jan", current: 350, previous: 380 },
+  { name: "30 Jan", current: 420, previous: 500 },
 ];
 
 const DONUT_DATA = [
-  { name: 'Meetings Booked', value: 52.1, color: '#31333E' },
-  { name: 'Interested Leads', value: 22.8, color: '#90CDF4' },
-  { name: 'Message Response', value: 13.9, color: '#A3E635' },
-  { name: "Don't Reply", value: 11.2, color: '#6366F1' },
+  { name: "Meetings Booked", value: 52.1, color: "#31333E" },
+  { name: "Interested Leads", value: 22.8, color: "#90CDF4" },
+  { name: "Message Response", value: 13.9, color: "#A3E635" },
+  { name: "Don't Reply", value: 11.2, color: "#6366F1" },
 ];
 
 const RECENT_LEADS = [
@@ -45,14 +43,35 @@ const RECENT_LEADS = [
   { id: 7, name: "Eleanor Pena", industry: "Plumbing", location: "Syracuse, Connecticut", platform: "Facebook", status: "9 day ago" },
 ];
 
-const MEETINGS = [
-  { title: "Dev Sync Meeting", date: "Mon, July 8, 2026-10:00 AM" },
-  { title: "Retrospective Meeting", date: "Tue, July 9, 2026-09:00 AM" },
-  { title: "QA Alignment Call", date: "Thu, July 11, 2026-11:00 AM" },
-  { title: "QA Alignment Call", date: "Thu, July 11, 2026-11:00 AM" },
-];
+interface Meeting {
+  id: string;
+  title: string;
+  startTime: string;
+  status: string;
+  lead?: { name: string };
+}
 
 export function DashboardPage() {
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+
+  useEffect(() => {
+    getAllMeetings().then((result) => {
+      if (result?.success) {
+        const data = result.data?.data ?? result.data ?? [];
+        setMeetings(data.slice(0, 4));
+      }
+    }).catch(() => {});
+  }, []);
+
+  const formatMeetingDate = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleString("en-US", {
+        weekday: "short", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
+      });
+    } catch {
+      return iso;
+    }
+  };
 
   const getPlatformStyle = (platform: string) => {
     switch(platform) {
@@ -210,7 +229,10 @@ export function DashboardPage() {
           </div>
           
           <div className="space-y-4">
-             {MEETINGS.map((meeting, idx) => (
+             {meetings.length === 0 ? (
+               <p className="text-sm text-gray-400 text-center py-8 font-medium">No upcoming meetings.</p>
+             ) : (
+               meetings.map((meeting: Meeting, idx: number) => (
                 <div key={idx} className="flex items-center gap-4 p-4 border border-gray-50 rounded-[16px] hover:border-gray-200 transition-colors cursor-pointer bg-[#FAFBFD]">
                    <div className="w-11 h-11 rounded-[12px] bg-white shadow-sm border border-gray-100 flex items-center justify-center shrink-0">
                      <div className="w-6 h-6 rounded-md bg-[#FAFBFD] flex items-center justify-center text-[#34A853]">
@@ -219,10 +241,10 @@ export function DashboardPage() {
                    </div>
                    <div className="flex-1 min-w-0">
                      <h4 className="font-bold text-gray-900 text-[14px] mb-0.5 truncate">{meeting.title}</h4>
-                     <p className="text-[11px] font-bold text-gray-400">{meeting.date}</p>
+                     <p className="text-[11px] font-bold text-gray-400">{formatMeetingDate(meeting.startTime)}</p>
                    </div>
                 </div>
-             ))}
+             )))}
           </div>
 
         </div>
