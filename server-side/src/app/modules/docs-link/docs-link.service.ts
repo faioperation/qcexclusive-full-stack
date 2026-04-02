@@ -26,7 +26,7 @@ const generateSamplePosts = (docsLinkId: string, count: number) => {
     heading: SAMPLE_HEADINGS[i % SAMPLE_HEADINGS.length],
     body: SAMPLE_BODY,
     postTime: new Date(),
-    status: i % 2 === 0 ? "Posted" : "Draft", // alternate Posted/Draft for demo
+    status: "Draft",
     docsLinkId,
   }));
 };
@@ -119,10 +119,24 @@ const getAllPostsFromDB = async (query: TQueryInput) => {
   return { meta: qb.getMeta(total), data: result };
 };
 
+
+const updatePostStatusInDB = async (postId: string, status: "Draft" | "Posted") => {
+  const post = await db.mediaPost.findUnique({ where: { id: postId } });
+  if (!post) throw new ApiError(httpStatus.NOT_FOUND, "Post not found");
+
+  const updated = await db.mediaPost.update({
+    where: { id: postId },
+    data: { status },
+  });
+
+  return updated;
+};
+
 export const DocsLinkService = {
   createDocsLinkInDB,
   getAllDocsLinksFromDB,
   getPostsByDocsLinkIdFromDB,
   getAllPostsFromDB,
   deleteDocsLinkFromDB,
+  updatePostStatusInDB
 };

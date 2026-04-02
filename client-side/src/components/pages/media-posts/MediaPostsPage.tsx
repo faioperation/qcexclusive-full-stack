@@ -1,9 +1,19 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Download, Copy, Check, Loader2, Search, ChevronLeft, ChevronRight, CloudCog } from "lucide-react";
+import {
+  Download,
+  Copy,
+  Check,
+  Loader2,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+} from "lucide-react";
 import {
   getAllPosts,
+  updatePostStatus,
   EPostStatus,
 } from "@/services/docs-link/docs.apis";
 
@@ -32,6 +42,7 @@ export function MediaPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState<PaginationMeta>({
     page: 1,
@@ -50,16 +61,15 @@ export function MediaPostsPage() {
         page: pagination.page,
         limit: pagination.limit,
         searchTerm: searchTerm || undefined,
-        // removed sortBy and sortOrder
       });
-
-      console.log(result);
 
       if (result?.success) {
         let filteredPosts = result.data?.data ?? result.data ?? [];
 
         if (statusParam) {
-          filteredPosts = filteredPosts.filter((p: Post) => p.status === statusParam);
+          filteredPosts = filteredPosts.filter(
+            (p: Post) => p.status === statusParam
+          );
         }
 
         setPosts(filteredPosts);
@@ -98,6 +108,25 @@ export function MediaPostsPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  // ─── Toggle status: Draft → Posted or Posted → Draft ──────────────────────
+  const handleToggleStatus = async (post: Post) => {
+    const newStatus = post.status === "Draft" ? "Posted" : "Draft";
+    setUpdatingId(post.id);
+    try {
+      const result = await updatePostStatus(post.id, newStatus);
+      if (result?.success) {
+        // Optimistically update local state so UI reflects instantly
+        setPosts((prev) =>
+          prev.map((p) => (p.id === post.id ? { ...p, status: newStatus } : p))
+        );
+      }
+    } catch {
+      // silently fail — you could add a toast here
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const formatTime = (iso: string) => {
     try {
       return new Date(iso).toLocaleString("en-US", {
@@ -127,8 +156,8 @@ export function MediaPostsPage() {
                   setPagination((prev) => ({ ...prev, page: 1 }));
                 }}
                 className={`px-5 py-2.5 rounded-[8px] text-sm font-medium transition-all ${activeTab === tab
-                  ? "bg-[#00A651] text-white shadow-sm"
-                  : "text-gray-600 hover:bg-gray-200"
+                    ? "bg-[#00A651] text-white shadow-sm"
+                    : "text-gray-600 hover:bg-gray-200"
                   }`}
               >
                 {tab}
@@ -139,8 +168,14 @@ export function MediaPostsPage() {
 
         {/* Search & Export */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <form onSubmit={handleSearch} className="relative flex-1 sm:flex-none">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <form
+            onSubmit={handleSearch}
+            className="relative flex-1 sm:flex-none"
+          >
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
             <input
               type="text"
               placeholder="Search posts..."
@@ -170,12 +205,14 @@ export function MediaPostsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => {
               const isCopied = copiedId === post.id;
+              const isUpdating = updatingId === post.id;
               const content = `${post.heading}\n\n${post.body}`;
+              const isPosted = post.status === "Posted";
 
               return (
                 <div
                   key={post.id}
-                  className="bg-white rounded-[16px] p-6 border border-gray-100 shadow-sm hover:border-gray-200 transition-all duration-200"
+                  className="bg-white rounded-[16px] p-6 border border-gray-100 shadow-sm hover:border-gray-200 transition-all duration-200 flex flex-col"
                 >
                   {/* Header */}
                   <div className="flex justify-between items-start mb-4">
@@ -190,7 +227,7 @@ export function MediaPostsPage() {
                         Post Time: {formatTime(post.createdAt)}
                       </p>
                     </div>
-                    {/* Actions */}
+                    {/* Copy Action */}
                     <div className="flex items-center gap-2 ml-4">
                       <button
                         onClick={() => handleCopy(post.id, content)}
@@ -207,22 +244,43 @@ export function MediaPostsPage() {
                   </div>
 
                   {/* Body */}
-                  <div className="pt-2">
+                  <div className="pt-2 flex-1">
                     <p className="text-[15px] text-gray-600 leading-relaxed font-medium whitespace-pre-wrap line-clamp-4">
                       {post.body}
                     </p>
                   </div>
 
-                  {/* Status Badge */}
-                  <div className="mt-6 flex justify-end">
+                  {/* Footer: Status Badge + Toggle Button */}
+                  <div className="mt-6 flex items-center justify-between gap-3">
+                    {/* Status Badge */}
                     <span
-                      className={`px-3 py-1 rounded-[6px] text-xs font-semibold ${post.status === "Posted"
-                        ? "bg-green-100 text-[#00A651]"
-                        : "bg-gray-100 text-gray-600"
+                      className={`px-3 py-1 rounded-[6px] text-xs font-semibold ${isPosted
+                          ? "bg-green-100 text-[#00A651]"
+                          : "bg-gray-100 text-gray-600"
                         }`}
                     >
                       {post.status}
                     </span>
+
+                    {/* Toggle Status Button */}
+                    <button
+                      onClick={() => handleToggleStatus(post)}
+                      disabled={isUpdating}
+                      title={
+                        isPosted ? "Revert to Draft" : "Mark as Posted"
+                      }
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-semibold border transition-all disabled:opacity-60 disabled:cursor-not-allowed ${isPosted
+                          ? "border-gray-300 text-gray-600 bg-gray-50 hover:bg-gray-100"
+                          : "border-[#00A651] text-[#00A651] bg-green-50 hover:bg-green-100"
+                        }`}
+                    >
+                      {isUpdating ? (
+                        <Loader2 size={13} className="animate-spin" />
+                      ) : (
+                        <RefreshCw size={13} />
+                      )}
+                      {isPosted ? "Revert to Draft" : "Mark as Posted"}
+                    </button>
                   </div>
                 </div>
               );

@@ -57,10 +57,18 @@ const getAllPosts = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updatePostStatus = catchAsync(async (req, res) => {
+  const { postId } = req.params;
+  const { status } = req.body;
+  const result = await DocsLinkService.updatePostStatusInDB(postId as string, status);
+  sendResponse(res, { statusCode: httpStatus.OK, success: true, message: "Post status updated", data: result });
+});
+
 export const DocsLinkController = {
   createDocsLink,
   getAllDocsLinks,
   getPostsByDocsLinkId,
   getAllPosts,
   deleteDocsLink,
+  updatePostStatus
 };

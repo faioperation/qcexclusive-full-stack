@@ -212,3 +212,29 @@ export const getAllPosts = async (query?: IDocsLinkQuery) => {
     throw err;
   }
 };
+
+
+export const updatePostStatus = async (
+  postId: string,
+  status: "Draft" | "Posted"
+) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND}/docs-link/posts/${postId}/status`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(await getAuthHeader()),
+        },
+        body: JSON.stringify({ status }),
+      }
+    );
+    revalidateTag("all-posts", "max");
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};

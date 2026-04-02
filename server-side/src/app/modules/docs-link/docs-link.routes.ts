@@ -28,6 +28,14 @@ router.get(
   DocsLinkController.getAllPosts
 );
 
+router.patch(
+  "/posts/:postId/status",
+  auth("Admin", "User"),
+  DocsLinkController.updatePostStatus
+);
+
+
+
 // Get all posts for a specific docs link (eye button view)
 // Supports ?status=All|Posted|Draft
 router.get(
