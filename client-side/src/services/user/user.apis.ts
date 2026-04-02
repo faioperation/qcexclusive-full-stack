@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { ERole } from "../auth/auth.types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -9,13 +10,12 @@ export interface IUserProfile {
   id: string;
   name: string;
   email: string;
-  role: string;
   contactNo: string | null;
   photo: string | null;
-  address: string | null;
-  isBlocked: boolean;
+  address?: string | null;
+  role: ERole;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

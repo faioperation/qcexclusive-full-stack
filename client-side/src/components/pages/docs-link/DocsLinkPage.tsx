@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Eye, Trash2, Plus, Loader2, ExternalLink, CloudCog } from "lucide-react";
+import { Eye, Trash2, Plus, Loader2, ExternalLink } from "lucide-react";
+import Swal from "sweetalert2";
 import { Modal } from "@/components/ui/modal";
 import {
   getAllDocsLinks,
   createDocsLink,
   deleteDocsLink,
+  getPostsByDocsLinkId,
 } from "@/services/docs-link/docs.apis";
 
 interface DocsLinkForm {
@@ -27,11 +29,26 @@ interface DocsRow {
   postGenerate?: number;
 }
 
+interface Post {
+  id: string;
+  heading: string;
+  body: string;
+  status: string;
+  createdAt: string;
+}
+
 export function DocsLinkPage() {
   const [docs, setDocs] = useState<DocsRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+  const [viewPostsModal, setViewPostsModal] = useState<{ isOpen: boolean; docsId: string; docsName: string; posts: Post[]; loading: boolean }>({
+    isOpen: false,
+    docsId: "",
+    docsName: "",
+    posts: [],
+    loading: false,
+  });
 
   const {
     register,
@@ -44,7 +61,6 @@ export function DocsLinkPage() {
     setIsLoading(true);
     try {
       const result = await getAllDocsLinks({ page: 1, limit: 50 });
-      console.log(result);
       if (result?.success) {
         setDocs(result.data?.data ?? result.data ?? []);
       }
@@ -59,13 +75,59 @@ export function DocsLinkPage() {
     fetchDocs();
   }, [fetchDocs]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this docs link?")) return;
+  const handleViewPosts = async (docsId: string, docsName: string) => {
+    setViewPostsModal({
+      isOpen: true,
+      docsId,
+      docsName,
+      posts: [],
+      loading: true,
+    });
+
     try {
-      await deleteDocsLink(id);
-      fetchDocs();
+      const result = await getPostsByDocsLinkId(docsId, "All");
+      if (result?.success) {
+        setViewPostsModal((prev) => ({
+          ...prev,
+          posts: result.data?.posts ?? [],
+          loading: false,
+        }));
+      }
     } catch {
-      alert("Failed to delete.");
+      setViewPostsModal((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
+  const handleClosePostsModal = () => {
+    setViewPostsModal({
+      isOpen: false,
+      docsId: "",
+      docsName: "",
+      posts: [],
+      loading: false,
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this! This will also delete all associated posts.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteDocsLink(id);
+        fetchDocs();
+        Swal.fire("Deleted!", "Docs link has been deleted.", "success");
+      } catch {
+        Swal.fire("Error!", "Failed to delete.", "error");
+      }
     }
   };
 
@@ -85,6 +147,20 @@ export function DocsLinkPage() {
       }
     } catch {
       setCreateError("Something went wrong. Please try again.");
+    }
+  };
+
+  const formatTime = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return iso;
     }
   };
 
@@ -151,6 +227,7 @@ export function DocsLinkPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-3">
                         <button
+                          onClick={() => handleViewPosts(row.id, row.projectName)}
                           className="text-gray-400 hover:text-[#00A651] transition-colors"
                           title="View posts"
                         >
@@ -248,6 +325,57 @@ export function DocsLinkPage() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* View Posts Modal */}
+      <Modal
+        isOpen={viewPostsModal.isOpen}
+        onClose={handleClosePostsModal}
+        title={`Posts: ${viewPostsModal.docsName}`}
+        width="max-w-3xl"
+      >
+        {viewPostsModal.loading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-[#00A651]" />
+          </div>
+        ) : viewPostsModal.posts.length === 0 ? (
+          <div className="text-center py-12 text-gray-400 font-medium">
+            No posts found for this docs link.
+          </div>
+        ) : (
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            {viewPostsModal.posts.map((post) => (
+              <div
+                key={post.id}
+                className="bg-gray-50 rounded-lg p-4 border border-gray-100"
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-semibold text-gray-900">{post.heading}</h4>
+                  <span
+                    className={`px-2 py-0.5 rounded text-xs font-medium ${post.status === "Posted"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-200 text-gray-600"
+                      }`}
+                  >
+                    {post.status}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 whitespace-pre-wrap">{post.body}</p>
+                <p className="text-xs text-gray-400 mt-2">
+                  Created: {formatTime(post.createdAt)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex justify-end mt-4 pt-4 border-t">
+          <button
+            onClick={handleClosePostsModal}
+            className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-[8px] transition-colors"
+          >
+            Close
+          </button>
+        </div>
       </Modal>
     </div>
   );

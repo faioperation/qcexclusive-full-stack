@@ -5,19 +5,7 @@ import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  role: ERole;
-}
-
-export enum ERole {
-  Admin = "Admin",
-  User = "User",
-}
+import { IUser } from "./auth.types";
 
 // ─── Register ─────────────────────────────────────────────────────────────────
 

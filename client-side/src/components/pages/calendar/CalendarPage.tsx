@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { Modal } from "@/components/ui/modal";
 
 interface Meeting {
@@ -189,7 +190,9 @@ export function CalendarPage() {
                   <div>
                     <p className="text-sm font-semibold text-gray-500 mb-3">Information</p>
                     <div className="flex items-center gap-3">
-                      <img src={meeting.avatar} className="w-10 h-10 rounded-full object-cover" alt={meeting.name} />
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-100 relative">
+                        <Image src={meeting.avatar} fill className="object-cover" alt={meeting.name} />
+                      </div>
                       <div>
                         <p className="text-[15px] font-bold text-gray-900">{meeting.name}</p>
                         <p className="text-xs text-gray-500 font-medium">{meeting.role}</p>

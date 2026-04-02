@@ -27,6 +27,19 @@ export interface IDocsLinkQuery {
   sortOrder?: "asc" | "desc";
 }
 
+export interface IAllPostsResponse {
+  id: string;
+  heading: string;
+  body: string;
+  status: string;
+  createdAt: string;
+  docsLink: {
+    id: string;
+    name: string;
+    projectName: string;
+  };
+}
+
 export type EPostStatus = "All" | "Posted" | "Draft";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -155,6 +168,43 @@ export const deleteDocsLink = async (docsLinkId: string) => {
       }
     );
     revalidateTag("docs-link", "default");
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+// ─── Get All Posts (for MediaPostsPage) ────────────────────────────────────────
+
+/**
+ * GET /docs-link/posts/all
+ * Retrieve all posts across all docs links with pagination & search.
+ * Query params: page, limit, searchTerm, sortBy, sortOrder
+ * Requires: Admin or User role
+ */
+export const getAllPosts = async (query?: IDocsLinkQuery) => {
+  try {
+    const params = new URLSearchParams();
+    if (query?.page) params.set("page", String(query.page));
+    if (query?.limit) params.set("limit", String(query.limit));
+    if (query?.searchTerm) params.set("searchTerm", query.searchTerm);
+    if (query?.sortBy) params.set("sortBy", query.sortBy);
+    if (query?.sortOrder) params.set("sortOrder", query.sortOrder);
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND}/docs-link/posts/all${queryString}`,
+      {
+        method: "GET",
+        headers: await getAuthHeader(),
+        next: {
+          tags: ["docs-link", "all-posts"],
+        },
+      }
+    );
     const result = await res.json();
     return result;
   } catch (err) {

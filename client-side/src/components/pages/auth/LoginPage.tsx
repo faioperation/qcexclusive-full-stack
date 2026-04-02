@@ -87,13 +87,13 @@ export function LoginPage() {
           error={errors.password?.message}
         />
 
-        <div className="w-full flex justify-between items-center mb-4">
-          <Link
+        <div className="w-full flex justify-end items-center mb-4">
+          {/* <Link
             href="/register"
             className="text-sm text-[#00A651] hover:underline font-medium transition-colors"
           >
             Create account
-          </Link>
+          </Link> */}
           <Link
             href="/forgot-password"
             className="text-sm text-gray-500 hover:text-gray-700 transition-colors"

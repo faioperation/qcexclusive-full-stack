@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Edit2, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { Modal } from "@/components/ui/modal";
 import { getMyProfile, updateMyProfile, IUserProfile } from "@/services/user/user.apis";
 
@@ -80,9 +81,6 @@ export function ProfilePage() {
     }
   };
 
-  const initials = profile?.name
-    ? profile.name.split(" ").map((n) => n[0]).join("").toUpperCase()
-    : "U";
   const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.name ?? "User")}&background=E5E7EB&color=374151&size=256`;
 
   return (
@@ -106,11 +104,12 @@ export function ProfilePage() {
           <div className="flex flex-col md:flex-row md:items-start gap-6 w-full">
             {/* Avatar Section */}
             <div className="flex flex-col items-center sm:items-start gap-4 flex-shrink-0">
-              <div className="w-24 h-24 rounded-full bg-gray-100 overflow-hidden ring-4 ring-gray-50">
-                <img
+              <div className="w-24 h-24 rounded-full bg-gray-100 overflow-hidden ring-4 ring-gray-50 relative">
+                <Image
                   src={profile?.photo ?? avatarUrl}
                   alt="Profile"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </div>
             </div>
@@ -170,11 +169,12 @@ export function ProfilePage() {
           )}
 
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-16 h-16 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
-              <img
+            <div className="w-16 h-16 rounded-full bg-gray-100 overflow-hidden border border-gray-200 relative">
+              <Image
                 src={profile?.photo ?? avatarUrl}
                 alt="Profile"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </div>
           </div>
