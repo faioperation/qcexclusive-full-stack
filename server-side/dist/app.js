@@ -13,7 +13,21 @@ const routes_1 = require("./app/routes");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
-    origin: config_1.default.FRONTEND_URL || true,
+    origin: (origin, callback) => {
+        const allowedOrigins = [
+            config_1.default.FRONTEND_URL,
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://172.252.13.90:8042",
+            "http://172.252.13.90",
+        ].filter(Boolean);
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error(`CORS blocked: ${origin}`));
+        }
+    },
     credentials: true,
 }));
 app.use((0, cookie_parser_1.default)());

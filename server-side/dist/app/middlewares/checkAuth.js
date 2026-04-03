@@ -18,8 +18,10 @@ const config_1 = __importDefault(require("../config"));
 const jwt_1 = require("../utils/jwt");
 const auth = (...roles) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a, _b, _c;
         try {
-            const token = req.cookies.accessToken;
+            const token = ((_a = req.cookies) === null || _a === void 0 ? void 0 : _a.accessToken) ||
+                ((_c = (_b = req.headers) === null || _b === void 0 ? void 0 : _b.authorization) === null || _c === void 0 ? void 0 : _c.split(" ")[1]);
             if (!token) {
                 throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, "You are not authorized!");
             }

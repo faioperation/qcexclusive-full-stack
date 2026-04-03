@@ -2,8 +2,8 @@ import { z } from "zod";
 
 const createConfigZodSchema = z.object({
     body: z.object({
-        key: z.string({ required_error: "Key is required" }),
-        value: z.string({ required_error: "Value is required" }),
+        key: z.string({ message: "Key is required" }),
+        value: z.string({ message: "Value is required" }),
     }),
 });
 

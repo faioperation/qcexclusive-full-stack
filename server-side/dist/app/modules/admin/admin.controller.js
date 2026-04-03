@@ -33,7 +33,7 @@ const getSingleAdmin = (0, catchAsync_1.catchAsync)((req, res, next) => __awaite
     });
 }));
 const createAdmin = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const admin = yield admin_service_1.adminServices.createAdmin(req.body);
+    const admin = yield admin_service_1.adminServices.createAdmin(req.body, req.user.role);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         message: "Admin created successfully",

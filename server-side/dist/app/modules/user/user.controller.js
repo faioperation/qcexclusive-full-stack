@@ -15,6 +15,7 @@ const sendResponse_1 = require("../../utils/sendResponse");
 const user_service_1 = require("./user.service");
 const getMyProfile = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
+    console.log(req.user.id);
     const user = yield user_service_1.userServices.getMyProfile(userId);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,

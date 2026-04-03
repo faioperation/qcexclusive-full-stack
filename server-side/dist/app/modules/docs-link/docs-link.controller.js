@@ -55,9 +55,27 @@ const deleteDocsLink = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void
         data: result,
     });
 }));
+const getAllPosts = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield docs_link_service_1.DocsLinkService.getAllPostsFromDB(req.query);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "All posts fetched successfully",
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const updatePostStatus = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { postId } = req.params;
+    const { status } = req.body;
+    const result = yield docs_link_service_1.DocsLinkService.updatePostStatusInDB(postId, status);
+    (0, sendResponse_1.sendResponse)(res, { statusCode: http_status_1.default.OK, success: true, message: "Post status updated", data: result });
+}));
 exports.DocsLinkController = {
     createDocsLink,
     getAllDocsLinks,
     getPostsByDocsLinkId,
+    getAllPosts,
     deleteDocsLink,
+    updatePostStatus
 };

@@ -9,6 +9,7 @@ const lead_routes_1 = require("../modules/lead/lead.routes");
 const inbox_routes_1 = require("../modules/inbox/inbox.routes");
 const campaign_routes_1 = require("../modules/campaign/campaign.routes");
 const docs_link_routes_1 = require("../modules/docs-link/docs-link.routes");
+const config_routes_1 = require("../modules/config/config.routes");
 exports.rootRoute = (0, express_1.Router)();
 const modelRoutes = [
     { path: "/auth", element: auth_routes_1.authRouter },
@@ -18,6 +19,7 @@ const modelRoutes = [
     { path: "/lead", element: lead_routes_1.leadRouter },
     { path: "/inbox", element: inbox_routes_1.inboxRouter },
     { path: "/docs-link", element: docs_link_routes_1.docsLinkRouter },
+    { path: "/config", element: config_routes_1.configRouter },
 ];
 modelRoutes.forEach((route) => {
     exports.rootRoute.use(route.path, route.element);

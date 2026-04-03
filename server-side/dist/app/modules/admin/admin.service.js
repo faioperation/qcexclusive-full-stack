@@ -57,7 +57,11 @@ const getSingleAdmin = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return admin;
 });
 // Create Admin
-const createAdmin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+const createAdmin = (payload, requestingUserRole) => __awaiter(void 0, void 0, void 0, function* () {
+    // Only Admin can create other admins
+    if (requestingUserRole !== "Admin") {
+        throw new ApiError_1.default(http_status_1.default.FORBIDDEN, "Only Admin can create other admins");
+    }
     const existingUser = yield db.user.findUnique({
         where: { email: payload.email },
         select: { id: true },

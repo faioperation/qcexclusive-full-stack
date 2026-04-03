@@ -47,7 +47,7 @@ const generateSamplePosts = (docsLinkId, count) => {
         heading: SAMPLE_HEADINGS[i % SAMPLE_HEADINGS.length],
         body: SAMPLE_BODY,
         postTime: new Date(),
-        status: i % 2 === 0 ? "Posted" : "Draft", // alternate Posted/Draft for demo
+        status: "Draft",
         docsLinkId,
     }));
 };
@@ -95,9 +95,42 @@ const deleteDocsLinkFromDB = (id) => __awaiter(void 0, void 0, void 0, function*
     yield db.docsLink.delete({ where: { id } });
     return docsLink;
 });
+// Get all posts across all docs links (for MediaPostsPage pagination & search)
+const getAllPostsFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const qb = new QueryBuilder_1.QueryBuilder(query)
+        .search(["heading", "body"])
+        .filter()
+        .sort()
+        .paginate();
+    const [result, total] = yield Promise.all([
+        db.mediaPost.findMany(Object.assign(Object.assign({}, qb.build()), { include: {
+                docsLink: {
+                    select: {
+                        id: true,
+                        name: true,
+                        projectName: true,
+                    },
+                },
+            }, orderBy: { createdAt: "desc" } })),
+        db.mediaPost.count({ where: qb.where }),
+    ]);
+    return { meta: qb.getMeta(total), data: result };
+});
+const updatePostStatusInDB = (postId, status) => __awaiter(void 0, void 0, void 0, function* () {
+    const post = yield db.mediaPost.findUnique({ where: { id: postId } });
+    if (!post)
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "Post not found");
+    const updated = yield db.mediaPost.update({
+        where: { id: postId },
+        data: { status },
+    });
+    return updated;
+});
 exports.DocsLinkService = {
     createDocsLinkInDB,
     getAllDocsLinksFromDB,
     getPostsByDocsLinkIdFromDB,
+    getAllPostsFromDB,
     deleteDocsLinkFromDB,
+    updatePostStatusInDB
 };
