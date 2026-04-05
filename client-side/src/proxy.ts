@@ -1,5 +1,7 @@
+// middleware.ts
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "./services/auth/auth.apis";
+import { jwtDecode } from "jwt-decode";
+import { IUser } from "./services/auth/auth.types";
 
 const authRoutes = ["/login", "/register"];
 const roleBaseRoutes = {
@@ -8,16 +10,26 @@ const roleBaseRoutes = {
 };
 type TRole = keyof typeof roleBaseRoutes;
 
+// ✅ Must be named `middleware` for Next.js to recognize it
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const userData = await getCurrentUser();
 
-  // If logged in and tries to access auth routes → redirect to dashboard
+  // ✅ Read cookie directly from request (Edge Runtime compatible)
+  const token = request.cookies.get("accessToken")?.value;
+
+  let userData: IUser | null = null;
+  if (token) {
+    try {
+      userData = jwtDecode<IUser>(token);
+    } catch {
+      userData = null;
+    }
+  }
+
   if (userData && authRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // If not logged in
   if (!userData) {
     if (authRoutes.includes(pathname)) {
       return NextResponse.next();
@@ -26,7 +38,6 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // Role-based route guard
   if (userData.role && roleBaseRoutes[userData.role as TRole]) {
     const validRoutes = roleBaseRoutes[userData.role as TRole];
     if (validRoutes.some((x) => x.test(pathname))) {

@@ -15,6 +15,7 @@ app.use(cors({
       "http://localhost:5173",
       "http://172.252.13.90:8042",
       "http://172.252.13.90",
+      "https://qcexclusive-full-stack.vercel.app"
     ].filter(Boolean) as string[];
 
     if (!origin || allowedOrigins.includes(origin)) {

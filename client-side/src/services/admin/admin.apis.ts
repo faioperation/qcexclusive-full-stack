@@ -85,6 +85,7 @@ export const createAdmin = async (
     });
     revalidateTag("admin", "default");
     const result = await res.json();
+    console.log(result);
     return result;
   } catch (err) {
     console.log(err);

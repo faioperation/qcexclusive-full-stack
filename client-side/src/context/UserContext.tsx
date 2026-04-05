@@ -19,6 +19,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleUser = async () => {
+    setIsLoading(true); // ✅ Reset loading on every refetch
     try {
       const userData = await getCurrentUser();
       setUser(userData);

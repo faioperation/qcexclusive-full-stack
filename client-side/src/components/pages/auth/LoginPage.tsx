@@ -32,7 +32,7 @@ export function LoginPage() {
     try {
       const result = await userLogin(data);
       if (result?.success) {
-        await refetchUser();
+
         router.push("/");
         router.refresh();
       } else {
