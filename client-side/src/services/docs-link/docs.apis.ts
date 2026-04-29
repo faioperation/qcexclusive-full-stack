@@ -56,6 +56,9 @@ const getAuthHeader = async () => ({
  * Requires: Admin or User role
  * Body: { name, projectName, docsLink, prompt, postGenerate }
  */
+
+
+//${process.env.NEXT_PUBLIC_BACKEND}/docs-link
 export const createDocsLink = async (
   payload: ICreateDocsLinkPayload | FieldValues
 ) => {
@@ -68,7 +71,7 @@ export const createDocsLink = async (
       },
       body: JSON.stringify(payload),
     });
-    revalidateTag("docs-link", "default");
+    revalidateTag("docs-link", "max");
     const result = await res.json();
     return result;
   } catch (err) {

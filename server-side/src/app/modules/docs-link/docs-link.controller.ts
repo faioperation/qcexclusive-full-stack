@@ -9,7 +9,7 @@ const createDocsLink = catchAsync(async (req: Request & { user?: any }, res: Res
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: "Docs link created and sample posts generated successfully",
+    message: "Docs link created and AI posts generated successfully",
     data: result,
   });
 });

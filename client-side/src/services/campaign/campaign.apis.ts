@@ -43,7 +43,7 @@ const getAuthHeader = async () => ({
  */
 export const createCampaign = async (
   payload: ICreateCampaignPayload | FieldValues
-) => {
+) => { 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/campaign`, {
       method: "POST",
