@@ -59,8 +59,8 @@ export class QueryBuilder {
     this.take = undefined;
   }
 
-  /** Apply exact-match filters from query params (case-insensitive for strings) */
-  filter(relationConfig: TRelationConfig = {}): this {
+  /** Apply exact-match filters from query params (case-insensitive for strings by default) */
+  filter(relationConfig: TRelationConfig = {}, exactFields: string[] = []): this {
     const filters = { ...this.query };
 
     [...excludeFields].forEach((field) => delete filters[field]);
@@ -70,9 +70,10 @@ export class QueryBuilder {
 
       let finalValue: any = value;
 
-      // Case-insensitive mode for plain strings that are not numbers/booleans
+      // Case-insensitive mode for plain strings that are not numbers/booleans/exactFields
       if (
         typeof value === "string" &&
+        !exactFields.includes(key) &&
         isNaN(Number(value)) &&
         value.toLowerCase() !== "true" &&
         value.toLowerCase() !== "false"

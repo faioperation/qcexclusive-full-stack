@@ -159,3 +159,28 @@ export const deleteLead = async (leadId: string) => {
     throw err;
   }
 };
+// ─── Send Outreach Email to Lead ─────────────────────────────────────────────
+
+/**
+ * POST /lead/:id/send-email
+ * Manually send an outreach email to a specific lead using its campaign's firstMessage.
+ * Creates an OutreachMessage record and marks the lead as Contacted.
+ * Requires: Admin or User role
+ */
+export const sendEmailToLead = async (leadId: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND}/lead/${leadId}/send-email`,
+      {
+        method: "POST",
+        headers: await getAuthHeader(),
+      }
+    );
+    revalidateTag("lead", "default");
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};

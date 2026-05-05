@@ -44,9 +44,21 @@ const deleteLead = catchAsync(async (req, res) => {
     });
 });
 
+const sendEmailToLead = catchAsync(async (req, res) => {
+  const result = await LeadService.sendEmailToLeadInDB(req.params.id as string);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Outreach email sent successfully",
+    data: result,
+  });
+});
+
 export const LeadController = {
   getAllLeads,
   getSingleLead,
   updateLead,
   deleteLead,
+  sendEmailToLead,
 };
+

@@ -19,6 +19,12 @@ router.get(
     LeadController.getSingleLead
 );
 
+router.post(
+    "/:id/send-email",
+    auth(ERole.Admin, ERole.User),
+    LeadController.sendEmailToLead
+);
+
 router.patch(
     "/:id", 
     auth(ERole.Admin, ERole.User), 
@@ -33,3 +39,4 @@ router.delete(
 );
 
 export const leadRouter = router;
+

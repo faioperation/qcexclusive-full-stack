@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Prisma, ELeadStatus, EPlatform } from "../../../../generated/prisma";
+import { ELeadStatus, EPlatform } from "../../../../generated/prisma";
 
 const createLeadZodSchema = z.object({
   body: z.object({
@@ -13,7 +13,7 @@ const createLeadZodSchema = z.object({
     bio: z.string().optional(),
     imageUrl: z.string().url().optional(),
     website: z.string().url().optional(),
-    totalScore: z.number().min(0).max(5).optional(),
+    totalScore: z.number().min(0).optional(),
     status: z.nativeEnum(ELeadStatus).optional(),
     industryId: z.string().uuid().optional(),
     locationId: z.string().uuid().optional(),
@@ -35,7 +35,7 @@ const updateLeadZodSchema = z.object({
     bio: z.string().optional(),
     imageUrl: z.string().url().optional(),
     website: z.string().url().optional(),
-    totalScore: z.number().min(0).max(5).optional(),
+    totalScore: z.number().min(0).optional(),
     status: z.nativeEnum(ELeadStatus).optional(),
     industryId: z.string().uuid().optional(),
     locationId: z.string().uuid().optional(),

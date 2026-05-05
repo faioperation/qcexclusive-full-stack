@@ -1,9 +1,8 @@
 import {
-  ECampaignStatus, EScrapingJobStatus, ELeadStatus, EPlatform,
+  ECampaignStatus, EScrapingJobStatus, EPlatform, ELeadStatus,
 } from "../../../../generated/prisma";
 import { prisma } from "../../db_connection/prisma";
 import { triggerApifyScraper, waitForApifyRun, getDatasetItems } from "../../utils/apify";
-import { sendEmail } from "../../utils/sendEmail";
 import { QueryBuilder, TQueryInput } from "../../utils/QueryBuilder";
 import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
@@ -244,35 +243,6 @@ const processScrapingResults = async (
 
         leadsExtracted++;
         console.log(`[Job ${jobId}] Lead: ${lead.name} | ${mapped.email ?? "no email"} | ${apifyPlatform}`);
-
-        // Send outreach email if available
-        if (mapped.email && campaignRecord?.firstMessage) {
-          try {
-            await sendEmail({
-              to: mapped.email,
-              subject: `Message from ${campaignRecord.name}`,
-              tempName: "outreach",
-              tempData: { leadName: lead.name, body: campaignRecord.firstMessage },
-            });
-
-            await db.outreachMessage.create({
-              data: {
-                campaignId,
-                leadId: lead.id,
-                body: campaignRecord.firstMessage,
-                type: "Email",
-                sentAt: new Date(),
-              },
-            });
-
-            await db.lead.update({
-              where: { id: lead.id },
-              data: { status: ELeadStatus.Contacted },
-            });
-          } catch (mailErr: any) {
-            console.error(`[Job ${jobId}] Email send failed to ${mapped.email}:`, mailErr.message);
-          }
-        }
       } catch (leadErr: any) {
         console.error(`[Job ${jobId}] Lead create failed for "${mapped.name}":`, leadErr.message);
       }
