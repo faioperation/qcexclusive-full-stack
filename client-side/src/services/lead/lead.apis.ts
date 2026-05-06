@@ -167,13 +167,43 @@ export const deleteLead = async (leadId: string) => {
  * Creates an OutreachMessage record and marks the lead as Contacted.
  * Requires: Admin or User role
  */
-export const sendEmailToLead = async (leadId: string) => {
+export const sendEmailToLead = async (leadId: string, message?: string) => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND}/lead/${leadId}/send-email`,
       {
         method: "POST",
-        headers: await getAuthHeader(),
+        headers: {
+          "Content-Type": "application/json",
+          ...(await getAuthHeader()),
+        },
+        body: JSON.stringify({ message }),
+      }
+    );
+    revalidateTag("lead", "default");
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+/**
+ * POST /lead/bulk-send-email
+ * Send outreach emails to multiple leads at once.
+ */
+export const bulkSendEmailToLeads = async (leadIds: string[], message?: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND}/lead/bulk-send-email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(await getAuthHeader()),
+        },
+        body: JSON.stringify({ leadIds, message }),
       }
     );
     revalidateTag("lead", "default");

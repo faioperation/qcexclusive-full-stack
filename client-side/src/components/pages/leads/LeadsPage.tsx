@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { useForm } from "react-hook-form";
-import { getAllLeads, deleteLead, sendEmailToLead } from "@/services/lead/lead.apis";
+import { getAllLeads, deleteLead, sendEmailToLead, bulkSendEmailToLeads } from "@/services/lead/lead.apis";
 import { createCampaign } from "@/services/campaign/campaign.apis";
 
 interface CampaignForm {
@@ -25,7 +25,6 @@ interface CampaignForm {
   location: string;
   industry: string;
   specification?: string;
-  firstMessage: string;
   platform: "GoogleMaps" | "Instagram" | "Facebook";
 }
 
@@ -63,12 +62,13 @@ const EMPTY_FILTERS: IFilters = {
   status: "",
 };
 
-const PAGE_SIZE = 10;
+// removed PAGE_SIZE constant
 
 export function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -82,6 +82,12 @@ export function LeadsPage() {
 
   // Per-row email send state: leadId → status
   const [emailStatusMap, setEmailStatusMap] = useState<Record<string, EmailStatus>>({});
+
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  const [bulkMessage, setBulkMessage] = useState("");
+  const [isBulkSending, setIsBulkSending] = useState(false);
 
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm<CampaignForm>({
     defaultValues: { platform: "GoogleMaps" },
@@ -100,7 +106,7 @@ export function LeadsPage() {
     try {
       const result = await getAllLeads({
         page,
-        limit: PAGE_SIZE,
+        limit,
         searchTerm: debouncedSearch || undefined,
         city: appliedFilters.city || undefined,
         industryName: appliedFilters.industryName || undefined,
@@ -117,7 +123,7 @@ export function LeadsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, debouncedSearch, appliedFilters]);
+  }, [page, limit, debouncedSearch, appliedFilters]);
 
   useEffect(() => {
     fetchLeads();
@@ -171,6 +177,50 @@ export function LeadsPage() {
     }
   };
 
+  const handleBulkSend = () => {
+    if (selectedIds.length === 0) return;
+    setBulkMessage("");
+    setIsBulkModalOpen(true);
+  };
+
+  const confirmBulkSend = async () => {
+    if (!bulkMessage.trim()) {
+      alert("Please enter a message.");
+      return;
+    }
+
+    setIsBulkSending(true);
+    try {
+      const result = await bulkSendEmailToLeads(selectedIds, bulkMessage);
+      if (result?.success) {
+        alert("Bulk outreach process completed.");
+        setSelectedIds([]);
+        setIsBulkModalOpen(false);
+        fetchLeads();
+      } else {
+        alert(result?.message || "Failed to process bulk outreach.");
+      }
+    } catch {
+      alert("Something went wrong during bulk outreach.");
+    } finally {
+      setIsBulkSending(false);
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === leads.length && leads.length > 0) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(leads.map((l) => l.id));
+    }
+  };
+
   const onSaveCampaign = async (data: CampaignForm) => {
     setCreateError(null);
     try {
@@ -214,7 +264,7 @@ export function LeadsPage() {
     }
   };
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(total / limit));
 
   const renderEmailButton = (lead: Lead) => {
     const status = emailStatusMap[lead.id] ?? "idle";
@@ -306,6 +356,15 @@ export function LeadsPage() {
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
+          {selectedIds.length > 0 && (
+            <button
+              onClick={handleBulkSend}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 h-10 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-[8px] transition-colors whitespace-nowrap shadow-sm"
+            >
+              <Mail size={18} />
+              Send Outreach ({selectedIds.length})
+            </button>
+          )}
           <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 h-10 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-semibold rounded-[8px] transition-colors whitespace-nowrap">
             <Download size={18} />
             Export CSV
@@ -506,6 +565,14 @@ export function LeadsPage() {
           <table className="w-full text-left text-sm text-gray-700 whitespace-nowrap">
             <thead className="bg-[#FAFBFD] text-gray-600 font-medium border-b border-gray-100">
               <tr>
+                <th className="px-4 py-4 font-semibold w-12 text-center">
+                   <input 
+                    type="checkbox" 
+                    className="w-4 h-4 rounded border-gray-300 text-[#00A651] focus:ring-[#00A651] cursor-pointer"
+                    checked={leads.length > 0 && selectedIds.length === leads.length}
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th className="px-4 py-4 font-semibold w-16">#</th>
                 <th className="px-4 py-4 font-semibold">Name</th>
                 <th className="px-4 py-4 font-semibold">Location</th>
@@ -519,21 +586,29 @@ export function LeadsPage() {
             <tbody className="divide-y divide-gray-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-16 text-center">
+                  <td colSpan={9} className="px-4 py-16 text-center">
                     <Loader2 className="w-8 h-8 animate-spin text-[#00A651] mx-auto" />
                   </td>
                 </tr>
               ) : leads.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-16 text-center text-gray-400 font-medium">
+                  <td colSpan={9} className="px-4 py-16 text-center text-gray-400 font-medium">
                     No leads found.
                   </td>
                 </tr>
               ) : (
                 leads.map((lead, idx) => (
-                  <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={lead.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.includes(lead.id) ? 'bg-green-50/50' : ''}`}>
+                    <td className="px-4 py-4 text-center">
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-gray-300 text-[#00A651] focus:ring-[#00A651] cursor-pointer"
+                        checked={selectedIds.includes(lead.id)}
+                        onChange={() => toggleSelect(lead.id)}
+                      />
+                    </td>
                     <td className="px-4 py-4 font-medium text-gray-900">
-                      {String((page - 1) * PAGE_SIZE + idx + 1).padStart(2, "0")}
+                      {String((page - 1) * limit + idx + 1).padStart(2, "0")}
                     </td>
                     <td className="px-4 py-4 font-medium text-gray-900">
                       <div>{lead.name}</div>
@@ -576,19 +651,39 @@ export function LeadsPage() {
         </div>
 
         {/* Pagination Footer */}
-        <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-gray-100 gap-4">
-          <p className="text-sm text-gray-500">
-            Showing{" "}
-            <span className="font-medium text-gray-900">
-              {total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}
-            </span>{" "}
-            to{" "}
-            <span className="font-medium text-gray-900">
-              {Math.min(page * PAGE_SIZE, total)}
-            </span>{" "}
-            of{" "}
-            <span className="font-medium text-gray-900">{total}</span> entries
-          </p>
+        <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 border-t border-gray-100 gap-4">
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-gray-500">
+              Showing{" "}
+              <span className="font-medium text-gray-900">
+                {total === 0 ? 0 : (page - 1) * limit + 1}
+              </span>{" "}
+              to{" "}
+              <span className="font-medium text-gray-900">
+                {Math.min(page * limit, total)}
+              </span>{" "}
+              of{" "}
+              <span className="font-medium text-gray-900">{total}</span> entries
+            </p>
+            
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="text-sm text-gray-400">|</span>
+              <select 
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="bg-transparent text-sm font-medium text-gray-600 focus:outline-none cursor-pointer hover:text-[#00A651] transition-colors"
+              >
+                <option value={10}>10 per page</option>
+                <option value={50}>50 per page</option>
+                <option value={100}>100 per page</option>
+                <option value={200}>200 per page</option>
+                <option value={500}>500 per page</option>
+              </select>
+            </div>
+          </div>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
@@ -687,16 +782,6 @@ export function LeadsPage() {
             </div>
           </div>
 
-          <div className="bg-[#FAFBFD] p-5 rounded-[12px] border border-gray-100">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">First Message</label>
-            <textarea
-              {...register("firstMessage", { required: true })}
-              rows={5}
-              placeholder="Hi {name}, I noticed your business..."
-              className="w-full p-4 bg-white border border-gray-200 rounded-[10px] text-sm resize-none focus:outline-none focus:border-[#00A651] transition-colors"
-            />
-          </div>
-
           <div className="flex justify-end pt-2">
             <button
               type="submit"
@@ -708,6 +793,74 @@ export function LeadsPage() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* Bulk Outreach Modal */}
+      <Modal
+        isOpen={isBulkModalOpen}
+        onClose={() => { if (!isBulkSending) setIsBulkModalOpen(false); }}
+        title={`Bulk Outreach (${selectedIds.length} leads)`}
+        width="max-w-2xl"
+      >
+        <div className="space-y-5">
+          <div className="bg-[#FAFBFD] p-6 rounded-[16px] border border-gray-100 shadow-inner">
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-bold text-gray-700">Message Content</label>
+              <div className="flex items-center gap-1.5 px-2 py-1 bg-white border border-gray-100 rounded-md shadow-sm">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Placeholder:</span>
+                <code className="text-[11px] font-mono font-bold text-[#00A651] bg-green-50 px-1 rounded">{`{name}`}</code>
+              </div>
+            </div>
+            
+            <textarea
+              value={bulkMessage}
+              onChange={(e) => setBulkMessage(e.target.value)}
+              rows={10}
+              placeholder="Write your personalized outreach message here..."
+              className="w-full p-5 bg-white border border-gray-200 rounded-[12px] text-[15px] leading-relaxed text-gray-700 resize-none focus:outline-none focus:border-[#00A651] focus:ring-4 focus:ring-green-50 transition-all placeholder:text-gray-300 shadow-sm"
+            />
+            
+            <div className="mt-4 flex items-start gap-2.5 p-3 bg-blue-50/50 rounded-lg border border-blue-100/50">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0" />
+              <p className="text-xs text-blue-600 font-medium leading-normal">
+                Personalization works! Use <code className="font-bold">{`{name}`}</code> to automatically insert the lead's name into the email.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between px-2 pt-2">
+            <p className="text-xs text-gray-400 font-medium">
+              Targeting <span className="text-gray-900 font-bold">{selectedIds.length}</span> verified leads
+            </p>
+            
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsBulkModalOpen(false)}
+                disabled={isBulkSending}
+                className="px-6 py-2.5 text-gray-500 hover:text-gray-800 text-sm font-bold transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmBulkSend}
+                disabled={isBulkSending}
+                className="px-8 py-3 bg-[#00A651] hover:bg-[#009345] text-white text-[15px] font-bold rounded-[10px] transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-60 flex items-center gap-2.5"
+              >
+                {isBulkSending ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    Sending Messages...
+                  </>
+                ) : (
+                  <>
+                    <Mail size={18} />
+                    Send Messages Now
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       </Modal>
     </div>
   );

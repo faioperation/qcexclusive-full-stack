@@ -45,11 +45,21 @@ const deleteLead = catchAsync(async (req, res) => {
 });
 
 const sendEmailToLead = catchAsync(async (req, res) => {
-  const result = await LeadService.sendEmailToLeadInDB(req.params.id as string);
+  const result = await LeadService.sendEmailToLeadInDB(req.params.id as string, req.body.message);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Outreach email sent successfully",
+    data: result,
+  });
+});
+
+const bulkSendEmailToLeads = catchAsync(async (req, res) => {
+  const result = await LeadService.bulkSendEmailToLeadsInDB(req.body.leadIds, req.body.message);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Bulk outreach emails processed",
     data: result,
   });
 });
@@ -60,5 +70,6 @@ export const LeadController = {
   updateLead,
   deleteLead,
   sendEmailToLead,
+  bulkSendEmailToLeads,
 };
 

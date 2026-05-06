@@ -25,6 +25,12 @@ router.post(
     LeadController.sendEmailToLead
 );
 
+router.post(
+    "/bulk-send-email",
+    auth(ERole.Admin, ERole.User),
+    LeadController.bulkSendEmailToLeads
+);
+
 router.patch(
     "/:id", 
     auth(ERole.Admin, ERole.User), 

@@ -8,7 +8,6 @@ import ApiError from "../../errors/ApiError";
 const db = prisma as any;
 
 const getAllLeadsFromDB = async (query: TQueryInput) => {
-  console.log("Incoming Query:", query);
   const queryBuilder = new QueryBuilder(query)
     .search([
       "name",
@@ -34,7 +33,6 @@ const getAllLeadsFromDB = async (query: TQueryInput) => {
     .fields();
 
   const prismaQuery = queryBuilder.build();
-  console.log("Built Where Clause:", JSON.stringify(prismaQuery.where, null, 2));
 
   // If the query uses "industryName" or "campaignName", QueryBuilder will put them inside industry/campaign objects.
   // We need to make sure the field names inside those objects match the Prisma schema (which is 'name' for both).
@@ -113,7 +111,7 @@ const deleteLeadFromDB = async (id: string) => {
 };
 
 // ─── Manual Send Email ────────────────────────────────────────────────────────
-const sendEmailToLeadInDB = async (leadId: string) => {
+const sendEmailToLeadInDB = async (leadId: string, message?: string) => {
   // Fetch lead with its associated campaign
   const lead = await db.lead.findUnique({
     where: { id: leadId },
@@ -128,28 +126,27 @@ const sendEmailToLeadInDB = async (leadId: string) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "This lead has no email address on record");
   }
 
-  if (!lead.campaign) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Lead is not associated with a campaign");
-  }
+  // Determine the message to send
+  const messageBody = message || lead.campaign?.firstMessage;
 
-  if (!lead.campaign.firstMessage) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Campaign has no first message configured");
+  if (!messageBody) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "No message content provided and campaign has no default first message");
   }
 
   // Send the outreach email
   await sendEmail({
     to: lead.email,
-    subject: `Message from ${lead.campaign.name}`,
+    subject: lead.campaign ? `Message from ${lead.campaign.name}` : "Outreach Message",
     tempName: "outreach",
-    tempData: { leadName: lead.name, body: lead.campaign.firstMessage },
+    tempData: { leadName: lead.name, body: messageBody },
   });
 
   // Record the outreach message
   await db.outreachMessage.create({
     data: {
-      campaignId: lead.campaignId,
+      campaignId: lead.campaignId || undefined,
       leadId: lead.id,
-      body: lead.campaign.firstMessage,
+      body: messageBody,
       type: "Email",
       sentAt: new Date(),
     },
@@ -164,11 +161,25 @@ const sendEmailToLeadInDB = async (leadId: string) => {
   return updatedLead;
 };
 
+const bulkSendEmailToLeadsInDB = async (leadIds: string[], message?: string) => {
+  const results = [];
+  for (const id of leadIds) {
+    try {
+      const result = await sendEmailToLeadInDB(id, message);
+      results.push({ id, success: true, result });
+    } catch (error: any) {
+      results.push({ id, success: false, message: error.message });
+    }
+  }
+  return results;
+};
+
 export const LeadService = {
   getAllLeadsFromDB,
   getSingleLeadFromDB,
   updateLeadInDB,
   deleteLeadFromDB,
   sendEmailToLeadInDB,
+  bulkSendEmailToLeadsInDB,
 };
 
