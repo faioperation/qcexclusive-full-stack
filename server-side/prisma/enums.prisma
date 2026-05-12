@@ -1,65 +1,93 @@
 enum ERole {
-    Admin
-    User
+  Admin
+  User
 }
 
 enum EPlatform {
-    Facebook
-    Instagram
-    LinkedIn
-    Indeed
-    Twitter
-    TikTok
-    YouTube
-    GoogleMaps
+  Facebook
+  Instagram
+  LinkedIn
+  Indeed
+  Twitter
+  TikTok
+  YouTube
+  GoogleMaps
 }
 
 enum ELeadStatus {
-    New
-    Running
-    Completed
-    Contacted
-    Interested
-    NotInterested
-    Scheduled
-    Converted
+  New
+  Running
+  Completed
+  Contacted
+  Interested
+  NotInterested
+  Scheduled
+  Converted
 }
 
 enum EOutreachType {
-    Email
-    InstagramDM
-    FacebookDM
+  Email
+  InstagramDM
+  FacebookDM
 }
 
 enum EReplyStatus {
-    NoReply
-    Interested
-    NotInterested
-    Neutral
+  NoReply
+  Interested
+  NotInterested
+  Neutral
+}
+
+enum EAIReplyClassification {
+  Interested
+  NotInterested
+  Neutral
+  MeetingRequest
+  PricingRequest
+  Spam
+}
+
+enum EAIResponseStatus {
+  Pending
+  Sent
+  Skipped
 }
 
 enum ECampaignStatus {
-    Draft
-    Active
-    Paused
-    Completed
+  Draft
+  Active
+  Paused
+  Completed
 }
 
 enum EScrapingJobStatus {
-    Pending
-    Running
-    Completed
-    Failed
+  Pending
+  Running
+  Completed
+  Failed
 }
 
 enum EMeetingStatus {
-    Scheduled
-    Completed
-    Cancelled
-    NoShow
+  Scheduled
+  Completed
+  Cancelled
+  NoShow
 }
 
 enum EMessageSender {
-    Admin
-    Lead
+  Admin
+  Lead
+}
+
+enum ECalendlyStatus {
+  Pending
+  Scheduled
+  Confirmed
+  Cancelled
+}
+
+enum ECalendlyEventType {
+  Meeting
+  Call
+  Webinar
 }

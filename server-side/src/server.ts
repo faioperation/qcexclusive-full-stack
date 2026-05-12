@@ -3,8 +3,10 @@ import app from "./app";
 import config from "./app/config";
 import { connectRedis } from "./app/config/redisConfig";
 import { prisma } from "./app/db_connection/prisma";
-import { gracefulShutdown as workerShutdown } from "./app/jobs/outreach.worker";
+import { gracefulShutdown as shutdownOutreachWorker } from "./app/jobs/outreach.worker";
+import { gracefulShutdownFollowUpWorker } from "./app/jobs/followup.worker";
 import "./app/jobs/outreach.worker";
+import "./app/jobs/followup.worker";
 
 
 let server: Server;
@@ -60,7 +62,8 @@ process.on("uncaughtException", async (err) => {
 
 process.on("SIGTERM", async () => {
   console.log("SIGTERM signal received... shutting down gracefully");
-  await workerShutdown();
+  await shutdownOutreachWorker();
+  await gracefulShutdownFollowUpWorker();
 
   if (server) {
     server.close(async () => {
@@ -72,7 +75,8 @@ process.on("SIGTERM", async () => {
 
 process.on("SIGINT", async () => {
   console.log("SIGINT signal received... shutting down gracefully");
-  await workerShutdown();
+  await shutdownOutreachWorker();
+  await gracefulShutdownFollowUpWorker();
 
   if (server) {
     server.close(async () => {

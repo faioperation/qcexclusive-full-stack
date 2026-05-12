@@ -1,11 +1,12 @@
 import { prisma } from "../../db_connection/prisma";
 import ApiError from "../../errors/ApiError";
+import config from "../../config";
 import httpStatus from "http-status";
 import { QueryBuilder, TQueryInput } from "../../utils/QueryBuilder";
 
 const db = prisma as any;
 
-const N8N_WEBHOOK_URL = "https://qcexclusive.app.n8n.cloud/webhook/doc";
+const N8N_WEBHOOK_URL = config.N8N_WEBHOOK_URL;
 
 // ─── n8n returns an ARRAY ─────────────────────────────────────────────────────
 interface TN8nPostEntry {
@@ -40,6 +41,9 @@ const callN8nWebhook = async (payload: {
   let response: Response;
 
   try {
+    if (!N8N_WEBHOOK_URL) {
+      throw new Error("N8N_WEBHOOK_URL is not configured");
+    }
     response = await fetch(N8N_WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -8,14 +8,36 @@ model AIPromptConfig {
   updatedAt  DateTime @updatedAt
 }
 
+model CalendlyEvent {
+  id              String             @id @default(uuid())
+  leadId          String
+  lead            Lead               @relation(fields: [leadId], references: [id])
+  eventId         String             @unique
+  eventType       ECalendlyEventType
+  title           String
+  description     String?
+  startTime       DateTime
+  endTime         DateTime
+  status          ECalendlyStatus    @default(Pending)
+  calendlyUri     String?            @db.Text
+  meetingLink     String?
+  location        String?
+  attendees       Int                @default(1)
+  isRescheduled   Boolean            @default(false)
+  rescheduledFrom String? // Reference to original event if rescheduled
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
 model Campaign {
-  id             String          @id @default(uuid())
-  name           String
-  description    String?
-  firstMessage   String? // template email sent to all leads on Start Campaign
-  apifyDatasetId String? // Central Apify dataset ID for scrape results
-  status         ECampaignStatus @default(Draft)
-  platform       EPlatform       @default(Instagram)
+  id              String          @id @default(uuid())
+  name            String
+  description     String?
+  firstMessage    String? // template email sent to all leads on Start Campaign
+  followUpMessage String? // optional 7-day follow-up template (placeholders supported)
+  apifyDatasetId  String? // Central Apify dataset ID for scrape results
+  status          ECampaignStatus @default(Draft)
+  platform        EPlatform       @default(Instagram)
 
   // ── Scraping Logic (Figma Modal Fields)
   location          String?
@@ -104,6 +126,21 @@ enum EReplyStatus {
   Neutral
 }
 
+enum EAIReplyClassification {
+  Interested
+  NotInterested
+  Neutral
+  MeetingRequest
+  PricingRequest
+  Spam
+}
+
+enum EAIResponseStatus {
+  Pending
+  Sent
+  Skipped
+}
+
 enum ECampaignStatus {
   Draft
   Active
@@ -130,6 +167,19 @@ enum EMessageSender {
   Lead
 }
 
+enum ECalendlyStatus {
+  Pending
+  Scheduled
+  Confirmed
+  Cancelled
+}
+
+enum ECalendlyEventType {
+  Meeting
+  Call
+  Webinar
+}
+
 model Industry {
   id          String     @id @default(uuid())
   name        String     @unique
@@ -142,33 +192,39 @@ model Industry {
 }
 
 model Lead {
-  id               String            @id @default(uuid())
-  name             String
-  email            String?
-  phone            String?
-  platform         EPlatform
-  platformUrl      String?
-  profileUsername  String?
-  followerCount    Int               @default(0)
-  bio              String?
-  imageUrl         String? // business logo / profile picture from scraper
-  website          String? // business website URL
-  totalScore       Float? // Google Maps star rating (0-5)
-  role             String? // Job role (e.g. Marketer, Developer)
-  status           ELeadStatus       @default(New)
-  industryId       String?
-  industry         Industry?         @relation(fields: [industryId], references: [id])
-  locationId       String?
-  location         Location?         @relation(fields: [locationId], references: [id])
-  campaignId       String?
-  campaign         Campaign?         @relation(fields: [campaignId], references: [id])
-  scrapingJobId    String?
-  scrapingJob      ScrapingJob?      @relation(fields: [scrapingJobId], references: [id])
-  outreachMessages OutreachMessage[]
-  meetings         Meeting[]
-  gmailThreadId    String?           @unique
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                   String            @id @default(uuid())
+  name                 String
+  email                String?
+  phone                String?
+  platform             EPlatform
+  platformUrl          String?
+  profileUsername      String?
+  followerCount        Int               @default(0)
+  bio                  String?
+  imageUrl             String? // business logo / profile picture from scraper
+  website              String? // business website URL
+  totalScore           Float? // Google Maps star rating (0-5)
+  role                 String? // Job role (e.g. Marketer, Developer)
+  status               ELeadStatus       @default(New)
+  industryId           String?
+  industry             Industry?         @relation(fields: [industryId], references: [id])
+  locationId           String?
+  location             Location?         @relation(fields: [locationId], references: [id])
+  campaignId           String?
+  campaign             Campaign?         @relation(fields: [campaignId], references: [id])
+  scrapingJobId        String?
+  scrapingJob          ScrapingJob?      @relation(fields: [scrapingJobId], references: [id])
+  outreachMessages     OutreachMessage[]
+  meetings             Meeting[]
+  calendlyEvents       CalendlyEvent[]
+  gmailThreadId        String?           @unique
+  pendingFollowUpJobId String?
+  followUpSentAt       DateTime?
+  calendlyEventId      String?           @unique
+  calendlyStatus       ECalendlyStatus?  @default(Pending)
+  calendlyUri          String?           @db.Text
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
 }
 
 model Location {
@@ -221,22 +277,33 @@ model Meeting {
 }
 
 model OutreachMessage {
-  id            String         @id @default(uuid())
-  leadId        String
-  lead          Lead           @relation(fields: [leadId], references: [id])
-  campaignId    String
-  campaign      Campaign       @relation(fields: [campaignId], references: [id])
-  type          EOutreachType
-  senderType    EMessageSender @default(Admin)
-  subject       String?
-  body          String
-  sentAt        DateTime?
-  replyStatus   EReplyStatus   @default(NoReply)
-  replyContent  String?
-  isFollowUp    Boolean        @default(false)
-  followUpCount Int            @default(0)
-  gmailThreadId String?
-  createdAt     DateTime       @default(now())
+  id                      String                  @id @default(uuid())
+  leadId                  String
+  lead                    Lead                    @relation(fields: [leadId], references: [id])
+  campaignId              String
+  campaign                Campaign                @relation(fields: [campaignId], references: [id])
+  type                    EOutreachType
+  senderType              EMessageSender          @default(Admin)
+  subject                 String?
+  body                    String
+  sentAt                  DateTime?
+  replyStatus             EReplyStatus            @default(NoReply)
+  replyContent            String?
+  isFollowUp              Boolean                 @default(false)
+  followUpCount           Int                     @default(0)
+  followUpSentAt          DateTime?
+  followUpSourceMessageId String?                 @unique
+  gmailThreadId           String?
+  /// Resend email id (e.g. used with webhooks / support)
+  providerMessageId       String?
+  /// AI Classification fields
+  aiClassification        EAIReplyClassification?
+  aiConfidence            Float?
+  aiGeneratedReply        String?
+  aiResponseStatus        EAIResponseStatus?
+  aiResponseSentAt        DateTime?
+  isAIGenerated           Boolean                 @default(false)
+  createdAt               DateTime                @default(now())
 }
 
 generator client {

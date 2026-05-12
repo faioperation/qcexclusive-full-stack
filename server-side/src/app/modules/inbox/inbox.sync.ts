@@ -4,6 +4,9 @@ import { prisma } from "../../db_connection/prisma";
 import config from "../../config";
 import ApiError from "../../errors/ApiError";
 import httpStatus from "http-status";
+import { cancelPendingFollowUpForLead } from "../followup/followup.scheduler";
+import { processIncomingReply } from "../../services/ai/aiReplyProcessor.service";
+import { processEmailReply } from "../../services/ai/openai.service";
 
 const db = prisma as any;
 
@@ -64,19 +67,79 @@ export const syncInboxReplies = async () => {
           if (lead) {
             console.log(`[InboxSync] Lead found: ${lead.name} (ID: ${lead.id})`);
 
-            // 2. Create an OutreachMessage record for the reply
-            await db.outreachMessage.create({
-              data: {
-                leadId: lead.id,
-                campaignId: lead.campaignId,
-                subject: subject,
-                body: body as string,
-                type: "Email",
-                senderType: "Lead", // Mark as message from Lead
-                sentAt: emailDate,
-                gmailThreadId: lead.gmailThreadId || lead.id,
-              },
+            await cancelPendingFollowUpForLead(lead.id).catch((err: unknown) => {
+              const m = err instanceof Error ? err.message : String(err);
+              console.warn(`[InboxSync] Follow-up cancel failed for lead ${lead.id}:`, m);
             });
+
+            if (!lead.campaignId) {
+              console.warn(
+                `[InboxSync] Lead ${lead.id} has no campaignId; skipping reply persistence`
+              );
+            } else {
+              // Create the reply message first
+              const replyMessage = await db.outreachMessage.create({
+                data: {
+                  leadId: lead.id,
+                  campaignId: lead.campaignId,
+                  subject: subject,
+                  body: body as string,
+                  type: "Email",
+                  senderType: "Lead",
+                  sentAt: emailDate,
+                  gmailThreadId: lead.gmailThreadId || lead.id,
+                },
+              });
+
+              // Process with AI for classification and potential auto-reply
+              try {
+                await processIncomingReply({
+                  messageId: replyMessage.id,
+                  leadId: lead.id,
+                  campaignId: lead.campaignId,
+                  subject: subject,
+                  body: body as string,
+                  leadName: lead.name,
+                  campaignName: lead.campaign?.name,
+                  autoReplyEnabled: true // Default to true, can be made configurable
+                });
+
+                // Schedule AI reply via queue for interested/pricing/meeting requests
+                const aiResult = await processEmailReply(body as string, subject, lead.name, lead.campaign?.name);
+                if (['Interested', 'PricingRequest', 'MeetingRequest'].includes(aiResult.classification.classification) && aiResult.reply) {
+                  // Import queue dynamically to avoid circular imports
+                  const aiReplyModule = await import('../../jobs/aiReply.job');
+                  const { aiReplyQueue } = aiReplyModule;
+                  
+                  await aiReplyQueue.add(
+                    'send-ai-reply',
+                    {
+                      messageId: replyMessage.id,
+                      leadId: lead.id,
+                      campaignId: lead.campaignId,
+                      leadName: lead.name,
+                      leadEmail: lead.email,
+                      aiGeneratedReply: aiResult.reply,
+                      classification: aiResult.classification.classification,
+                    },
+                    {
+                      // Delay AI replies by 5-10 minutes to seem more natural
+                      delay: Math.random() * 300000 + 300000, // 5-10 minutes
+                      attempts: 3,
+                      backoff: {
+                        type: 'exponential',
+                        delay: 10000,
+                      },
+                    }
+                  );
+
+                  console.log(`[InboxSync] Scheduled AI reply for lead ${lead.id}`);
+                }
+              } catch (aiError) {
+                console.error(`[InboxSync] AI processing failed for lead ${lead.id}:`, aiError);
+                // Continue without AI processing - don't break sync
+              }
+            }
 
             // 3. Automated Meeting Detection
             // Simple regex to look for dates like "1 June 2026" or "10:30 AM"
@@ -98,7 +161,7 @@ export const syncInboxReplies = async () => {
                   startTime: startDateTime,
                   endTime: endDateTime,
                   status: "Scheduled",
-                  meetingLink: "https://meet.google.com/qcx-clusive", // Default link
+                  meetingLink: config.DEFAULT_MEETING_LINK, // Default link
                 },
               });
               console.log(`[InboxSync] Automated meeting created for ${lead.name} at ${startDateTime}`);

@@ -1,0 +1,20 @@
+model CalendlyEvent {
+  id              String             @id @default(uuid())
+  leadId          String
+  lead            Lead               @relation(fields: [leadId], references: [id])
+  eventId         String             @unique
+  eventType       ECalendlyEventType
+  title           String
+  description     String?
+  startTime       DateTime
+  endTime         DateTime
+  status          ECalendlyStatus    @default(Pending)
+  calendlyUri     String?            @db.Text
+  meetingLink     String?
+  location        String?
+  attendees       Int                @default(1)
+  isRescheduled   Boolean            @default(false)
+  rescheduledFrom String? // Reference to original event if rescheduled
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}

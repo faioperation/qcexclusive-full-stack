@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { Search, MoreVertical, Paperclip, Send, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { getAllConversations, getMessagesByThreadId, getMessagesByLeadId } from "@/services/inbox/inbox.apis";
+import { AIReplyBadge } from "./AIReplyBadge";
+import { CalendlyBadge } from "./CalendlyBadge";
 
 interface Conversation {
   id: string;
@@ -39,6 +41,7 @@ export function InboxPage() {
   const [isLoadingConvs, setIsLoadingConvs] = useState(true);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [autoReplyEnabled, setAutoReplyEnabled] = useState(false);
 
   const fetchConversations = useCallback(async () => {
     setIsLoadingConvs(true);
@@ -117,6 +120,21 @@ export function InboxPage() {
     ]);
     setNewMessage("");
     // TODO: call sendInboxMessage API when available
+  };
+
+  const handleSendAIReply = async () => {
+    // Find the last lead message to send AI reply
+    const lastLeadMessage = messages.find(m => m.sender === "them");
+    if (lastLeadMessage) {
+      // TODO: Call AI reply API
+      console.log("Sending AI reply for message:", lastLeadMessage);
+    }
+  };
+
+  const handleToggleAutoReply = (enabled: boolean) => {
+    setAutoReplyEnabled(enabled);
+    // TODO: Call toggle auto-reply API
+    console.log("Auto-reply toggled:", enabled);
   };
 
   const formatTime = (iso: string) => {
@@ -271,9 +289,35 @@ export function InboxPage() {
                   </div>
                   {messages.map((msg: any, idx) => {
                     const isMe = msg.sender === "me" || msg.type === "Email"; // Outreach messages from us are 'me'
+                    const isLeadReply = msg.sender === "them" && msg.aiClassification;
+                    
                     return (
                       <div key={idx} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                         <div className={`flex flex-col max-w-[70%] ${isMe ? "items-end" : "items-start"}`}>
+                          {/* AI Reply Badge for lead replies */}
+                          {isLeadReply && (
+                            <AIReplyBadge
+                              classification={msg.aiClassification}
+                              confidence={msg.aiConfidence}
+                              aiGeneratedReply={msg.aiGeneratedReply}
+                              aiResponseStatus={msg.aiResponseStatus}
+                              aiResponseSentAt={msg.aiResponseSentAt}
+                              onSendAIReply={handleSendAIReply}
+                              autoReplyEnabled={autoReplyEnabled}
+                              onToggleAutoReply={handleToggleAutoReply}
+                            />
+                          )}
+                          
+                          {/* Calendly Badge for meeting requests */}
+                          {isLeadReply && msg.aiClassification === 'MeetingRequest' && (
+                            <CalendlyBadge
+                              calendlyStatus={msg.calendlyStatus}
+                              calendlyUri={msg.calendlyUri}
+                              meetingTime={msg.meetingTime}
+                              meetingLink={msg.meetingLink}
+                            />
+                          )}
+                          
                           <div
                             className={`p-4 rounded-[16px] text-[15px] leading-relaxed mb-1 ${
                               isMe

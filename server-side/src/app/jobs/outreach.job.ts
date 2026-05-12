@@ -6,7 +6,7 @@ export const OUTREACH_QUEUE_NAME = "outreach-email";
 export const outreachQueue = new Queue(OUTREACH_QUEUE_NAME, {
   connection: redisConnection,
   defaultJobOptions: {
-    attempts: 5, // Increased retries for SMTP resilience
+    attempts: 5, // Retries on Resend/network failures
     backoff: {
       type: "exponential",
       delay: 10000, // Start with 10s wait

@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type AIPromptConfig = $Result.DefaultSelection<Prisma.$AIPromptConfigPayload>
 /**
+ * Model CalendlyEvent
+ * 
+ */
+export type CalendlyEvent = $Result.DefaultSelection<Prisma.$CalendlyEventPayload>
+/**
  * Model Campaign
  * 
  */
@@ -133,6 +138,27 @@ export const EReplyStatus: {
 export type EReplyStatus = (typeof EReplyStatus)[keyof typeof EReplyStatus]
 
 
+export const EAIReplyClassification: {
+  Interested: 'Interested',
+  NotInterested: 'NotInterested',
+  Neutral: 'Neutral',
+  MeetingRequest: 'MeetingRequest',
+  PricingRequest: 'PricingRequest',
+  Spam: 'Spam'
+};
+
+export type EAIReplyClassification = (typeof EAIReplyClassification)[keyof typeof EAIReplyClassification]
+
+
+export const EAIResponseStatus: {
+  Pending: 'Pending',
+  Sent: 'Sent',
+  Skipped: 'Skipped'
+};
+
+export type EAIResponseStatus = (typeof EAIResponseStatus)[keyof typeof EAIResponseStatus]
+
+
 export const ECampaignStatus: {
   Draft: 'Draft',
   Active: 'Active',
@@ -171,6 +197,25 @@ export const EMessageSender: {
 export type EMessageSender = (typeof EMessageSender)[keyof typeof EMessageSender]
 
 
+export const ECalendlyStatus: {
+  Pending: 'Pending',
+  Scheduled: 'Scheduled',
+  Confirmed: 'Confirmed',
+  Cancelled: 'Cancelled'
+};
+
+export type ECalendlyStatus = (typeof ECalendlyStatus)[keyof typeof ECalendlyStatus]
+
+
+export const ECalendlyEventType: {
+  Meeting: 'Meeting',
+  Call: 'Call',
+  Webinar: 'Webinar'
+};
+
+export type ECalendlyEventType = (typeof ECalendlyEventType)[keyof typeof ECalendlyEventType]
+
+
 export const EMediaPostStatus: {
   Posted: 'Posted',
   Draft: 'Draft'
@@ -200,6 +245,14 @@ export type EReplyStatus = $Enums.EReplyStatus
 
 export const EReplyStatus: typeof $Enums.EReplyStatus
 
+export type EAIReplyClassification = $Enums.EAIReplyClassification
+
+export const EAIReplyClassification: typeof $Enums.EAIReplyClassification
+
+export type EAIResponseStatus = $Enums.EAIResponseStatus
+
+export const EAIResponseStatus: typeof $Enums.EAIResponseStatus
+
 export type ECampaignStatus = $Enums.ECampaignStatus
 
 export const ECampaignStatus: typeof $Enums.ECampaignStatus
@@ -215,6 +268,14 @@ export const EMeetingStatus: typeof $Enums.EMeetingStatus
 export type EMessageSender = $Enums.EMessageSender
 
 export const EMessageSender: typeof $Enums.EMessageSender
+
+export type ECalendlyStatus = $Enums.ECalendlyStatus
+
+export const ECalendlyStatus: typeof $Enums.ECalendlyStatus
+
+export type ECalendlyEventType = $Enums.ECalendlyEventType
+
+export const ECalendlyEventType: typeof $Enums.ECalendlyEventType
 
 export type EMediaPostStatus = $Enums.EMediaPostStatus
 
@@ -350,6 +411,16 @@ export class PrismaClient<
     * ```
     */
   get aIPromptConfig(): Prisma.AIPromptConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.calendlyEvent`: Exposes CRUD operations for the **CalendlyEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CalendlyEvents
+    * const calendlyEvents = await prisma.calendlyEvent.findMany()
+    * ```
+    */
+  get calendlyEvent(): Prisma.CalendlyEventDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.campaign`: Exposes CRUD operations for the **Campaign** model.
@@ -895,6 +966,7 @@ export namespace Prisma {
 
   export const ModelName: {
     AIPromptConfig: 'AIPromptConfig',
+    CalendlyEvent: 'CalendlyEvent',
     Campaign: 'Campaign',
     Config: 'Config',
     DocsLink: 'DocsLink',
@@ -921,7 +993,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "aIPromptConfig" | "campaign" | "config" | "docsLink" | "industry" | "lead" | "location" | "mediaPost" | "meeting" | "outreachMessage" | "scrapingJob" | "user"
+      modelProps: "aIPromptConfig" | "calendlyEvent" | "campaign" | "config" | "docsLink" | "industry" | "lead" | "location" | "mediaPost" | "meeting" | "outreachMessage" | "scrapingJob" | "user"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -996,6 +1068,80 @@ export namespace Prisma {
           count: {
             args: Prisma.AIPromptConfigCountArgs<ExtArgs>
             result: $Utils.Optional<AIPromptConfigCountAggregateOutputType> | number
+          }
+        }
+      }
+      CalendlyEvent: {
+        payload: Prisma.$CalendlyEventPayload<ExtArgs>
+        fields: Prisma.CalendlyEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CalendlyEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CalendlyEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>
+          }
+          findFirst: {
+            args: Prisma.CalendlyEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CalendlyEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>
+          }
+          findMany: {
+            args: Prisma.CalendlyEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>[]
+          }
+          create: {
+            args: Prisma.CalendlyEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>
+          }
+          createMany: {
+            args: Prisma.CalendlyEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CalendlyEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>[]
+          }
+          delete: {
+            args: Prisma.CalendlyEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>
+          }
+          update: {
+            args: Prisma.CalendlyEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.CalendlyEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CalendlyEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CalendlyEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.CalendlyEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CalendlyEventPayload>
+          }
+          aggregate: {
+            args: Prisma.CalendlyEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCalendlyEvent>
+          }
+          groupBy: {
+            args: Prisma.CalendlyEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CalendlyEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CalendlyEventCountArgs<ExtArgs>
+            result: $Utils.Optional<CalendlyEventCountAggregateOutputType> | number
           }
         }
       }
@@ -1922,6 +2068,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     aIPromptConfig?: AIPromptConfigOmit
+    calendlyEvent?: CalendlyEventOmit
     campaign?: CampaignOmit
     config?: ConfigOmit
     docsLink?: DocsLinkOmit
@@ -2144,11 +2291,13 @@ export namespace Prisma {
   export type LeadCountOutputType = {
     outreachMessages: number
     meetings: number
+    calendlyEvents: number
   }
 
   export type LeadCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     outreachMessages?: boolean | LeadCountOutputTypeCountOutreachMessagesArgs
     meetings?: boolean | LeadCountOutputTypeCountMeetingsArgs
+    calendlyEvents?: boolean | LeadCountOutputTypeCountCalendlyEventsArgs
   }
 
   // Custom InputTypes
@@ -2174,6 +2323,13 @@ export namespace Prisma {
    */
   export type LeadCountOutputTypeCountMeetingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MeetingWhereInput
+  }
+
+  /**
+   * LeadCountOutputType without action
+   */
+  export type LeadCountOutputTypeCountCalendlyEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CalendlyEventWhereInput
   }
 
 
@@ -3314,6 +3470,1254 @@ export namespace Prisma {
 
 
   /**
+   * Model CalendlyEvent
+   */
+
+  export type AggregateCalendlyEvent = {
+    _count: CalendlyEventCountAggregateOutputType | null
+    _avg: CalendlyEventAvgAggregateOutputType | null
+    _sum: CalendlyEventSumAggregateOutputType | null
+    _min: CalendlyEventMinAggregateOutputType | null
+    _max: CalendlyEventMaxAggregateOutputType | null
+  }
+
+  export type CalendlyEventAvgAggregateOutputType = {
+    attendees: number | null
+  }
+
+  export type CalendlyEventSumAggregateOutputType = {
+    attendees: number | null
+  }
+
+  export type CalendlyEventMinAggregateOutputType = {
+    id: string | null
+    leadId: string | null
+    eventId: string | null
+    eventType: $Enums.ECalendlyEventType | null
+    title: string | null
+    description: string | null
+    startTime: Date | null
+    endTime: Date | null
+    status: $Enums.ECalendlyStatus | null
+    calendlyUri: string | null
+    meetingLink: string | null
+    location: string | null
+    attendees: number | null
+    isRescheduled: boolean | null
+    rescheduledFrom: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CalendlyEventMaxAggregateOutputType = {
+    id: string | null
+    leadId: string | null
+    eventId: string | null
+    eventType: $Enums.ECalendlyEventType | null
+    title: string | null
+    description: string | null
+    startTime: Date | null
+    endTime: Date | null
+    status: $Enums.ECalendlyStatus | null
+    calendlyUri: string | null
+    meetingLink: string | null
+    location: string | null
+    attendees: number | null
+    isRescheduled: boolean | null
+    rescheduledFrom: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CalendlyEventCountAggregateOutputType = {
+    id: number
+    leadId: number
+    eventId: number
+    eventType: number
+    title: number
+    description: number
+    startTime: number
+    endTime: number
+    status: number
+    calendlyUri: number
+    meetingLink: number
+    location: number
+    attendees: number
+    isRescheduled: number
+    rescheduledFrom: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CalendlyEventAvgAggregateInputType = {
+    attendees?: true
+  }
+
+  export type CalendlyEventSumAggregateInputType = {
+    attendees?: true
+  }
+
+  export type CalendlyEventMinAggregateInputType = {
+    id?: true
+    leadId?: true
+    eventId?: true
+    eventType?: true
+    title?: true
+    description?: true
+    startTime?: true
+    endTime?: true
+    status?: true
+    calendlyUri?: true
+    meetingLink?: true
+    location?: true
+    attendees?: true
+    isRescheduled?: true
+    rescheduledFrom?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CalendlyEventMaxAggregateInputType = {
+    id?: true
+    leadId?: true
+    eventId?: true
+    eventType?: true
+    title?: true
+    description?: true
+    startTime?: true
+    endTime?: true
+    status?: true
+    calendlyUri?: true
+    meetingLink?: true
+    location?: true
+    attendees?: true
+    isRescheduled?: true
+    rescheduledFrom?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CalendlyEventCountAggregateInputType = {
+    id?: true
+    leadId?: true
+    eventId?: true
+    eventType?: true
+    title?: true
+    description?: true
+    startTime?: true
+    endTime?: true
+    status?: true
+    calendlyUri?: true
+    meetingLink?: true
+    location?: true
+    attendees?: true
+    isRescheduled?: true
+    rescheduledFrom?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CalendlyEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendlyEvent to aggregate.
+     */
+    where?: CalendlyEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendlyEvents to fetch.
+     */
+    orderBy?: CalendlyEventOrderByWithRelationInput | CalendlyEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CalendlyEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendlyEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendlyEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CalendlyEvents
+    **/
+    _count?: true | CalendlyEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CalendlyEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CalendlyEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CalendlyEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CalendlyEventMaxAggregateInputType
+  }
+
+  export type GetCalendlyEventAggregateType<T extends CalendlyEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateCalendlyEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCalendlyEvent[P]>
+      : GetScalarType<T[P], AggregateCalendlyEvent[P]>
+  }
+
+
+
+
+  export type CalendlyEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CalendlyEventWhereInput
+    orderBy?: CalendlyEventOrderByWithAggregationInput | CalendlyEventOrderByWithAggregationInput[]
+    by: CalendlyEventScalarFieldEnum[] | CalendlyEventScalarFieldEnum
+    having?: CalendlyEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CalendlyEventCountAggregateInputType | true
+    _avg?: CalendlyEventAvgAggregateInputType
+    _sum?: CalendlyEventSumAggregateInputType
+    _min?: CalendlyEventMinAggregateInputType
+    _max?: CalendlyEventMaxAggregateInputType
+  }
+
+  export type CalendlyEventGroupByOutputType = {
+    id: string
+    leadId: string
+    eventId: string
+    eventType: $Enums.ECalendlyEventType
+    title: string
+    description: string | null
+    startTime: Date
+    endTime: Date
+    status: $Enums.ECalendlyStatus
+    calendlyUri: string | null
+    meetingLink: string | null
+    location: string | null
+    attendees: number
+    isRescheduled: boolean
+    rescheduledFrom: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CalendlyEventCountAggregateOutputType | null
+    _avg: CalendlyEventAvgAggregateOutputType | null
+    _sum: CalendlyEventSumAggregateOutputType | null
+    _min: CalendlyEventMinAggregateOutputType | null
+    _max: CalendlyEventMaxAggregateOutputType | null
+  }
+
+  type GetCalendlyEventGroupByPayload<T extends CalendlyEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CalendlyEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CalendlyEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CalendlyEventGroupByOutputType[P]>
+            : GetScalarType<T[P], CalendlyEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CalendlyEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadId?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    title?: boolean
+    description?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    calendlyUri?: boolean
+    meetingLink?: boolean
+    location?: boolean
+    attendees?: boolean
+    isRescheduled?: boolean
+    rescheduledFrom?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["calendlyEvent"]>
+
+  export type CalendlyEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadId?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    title?: boolean
+    description?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    calendlyUri?: boolean
+    meetingLink?: boolean
+    location?: boolean
+    attendees?: boolean
+    isRescheduled?: boolean
+    rescheduledFrom?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["calendlyEvent"]>
+
+  export type CalendlyEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadId?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    title?: boolean
+    description?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    calendlyUri?: boolean
+    meetingLink?: boolean
+    location?: boolean
+    attendees?: boolean
+    isRescheduled?: boolean
+    rescheduledFrom?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["calendlyEvent"]>
+
+  export type CalendlyEventSelectScalar = {
+    id?: boolean
+    leadId?: boolean
+    eventId?: boolean
+    eventType?: boolean
+    title?: boolean
+    description?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    calendlyUri?: boolean
+    meetingLink?: boolean
+    location?: boolean
+    attendees?: boolean
+    isRescheduled?: boolean
+    rescheduledFrom?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CalendlyEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "leadId" | "eventId" | "eventType" | "title" | "description" | "startTime" | "endTime" | "status" | "calendlyUri" | "meetingLink" | "location" | "attendees" | "isRescheduled" | "rescheduledFrom" | "createdAt" | "updatedAt", ExtArgs["result"]["calendlyEvent"]>
+  export type CalendlyEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+  export type CalendlyEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+  export type CalendlyEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lead?: boolean | LeadDefaultArgs<ExtArgs>
+  }
+
+  export type $CalendlyEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CalendlyEvent"
+    objects: {
+      lead: Prisma.$LeadPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      leadId: string
+      eventId: string
+      eventType: $Enums.ECalendlyEventType
+      title: string
+      description: string | null
+      startTime: Date
+      endTime: Date
+      status: $Enums.ECalendlyStatus
+      calendlyUri: string | null
+      meetingLink: string | null
+      location: string | null
+      attendees: number
+      isRescheduled: boolean
+      rescheduledFrom: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["calendlyEvent"]>
+    composites: {}
+  }
+
+  type CalendlyEventGetPayload<S extends boolean | null | undefined | CalendlyEventDefaultArgs> = $Result.GetResult<Prisma.$CalendlyEventPayload, S>
+
+  type CalendlyEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CalendlyEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CalendlyEventCountAggregateInputType | true
+    }
+
+  export interface CalendlyEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CalendlyEvent'], meta: { name: 'CalendlyEvent' } }
+    /**
+     * Find zero or one CalendlyEvent that matches the filter.
+     * @param {CalendlyEventFindUniqueArgs} args - Arguments to find a CalendlyEvent
+     * @example
+     * // Get one CalendlyEvent
+     * const calendlyEvent = await prisma.calendlyEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CalendlyEventFindUniqueArgs>(args: SelectSubset<T, CalendlyEventFindUniqueArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CalendlyEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CalendlyEventFindUniqueOrThrowArgs} args - Arguments to find a CalendlyEvent
+     * @example
+     * // Get one CalendlyEvent
+     * const calendlyEvent = await prisma.calendlyEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CalendlyEventFindUniqueOrThrowArgs>(args: SelectSubset<T, CalendlyEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CalendlyEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendlyEventFindFirstArgs} args - Arguments to find a CalendlyEvent
+     * @example
+     * // Get one CalendlyEvent
+     * const calendlyEvent = await prisma.calendlyEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CalendlyEventFindFirstArgs>(args?: SelectSubset<T, CalendlyEventFindFirstArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CalendlyEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendlyEventFindFirstOrThrowArgs} args - Arguments to find a CalendlyEvent
+     * @example
+     * // Get one CalendlyEvent
+     * const calendlyEvent = await prisma.calendlyEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CalendlyEventFindFirstOrThrowArgs>(args?: SelectSubset<T, CalendlyEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CalendlyEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendlyEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CalendlyEvents
+     * const calendlyEvents = await prisma.calendlyEvent.findMany()
+     * 
+     * // Get first 10 CalendlyEvents
+     * const calendlyEvents = await prisma.calendlyEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const calendlyEventWithIdOnly = await prisma.calendlyEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CalendlyEventFindManyArgs>(args?: SelectSubset<T, CalendlyEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CalendlyEvent.
+     * @param {CalendlyEventCreateArgs} args - Arguments to create a CalendlyEvent.
+     * @example
+     * // Create one CalendlyEvent
+     * const CalendlyEvent = await prisma.calendlyEvent.create({
+     *   data: {
+     *     // ... data to create a CalendlyEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends CalendlyEventCreateArgs>(args: SelectSubset<T, CalendlyEventCreateArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CalendlyEvents.
+     * @param {CalendlyEventCreateManyArgs} args - Arguments to create many CalendlyEvents.
+     * @example
+     * // Create many CalendlyEvents
+     * const calendlyEvent = await prisma.calendlyEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CalendlyEventCreateManyArgs>(args?: SelectSubset<T, CalendlyEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CalendlyEvents and returns the data saved in the database.
+     * @param {CalendlyEventCreateManyAndReturnArgs} args - Arguments to create many CalendlyEvents.
+     * @example
+     * // Create many CalendlyEvents
+     * const calendlyEvent = await prisma.calendlyEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CalendlyEvents and only return the `id`
+     * const calendlyEventWithIdOnly = await prisma.calendlyEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CalendlyEventCreateManyAndReturnArgs>(args?: SelectSubset<T, CalendlyEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CalendlyEvent.
+     * @param {CalendlyEventDeleteArgs} args - Arguments to delete one CalendlyEvent.
+     * @example
+     * // Delete one CalendlyEvent
+     * const CalendlyEvent = await prisma.calendlyEvent.delete({
+     *   where: {
+     *     // ... filter to delete one CalendlyEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CalendlyEventDeleteArgs>(args: SelectSubset<T, CalendlyEventDeleteArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CalendlyEvent.
+     * @param {CalendlyEventUpdateArgs} args - Arguments to update one CalendlyEvent.
+     * @example
+     * // Update one CalendlyEvent
+     * const calendlyEvent = await prisma.calendlyEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CalendlyEventUpdateArgs>(args: SelectSubset<T, CalendlyEventUpdateArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CalendlyEvents.
+     * @param {CalendlyEventDeleteManyArgs} args - Arguments to filter CalendlyEvents to delete.
+     * @example
+     * // Delete a few CalendlyEvents
+     * const { count } = await prisma.calendlyEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CalendlyEventDeleteManyArgs>(args?: SelectSubset<T, CalendlyEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CalendlyEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendlyEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CalendlyEvents
+     * const calendlyEvent = await prisma.calendlyEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CalendlyEventUpdateManyArgs>(args: SelectSubset<T, CalendlyEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CalendlyEvents and returns the data updated in the database.
+     * @param {CalendlyEventUpdateManyAndReturnArgs} args - Arguments to update many CalendlyEvents.
+     * @example
+     * // Update many CalendlyEvents
+     * const calendlyEvent = await prisma.calendlyEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CalendlyEvents and only return the `id`
+     * const calendlyEventWithIdOnly = await prisma.calendlyEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CalendlyEventUpdateManyAndReturnArgs>(args: SelectSubset<T, CalendlyEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CalendlyEvent.
+     * @param {CalendlyEventUpsertArgs} args - Arguments to update or create a CalendlyEvent.
+     * @example
+     * // Update or create a CalendlyEvent
+     * const calendlyEvent = await prisma.calendlyEvent.upsert({
+     *   create: {
+     *     // ... data to create a CalendlyEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CalendlyEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CalendlyEventUpsertArgs>(args: SelectSubset<T, CalendlyEventUpsertArgs<ExtArgs>>): Prisma__CalendlyEventClient<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CalendlyEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendlyEventCountArgs} args - Arguments to filter CalendlyEvents to count.
+     * @example
+     * // Count the number of CalendlyEvents
+     * const count = await prisma.calendlyEvent.count({
+     *   where: {
+     *     // ... the filter for the CalendlyEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends CalendlyEventCountArgs>(
+      args?: Subset<T, CalendlyEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CalendlyEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CalendlyEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendlyEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CalendlyEventAggregateArgs>(args: Subset<T, CalendlyEventAggregateArgs>): Prisma.PrismaPromise<GetCalendlyEventAggregateType<T>>
+
+    /**
+     * Group by CalendlyEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CalendlyEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CalendlyEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CalendlyEventGroupByArgs['orderBy'] }
+        : { orderBy?: CalendlyEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CalendlyEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCalendlyEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CalendlyEvent model
+   */
+  readonly fields: CalendlyEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CalendlyEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CalendlyEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    lead<T extends LeadDefaultArgs<ExtArgs> = {}>(args?: Subset<T, LeadDefaultArgs<ExtArgs>>): Prisma__LeadClient<$Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CalendlyEvent model
+   */
+  interface CalendlyEventFieldRefs {
+    readonly id: FieldRef<"CalendlyEvent", 'String'>
+    readonly leadId: FieldRef<"CalendlyEvent", 'String'>
+    readonly eventId: FieldRef<"CalendlyEvent", 'String'>
+    readonly eventType: FieldRef<"CalendlyEvent", 'ECalendlyEventType'>
+    readonly title: FieldRef<"CalendlyEvent", 'String'>
+    readonly description: FieldRef<"CalendlyEvent", 'String'>
+    readonly startTime: FieldRef<"CalendlyEvent", 'DateTime'>
+    readonly endTime: FieldRef<"CalendlyEvent", 'DateTime'>
+    readonly status: FieldRef<"CalendlyEvent", 'ECalendlyStatus'>
+    readonly calendlyUri: FieldRef<"CalendlyEvent", 'String'>
+    readonly meetingLink: FieldRef<"CalendlyEvent", 'String'>
+    readonly location: FieldRef<"CalendlyEvent", 'String'>
+    readonly attendees: FieldRef<"CalendlyEvent", 'Int'>
+    readonly isRescheduled: FieldRef<"CalendlyEvent", 'Boolean'>
+    readonly rescheduledFrom: FieldRef<"CalendlyEvent", 'String'>
+    readonly createdAt: FieldRef<"CalendlyEvent", 'DateTime'>
+    readonly updatedAt: FieldRef<"CalendlyEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CalendlyEvent findUnique
+   */
+  export type CalendlyEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendlyEvent to fetch.
+     */
+    where: CalendlyEventWhereUniqueInput
+  }
+
+  /**
+   * CalendlyEvent findUniqueOrThrow
+   */
+  export type CalendlyEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendlyEvent to fetch.
+     */
+    where: CalendlyEventWhereUniqueInput
+  }
+
+  /**
+   * CalendlyEvent findFirst
+   */
+  export type CalendlyEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendlyEvent to fetch.
+     */
+    where?: CalendlyEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendlyEvents to fetch.
+     */
+    orderBy?: CalendlyEventOrderByWithRelationInput | CalendlyEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendlyEvents.
+     */
+    cursor?: CalendlyEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendlyEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendlyEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendlyEvents.
+     */
+    distinct?: CalendlyEventScalarFieldEnum | CalendlyEventScalarFieldEnum[]
+  }
+
+  /**
+   * CalendlyEvent findFirstOrThrow
+   */
+  export type CalendlyEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendlyEvent to fetch.
+     */
+    where?: CalendlyEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendlyEvents to fetch.
+     */
+    orderBy?: CalendlyEventOrderByWithRelationInput | CalendlyEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CalendlyEvents.
+     */
+    cursor?: CalendlyEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendlyEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendlyEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CalendlyEvents.
+     */
+    distinct?: CalendlyEventScalarFieldEnum | CalendlyEventScalarFieldEnum[]
+  }
+
+  /**
+   * CalendlyEvent findMany
+   */
+  export type CalendlyEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * Filter, which CalendlyEvents to fetch.
+     */
+    where?: CalendlyEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CalendlyEvents to fetch.
+     */
+    orderBy?: CalendlyEventOrderByWithRelationInput | CalendlyEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CalendlyEvents.
+     */
+    cursor?: CalendlyEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CalendlyEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CalendlyEvents.
+     */
+    skip?: number
+    distinct?: CalendlyEventScalarFieldEnum | CalendlyEventScalarFieldEnum[]
+  }
+
+  /**
+   * CalendlyEvent create
+   */
+  export type CalendlyEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CalendlyEvent.
+     */
+    data: XOR<CalendlyEventCreateInput, CalendlyEventUncheckedCreateInput>
+  }
+
+  /**
+   * CalendlyEvent createMany
+   */
+  export type CalendlyEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CalendlyEvents.
+     */
+    data: CalendlyEventCreateManyInput | CalendlyEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CalendlyEvent createManyAndReturn
+   */
+  export type CalendlyEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many CalendlyEvents.
+     */
+    data: CalendlyEventCreateManyInput | CalendlyEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CalendlyEvent update
+   */
+  export type CalendlyEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CalendlyEvent.
+     */
+    data: XOR<CalendlyEventUpdateInput, CalendlyEventUncheckedUpdateInput>
+    /**
+     * Choose, which CalendlyEvent to update.
+     */
+    where: CalendlyEventWhereUniqueInput
+  }
+
+  /**
+   * CalendlyEvent updateMany
+   */
+  export type CalendlyEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CalendlyEvents.
+     */
+    data: XOR<CalendlyEventUpdateManyMutationInput, CalendlyEventUncheckedUpdateManyInput>
+    /**
+     * Filter which CalendlyEvents to update
+     */
+    where?: CalendlyEventWhereInput
+    /**
+     * Limit how many CalendlyEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CalendlyEvent updateManyAndReturn
+   */
+  export type CalendlyEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * The data used to update CalendlyEvents.
+     */
+    data: XOR<CalendlyEventUpdateManyMutationInput, CalendlyEventUncheckedUpdateManyInput>
+    /**
+     * Filter which CalendlyEvents to update
+     */
+    where?: CalendlyEventWhereInput
+    /**
+     * Limit how many CalendlyEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CalendlyEvent upsert
+   */
+  export type CalendlyEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CalendlyEvent to update in case it exists.
+     */
+    where: CalendlyEventWhereUniqueInput
+    /**
+     * In case the CalendlyEvent found by the `where` argument doesn't exist, create a new CalendlyEvent with this data.
+     */
+    create: XOR<CalendlyEventCreateInput, CalendlyEventUncheckedCreateInput>
+    /**
+     * In case the CalendlyEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CalendlyEventUpdateInput, CalendlyEventUncheckedUpdateInput>
+  }
+
+  /**
+   * CalendlyEvent delete
+   */
+  export type CalendlyEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    /**
+     * Filter which CalendlyEvent to delete.
+     */
+    where: CalendlyEventWhereUniqueInput
+  }
+
+  /**
+   * CalendlyEvent deleteMany
+   */
+  export type CalendlyEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CalendlyEvents to delete
+     */
+    where?: CalendlyEventWhereInput
+    /**
+     * Limit how many CalendlyEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CalendlyEvent without action
+   */
+  export type CalendlyEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Campaign
    */
 
@@ -3338,6 +4742,7 @@ export namespace Prisma {
     name: string | null
     description: string | null
     firstMessage: string | null
+    followUpMessage: string | null
     apifyDatasetId: string | null
     status: $Enums.ECampaignStatus | null
     platform: $Enums.EPlatform | null
@@ -3357,6 +4762,7 @@ export namespace Prisma {
     name: string | null
     description: string | null
     firstMessage: string | null
+    followUpMessage: string | null
     apifyDatasetId: string | null
     status: $Enums.ECampaignStatus | null
     platform: $Enums.EPlatform | null
@@ -3376,6 +4782,7 @@ export namespace Prisma {
     name: number
     description: number
     firstMessage: number
+    followUpMessage: number
     apifyDatasetId: number
     status: number
     platform: number
@@ -3405,6 +4812,7 @@ export namespace Prisma {
     name?: true
     description?: true
     firstMessage?: true
+    followUpMessage?: true
     apifyDatasetId?: true
     status?: true
     platform?: true
@@ -3424,6 +4832,7 @@ export namespace Prisma {
     name?: true
     description?: true
     firstMessage?: true
+    followUpMessage?: true
     apifyDatasetId?: true
     status?: true
     platform?: true
@@ -3443,6 +4852,7 @@ export namespace Prisma {
     name?: true
     description?: true
     firstMessage?: true
+    followUpMessage?: true
     apifyDatasetId?: true
     status?: true
     platform?: true
@@ -3549,6 +4959,7 @@ export namespace Prisma {
     name: string
     description: string | null
     firstMessage: string | null
+    followUpMessage: string | null
     apifyDatasetId: string | null
     status: $Enums.ECampaignStatus
     platform: $Enums.EPlatform
@@ -3587,6 +4998,7 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     firstMessage?: boolean
+    followUpMessage?: boolean
     apifyDatasetId?: boolean
     status?: boolean
     platform?: boolean
@@ -3614,6 +5026,7 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     firstMessage?: boolean
+    followUpMessage?: boolean
     apifyDatasetId?: boolean
     status?: boolean
     platform?: boolean
@@ -3636,6 +5049,7 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     firstMessage?: boolean
+    followUpMessage?: boolean
     apifyDatasetId?: boolean
     status?: boolean
     platform?: boolean
@@ -3658,6 +5072,7 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     firstMessage?: boolean
+    followUpMessage?: boolean
     apifyDatasetId?: boolean
     status?: boolean
     platform?: boolean
@@ -3672,7 +5087,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "firstMessage" | "apifyDatasetId" | "status" | "platform" | "location" | "industry" | "followerThreshold" | "specification" | "targetIndustryId" | "targetLocationId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["campaign"]>
+  export type CampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "firstMessage" | "followUpMessage" | "apifyDatasetId" | "status" | "platform" | "location" | "industry" | "followerThreshold" | "specification" | "targetIndustryId" | "targetLocationId" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["campaign"]>
   export type CampaignInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     targetIndustry?: boolean | Campaign$targetIndustryArgs<ExtArgs>
     targetLocation?: boolean | Campaign$targetLocationArgs<ExtArgs>
@@ -3710,6 +5125,7 @@ export namespace Prisma {
       name: string
       description: string | null
       firstMessage: string | null
+      followUpMessage: string | null
       apifyDatasetId: string | null
       status: $Enums.ECampaignStatus
       platform: $Enums.EPlatform
@@ -4156,6 +5572,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Campaign", 'String'>
     readonly description: FieldRef<"Campaign", 'String'>
     readonly firstMessage: FieldRef<"Campaign", 'String'>
+    readonly followUpMessage: FieldRef<"Campaign", 'String'>
     readonly apifyDatasetId: FieldRef<"Campaign", 'String'>
     readonly status: FieldRef<"Campaign", 'ECampaignStatus'>
     readonly platform: FieldRef<"Campaign", 'EPlatform'>
@@ -8038,6 +9455,11 @@ export namespace Prisma {
     campaignId: string | null
     scrapingJobId: string | null
     gmailThreadId: string | null
+    pendingFollowUpJobId: string | null
+    followUpSentAt: Date | null
+    calendlyEventId: string | null
+    calendlyStatus: $Enums.ECalendlyStatus | null
+    calendlyUri: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8062,6 +9484,11 @@ export namespace Prisma {
     campaignId: string | null
     scrapingJobId: string | null
     gmailThreadId: string | null
+    pendingFollowUpJobId: string | null
+    followUpSentAt: Date | null
+    calendlyEventId: string | null
+    calendlyStatus: $Enums.ECalendlyStatus | null
+    calendlyUri: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8086,6 +9513,11 @@ export namespace Prisma {
     campaignId: number
     scrapingJobId: number
     gmailThreadId: number
+    pendingFollowUpJobId: number
+    followUpSentAt: number
+    calendlyEventId: number
+    calendlyStatus: number
+    calendlyUri: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -8122,6 +9554,11 @@ export namespace Prisma {
     campaignId?: true
     scrapingJobId?: true
     gmailThreadId?: true
+    pendingFollowUpJobId?: true
+    followUpSentAt?: true
+    calendlyEventId?: true
+    calendlyStatus?: true
+    calendlyUri?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8146,6 +9583,11 @@ export namespace Prisma {
     campaignId?: true
     scrapingJobId?: true
     gmailThreadId?: true
+    pendingFollowUpJobId?: true
+    followUpSentAt?: true
+    calendlyEventId?: true
+    calendlyStatus?: true
+    calendlyUri?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8170,6 +9612,11 @@ export namespace Prisma {
     campaignId?: true
     scrapingJobId?: true
     gmailThreadId?: true
+    pendingFollowUpJobId?: true
+    followUpSentAt?: true
+    calendlyEventId?: true
+    calendlyStatus?: true
+    calendlyUri?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -8281,6 +9728,11 @@ export namespace Prisma {
     campaignId: string | null
     scrapingJobId: string | null
     gmailThreadId: string | null
+    pendingFollowUpJobId: string | null
+    followUpSentAt: Date | null
+    calendlyEventId: string | null
+    calendlyStatus: $Enums.ECalendlyStatus | null
+    calendlyUri: string | null
     createdAt: Date
     updatedAt: Date
     _count: LeadCountAggregateOutputType | null
@@ -8324,6 +9776,11 @@ export namespace Prisma {
     campaignId?: boolean
     scrapingJobId?: boolean
     gmailThreadId?: boolean
+    pendingFollowUpJobId?: boolean
+    followUpSentAt?: boolean
+    calendlyEventId?: boolean
+    calendlyStatus?: boolean
+    calendlyUri?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     industry?: boolean | Lead$industryArgs<ExtArgs>
@@ -8332,6 +9789,7 @@ export namespace Prisma {
     scrapingJob?: boolean | Lead$scrapingJobArgs<ExtArgs>
     outreachMessages?: boolean | Lead$outreachMessagesArgs<ExtArgs>
     meetings?: boolean | Lead$meetingsArgs<ExtArgs>
+    calendlyEvents?: boolean | Lead$calendlyEventsArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lead"]>
 
@@ -8355,6 +9813,11 @@ export namespace Prisma {
     campaignId?: boolean
     scrapingJobId?: boolean
     gmailThreadId?: boolean
+    pendingFollowUpJobId?: boolean
+    followUpSentAt?: boolean
+    calendlyEventId?: boolean
+    calendlyStatus?: boolean
+    calendlyUri?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     industry?: boolean | Lead$industryArgs<ExtArgs>
@@ -8383,6 +9846,11 @@ export namespace Prisma {
     campaignId?: boolean
     scrapingJobId?: boolean
     gmailThreadId?: boolean
+    pendingFollowUpJobId?: boolean
+    followUpSentAt?: boolean
+    calendlyEventId?: boolean
+    calendlyStatus?: boolean
+    calendlyUri?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     industry?: boolean | Lead$industryArgs<ExtArgs>
@@ -8411,11 +9879,16 @@ export namespace Prisma {
     campaignId?: boolean
     scrapingJobId?: boolean
     gmailThreadId?: boolean
+    pendingFollowUpJobId?: boolean
+    followUpSentAt?: boolean
+    calendlyEventId?: boolean
+    calendlyStatus?: boolean
+    calendlyUri?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "platform" | "platformUrl" | "profileUsername" | "followerCount" | "bio" | "imageUrl" | "website" | "totalScore" | "role" | "status" | "industryId" | "locationId" | "campaignId" | "scrapingJobId" | "gmailThreadId" | "createdAt" | "updatedAt", ExtArgs["result"]["lead"]>
+  export type LeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "platform" | "platformUrl" | "profileUsername" | "followerCount" | "bio" | "imageUrl" | "website" | "totalScore" | "role" | "status" | "industryId" | "locationId" | "campaignId" | "scrapingJobId" | "gmailThreadId" | "pendingFollowUpJobId" | "followUpSentAt" | "calendlyEventId" | "calendlyStatus" | "calendlyUri" | "createdAt" | "updatedAt", ExtArgs["result"]["lead"]>
   export type LeadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     industry?: boolean | Lead$industryArgs<ExtArgs>
     location?: boolean | Lead$locationArgs<ExtArgs>
@@ -8423,6 +9896,7 @@ export namespace Prisma {
     scrapingJob?: boolean | Lead$scrapingJobArgs<ExtArgs>
     outreachMessages?: boolean | Lead$outreachMessagesArgs<ExtArgs>
     meetings?: boolean | Lead$meetingsArgs<ExtArgs>
+    calendlyEvents?: boolean | Lead$calendlyEventsArgs<ExtArgs>
     _count?: boolean | LeadCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type LeadIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8447,6 +9921,7 @@ export namespace Prisma {
       scrapingJob: Prisma.$ScrapingJobPayload<ExtArgs> | null
       outreachMessages: Prisma.$OutreachMessagePayload<ExtArgs>[]
       meetings: Prisma.$MeetingPayload<ExtArgs>[]
+      calendlyEvents: Prisma.$CalendlyEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8468,6 +9943,11 @@ export namespace Prisma {
       campaignId: string | null
       scrapingJobId: string | null
       gmailThreadId: string | null
+      pendingFollowUpJobId: string | null
+      followUpSentAt: Date | null
+      calendlyEventId: string | null
+      calendlyStatus: $Enums.ECalendlyStatus | null
+      calendlyUri: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["lead"]>
@@ -8870,6 +10350,7 @@ export namespace Prisma {
     scrapingJob<T extends Lead$scrapingJobArgs<ExtArgs> = {}>(args?: Subset<T, Lead$scrapingJobArgs<ExtArgs>>): Prisma__ScrapingJobClient<$Result.GetResult<Prisma.$ScrapingJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     outreachMessages<T extends Lead$outreachMessagesArgs<ExtArgs> = {}>(args?: Subset<T, Lead$outreachMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutreachMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     meetings<T extends Lead$meetingsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$meetingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MeetingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    calendlyEvents<T extends Lead$calendlyEventsArgs<ExtArgs> = {}>(args?: Subset<T, Lead$calendlyEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CalendlyEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8918,6 +10399,11 @@ export namespace Prisma {
     readonly campaignId: FieldRef<"Lead", 'String'>
     readonly scrapingJobId: FieldRef<"Lead", 'String'>
     readonly gmailThreadId: FieldRef<"Lead", 'String'>
+    readonly pendingFollowUpJobId: FieldRef<"Lead", 'String'>
+    readonly followUpSentAt: FieldRef<"Lead", 'DateTime'>
+    readonly calendlyEventId: FieldRef<"Lead", 'String'>
+    readonly calendlyStatus: FieldRef<"Lead", 'ECalendlyStatus'>
+    readonly calendlyUri: FieldRef<"Lead", 'String'>
     readonly createdAt: FieldRef<"Lead", 'DateTime'>
     readonly updatedAt: FieldRef<"Lead", 'DateTime'>
   }
@@ -9437,6 +10923,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MeetingScalarFieldEnum | MeetingScalarFieldEnum[]
+  }
+
+  /**
+   * Lead.calendlyEvents
+   */
+  export type Lead$calendlyEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CalendlyEvent
+     */
+    select?: CalendlyEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CalendlyEvent
+     */
+    omit?: CalendlyEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CalendlyEventInclude<ExtArgs> | null
+    where?: CalendlyEventWhereInput
+    orderBy?: CalendlyEventOrderByWithRelationInput | CalendlyEventOrderByWithRelationInput[]
+    cursor?: CalendlyEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CalendlyEventScalarFieldEnum | CalendlyEventScalarFieldEnum[]
   }
 
   /**
@@ -12856,10 +14366,12 @@ export namespace Prisma {
 
   export type OutreachMessageAvgAggregateOutputType = {
     followUpCount: number | null
+    aiConfidence: number | null
   }
 
   export type OutreachMessageSumAggregateOutputType = {
     followUpCount: number | null
+    aiConfidence: number | null
   }
 
   export type OutreachMessageMinAggregateOutputType = {
@@ -12875,7 +14387,16 @@ export namespace Prisma {
     replyContent: string | null
     isFollowUp: boolean | null
     followUpCount: number | null
+    followUpSentAt: Date | null
+    followUpSourceMessageId: string | null
     gmailThreadId: string | null
+    providerMessageId: string | null
+    aiClassification: $Enums.EAIReplyClassification | null
+    aiConfidence: number | null
+    aiGeneratedReply: string | null
+    aiResponseStatus: $Enums.EAIResponseStatus | null
+    aiResponseSentAt: Date | null
+    isAIGenerated: boolean | null
     createdAt: Date | null
   }
 
@@ -12892,7 +14413,16 @@ export namespace Prisma {
     replyContent: string | null
     isFollowUp: boolean | null
     followUpCount: number | null
+    followUpSentAt: Date | null
+    followUpSourceMessageId: string | null
     gmailThreadId: string | null
+    providerMessageId: string | null
+    aiClassification: $Enums.EAIReplyClassification | null
+    aiConfidence: number | null
+    aiGeneratedReply: string | null
+    aiResponseStatus: $Enums.EAIResponseStatus | null
+    aiResponseSentAt: Date | null
+    isAIGenerated: boolean | null
     createdAt: Date | null
   }
 
@@ -12909,7 +14439,16 @@ export namespace Prisma {
     replyContent: number
     isFollowUp: number
     followUpCount: number
+    followUpSentAt: number
+    followUpSourceMessageId: number
     gmailThreadId: number
+    providerMessageId: number
+    aiClassification: number
+    aiConfidence: number
+    aiGeneratedReply: number
+    aiResponseStatus: number
+    aiResponseSentAt: number
+    isAIGenerated: number
     createdAt: number
     _all: number
   }
@@ -12917,10 +14456,12 @@ export namespace Prisma {
 
   export type OutreachMessageAvgAggregateInputType = {
     followUpCount?: true
+    aiConfidence?: true
   }
 
   export type OutreachMessageSumAggregateInputType = {
     followUpCount?: true
+    aiConfidence?: true
   }
 
   export type OutreachMessageMinAggregateInputType = {
@@ -12936,7 +14477,16 @@ export namespace Prisma {
     replyContent?: true
     isFollowUp?: true
     followUpCount?: true
+    followUpSentAt?: true
+    followUpSourceMessageId?: true
     gmailThreadId?: true
+    providerMessageId?: true
+    aiClassification?: true
+    aiConfidence?: true
+    aiGeneratedReply?: true
+    aiResponseStatus?: true
+    aiResponseSentAt?: true
+    isAIGenerated?: true
     createdAt?: true
   }
 
@@ -12953,7 +14503,16 @@ export namespace Prisma {
     replyContent?: true
     isFollowUp?: true
     followUpCount?: true
+    followUpSentAt?: true
+    followUpSourceMessageId?: true
     gmailThreadId?: true
+    providerMessageId?: true
+    aiClassification?: true
+    aiConfidence?: true
+    aiGeneratedReply?: true
+    aiResponseStatus?: true
+    aiResponseSentAt?: true
+    isAIGenerated?: true
     createdAt?: true
   }
 
@@ -12970,7 +14529,16 @@ export namespace Prisma {
     replyContent?: true
     isFollowUp?: true
     followUpCount?: true
+    followUpSentAt?: true
+    followUpSourceMessageId?: true
     gmailThreadId?: true
+    providerMessageId?: true
+    aiClassification?: true
+    aiConfidence?: true
+    aiGeneratedReply?: true
+    aiResponseStatus?: true
+    aiResponseSentAt?: true
+    isAIGenerated?: true
     createdAt?: true
     _all?: true
   }
@@ -13074,7 +14642,16 @@ export namespace Prisma {
     replyContent: string | null
     isFollowUp: boolean
     followUpCount: number
+    followUpSentAt: Date | null
+    followUpSourceMessageId: string | null
     gmailThreadId: string | null
+    providerMessageId: string | null
+    aiClassification: $Enums.EAIReplyClassification | null
+    aiConfidence: number | null
+    aiGeneratedReply: string | null
+    aiResponseStatus: $Enums.EAIResponseStatus | null
+    aiResponseSentAt: Date | null
+    isAIGenerated: boolean
     createdAt: Date
     _count: OutreachMessageCountAggregateOutputType | null
     _avg: OutreachMessageAvgAggregateOutputType | null
@@ -13110,7 +14687,16 @@ export namespace Prisma {
     replyContent?: boolean
     isFollowUp?: boolean
     followUpCount?: boolean
+    followUpSentAt?: boolean
+    followUpSourceMessageId?: boolean
     gmailThreadId?: boolean
+    providerMessageId?: boolean
+    aiClassification?: boolean
+    aiConfidence?: boolean
+    aiGeneratedReply?: boolean
+    aiResponseStatus?: boolean
+    aiResponseSentAt?: boolean
+    isAIGenerated?: boolean
     createdAt?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
     campaign?: boolean | CampaignDefaultArgs<ExtArgs>
@@ -13129,7 +14715,16 @@ export namespace Prisma {
     replyContent?: boolean
     isFollowUp?: boolean
     followUpCount?: boolean
+    followUpSentAt?: boolean
+    followUpSourceMessageId?: boolean
     gmailThreadId?: boolean
+    providerMessageId?: boolean
+    aiClassification?: boolean
+    aiConfidence?: boolean
+    aiGeneratedReply?: boolean
+    aiResponseStatus?: boolean
+    aiResponseSentAt?: boolean
+    isAIGenerated?: boolean
     createdAt?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
     campaign?: boolean | CampaignDefaultArgs<ExtArgs>
@@ -13148,7 +14743,16 @@ export namespace Prisma {
     replyContent?: boolean
     isFollowUp?: boolean
     followUpCount?: boolean
+    followUpSentAt?: boolean
+    followUpSourceMessageId?: boolean
     gmailThreadId?: boolean
+    providerMessageId?: boolean
+    aiClassification?: boolean
+    aiConfidence?: boolean
+    aiGeneratedReply?: boolean
+    aiResponseStatus?: boolean
+    aiResponseSentAt?: boolean
+    isAIGenerated?: boolean
     createdAt?: boolean
     lead?: boolean | LeadDefaultArgs<ExtArgs>
     campaign?: boolean | CampaignDefaultArgs<ExtArgs>
@@ -13167,11 +14771,20 @@ export namespace Prisma {
     replyContent?: boolean
     isFollowUp?: boolean
     followUpCount?: boolean
+    followUpSentAt?: boolean
+    followUpSourceMessageId?: boolean
     gmailThreadId?: boolean
+    providerMessageId?: boolean
+    aiClassification?: boolean
+    aiConfidence?: boolean
+    aiGeneratedReply?: boolean
+    aiResponseStatus?: boolean
+    aiResponseSentAt?: boolean
+    isAIGenerated?: boolean
     createdAt?: boolean
   }
 
-  export type OutreachMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "leadId" | "campaignId" | "type" | "senderType" | "subject" | "body" | "sentAt" | "replyStatus" | "replyContent" | "isFollowUp" | "followUpCount" | "gmailThreadId" | "createdAt", ExtArgs["result"]["outreachMessage"]>
+  export type OutreachMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "leadId" | "campaignId" | "type" | "senderType" | "subject" | "body" | "sentAt" | "replyStatus" | "replyContent" | "isFollowUp" | "followUpCount" | "followUpSentAt" | "followUpSourceMessageId" | "gmailThreadId" | "providerMessageId" | "aiClassification" | "aiConfidence" | "aiGeneratedReply" | "aiResponseStatus" | "aiResponseSentAt" | "isAIGenerated" | "createdAt", ExtArgs["result"]["outreachMessage"]>
   export type OutreachMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     lead?: boolean | LeadDefaultArgs<ExtArgs>
     campaign?: boolean | CampaignDefaultArgs<ExtArgs>
@@ -13204,7 +14817,22 @@ export namespace Prisma {
       replyContent: string | null
       isFollowUp: boolean
       followUpCount: number
+      followUpSentAt: Date | null
+      followUpSourceMessageId: string | null
       gmailThreadId: string | null
+      /**
+       * Resend email id (e.g. used with webhooks / support)
+       */
+      providerMessageId: string | null
+      /**
+       * AI Classification fields
+       */
+      aiClassification: $Enums.EAIReplyClassification | null
+      aiConfidence: number | null
+      aiGeneratedReply: string | null
+      aiResponseStatus: $Enums.EAIResponseStatus | null
+      aiResponseSentAt: Date | null
+      isAIGenerated: boolean
       createdAt: Date
     }, ExtArgs["result"]["outreachMessage"]>
     composites: {}
@@ -13643,7 +15271,16 @@ export namespace Prisma {
     readonly replyContent: FieldRef<"OutreachMessage", 'String'>
     readonly isFollowUp: FieldRef<"OutreachMessage", 'Boolean'>
     readonly followUpCount: FieldRef<"OutreachMessage", 'Int'>
+    readonly followUpSentAt: FieldRef<"OutreachMessage", 'DateTime'>
+    readonly followUpSourceMessageId: FieldRef<"OutreachMessage", 'String'>
     readonly gmailThreadId: FieldRef<"OutreachMessage", 'String'>
+    readonly providerMessageId: FieldRef<"OutreachMessage", 'String'>
+    readonly aiClassification: FieldRef<"OutreachMessage", 'EAIReplyClassification'>
+    readonly aiConfidence: FieldRef<"OutreachMessage", 'Float'>
+    readonly aiGeneratedReply: FieldRef<"OutreachMessage", 'String'>
+    readonly aiResponseStatus: FieldRef<"OutreachMessage", 'EAIResponseStatus'>
+    readonly aiResponseSentAt: FieldRef<"OutreachMessage", 'DateTime'>
+    readonly isAIGenerated: FieldRef<"OutreachMessage", 'Boolean'>
     readonly createdAt: FieldRef<"OutreachMessage", 'DateTime'>
   }
     
@@ -16466,11 +18103,35 @@ export namespace Prisma {
   export type AIPromptConfigScalarFieldEnum = (typeof AIPromptConfigScalarFieldEnum)[keyof typeof AIPromptConfigScalarFieldEnum]
 
 
+  export const CalendlyEventScalarFieldEnum: {
+    id: 'id',
+    leadId: 'leadId',
+    eventId: 'eventId',
+    eventType: 'eventType',
+    title: 'title',
+    description: 'description',
+    startTime: 'startTime',
+    endTime: 'endTime',
+    status: 'status',
+    calendlyUri: 'calendlyUri',
+    meetingLink: 'meetingLink',
+    location: 'location',
+    attendees: 'attendees',
+    isRescheduled: 'isRescheduled',
+    rescheduledFrom: 'rescheduledFrom',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CalendlyEventScalarFieldEnum = (typeof CalendlyEventScalarFieldEnum)[keyof typeof CalendlyEventScalarFieldEnum]
+
+
   export const CampaignScalarFieldEnum: {
     id: 'id',
     name: 'name',
     description: 'description',
     firstMessage: 'firstMessage',
+    followUpMessage: 'followUpMessage',
     apifyDatasetId: 'apifyDatasetId',
     status: 'status',
     platform: 'platform',
@@ -16546,6 +18207,11 @@ export namespace Prisma {
     campaignId: 'campaignId',
     scrapingJobId: 'scrapingJobId',
     gmailThreadId: 'gmailThreadId',
+    pendingFollowUpJobId: 'pendingFollowUpJobId',
+    followUpSentAt: 'followUpSentAt',
+    calendlyEventId: 'calendlyEventId',
+    calendlyStatus: 'calendlyStatus',
+    calendlyUri: 'calendlyUri',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -16610,7 +18276,16 @@ export namespace Prisma {
     replyContent: 'replyContent',
     isFollowUp: 'isFollowUp',
     followUpCount: 'followUpCount',
+    followUpSentAt: 'followUpSentAt',
+    followUpSourceMessageId: 'followUpSourceMessageId',
     gmailThreadId: 'gmailThreadId',
+    providerMessageId: 'providerMessageId',
+    aiClassification: 'aiClassification',
+    aiConfidence: 'aiConfidence',
+    aiGeneratedReply: 'aiGeneratedReply',
+    aiResponseStatus: 'aiResponseStatus',
+    aiResponseSentAt: 'aiResponseSentAt',
+    isAIGenerated: 'isAIGenerated',
     createdAt: 'createdAt'
   };
 
@@ -16716,6 +18391,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ECalendlyEventType'
+   */
+  export type EnumECalendlyEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ECalendlyEventType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ECalendlyEventType[]'
+   */
+  export type ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ECalendlyEventType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ECalendlyStatus'
+   */
+  export type EnumECalendlyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ECalendlyStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ECalendlyStatus[]'
+   */
+  export type ListEnumECalendlyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ECalendlyStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ECampaignStatus'
    */
   export type EnumECampaignStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ECampaignStatus'>
@@ -16740,20 +18457,6 @@ export namespace Prisma {
    * Reference to a field of type 'EPlatform[]'
    */
   export type ListEnumEPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EPlatform[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -16856,6 +18559,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'EAIReplyClassification'
+   */
+  export type EnumEAIReplyClassificationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EAIReplyClassification'>
+    
+
+
+  /**
+   * Reference to a field of type 'EAIReplyClassification[]'
+   */
+  export type ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EAIReplyClassification[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EAIResponseStatus'
+   */
+  export type EnumEAIResponseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EAIResponseStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EAIResponseStatus[]'
+   */
+  export type ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EAIResponseStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'EScrapingJobStatus'
    */
   export type EnumEScrapingJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EScrapingJobStatus'>
@@ -16948,6 +18679,123 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"AIPromptConfig"> | Date | string
   }
 
+  export type CalendlyEventWhereInput = {
+    AND?: CalendlyEventWhereInput | CalendlyEventWhereInput[]
+    OR?: CalendlyEventWhereInput[]
+    NOT?: CalendlyEventWhereInput | CalendlyEventWhereInput[]
+    id?: StringFilter<"CalendlyEvent"> | string
+    leadId?: StringFilter<"CalendlyEvent"> | string
+    eventId?: StringFilter<"CalendlyEvent"> | string
+    eventType?: EnumECalendlyEventTypeFilter<"CalendlyEvent"> | $Enums.ECalendlyEventType
+    title?: StringFilter<"CalendlyEvent"> | string
+    description?: StringNullableFilter<"CalendlyEvent"> | string | null
+    startTime?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    endTime?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    status?: EnumECalendlyStatusFilter<"CalendlyEvent"> | $Enums.ECalendlyStatus
+    calendlyUri?: StringNullableFilter<"CalendlyEvent"> | string | null
+    meetingLink?: StringNullableFilter<"CalendlyEvent"> | string | null
+    location?: StringNullableFilter<"CalendlyEvent"> | string | null
+    attendees?: IntFilter<"CalendlyEvent"> | number
+    isRescheduled?: BoolFilter<"CalendlyEvent"> | boolean
+    rescheduledFrom?: StringNullableFilter<"CalendlyEvent"> | string | null
+    createdAt?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+  }
+
+  export type CalendlyEventOrderByWithRelationInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    calendlyUri?: SortOrderInput | SortOrder
+    meetingLink?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    attendees?: SortOrder
+    isRescheduled?: SortOrder
+    rescheduledFrom?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    lead?: LeadOrderByWithRelationInput
+  }
+
+  export type CalendlyEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    eventId?: string
+    AND?: CalendlyEventWhereInput | CalendlyEventWhereInput[]
+    OR?: CalendlyEventWhereInput[]
+    NOT?: CalendlyEventWhereInput | CalendlyEventWhereInput[]
+    leadId?: StringFilter<"CalendlyEvent"> | string
+    eventType?: EnumECalendlyEventTypeFilter<"CalendlyEvent"> | $Enums.ECalendlyEventType
+    title?: StringFilter<"CalendlyEvent"> | string
+    description?: StringNullableFilter<"CalendlyEvent"> | string | null
+    startTime?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    endTime?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    status?: EnumECalendlyStatusFilter<"CalendlyEvent"> | $Enums.ECalendlyStatus
+    calendlyUri?: StringNullableFilter<"CalendlyEvent"> | string | null
+    meetingLink?: StringNullableFilter<"CalendlyEvent"> | string | null
+    location?: StringNullableFilter<"CalendlyEvent"> | string | null
+    attendees?: IntFilter<"CalendlyEvent"> | number
+    isRescheduled?: BoolFilter<"CalendlyEvent"> | boolean
+    rescheduledFrom?: StringNullableFilter<"CalendlyEvent"> | string | null
+    createdAt?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
+  }, "id" | "eventId">
+
+  export type CalendlyEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    calendlyUri?: SortOrderInput | SortOrder
+    meetingLink?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    attendees?: SortOrder
+    isRescheduled?: SortOrder
+    rescheduledFrom?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CalendlyEventCountOrderByAggregateInput
+    _avg?: CalendlyEventAvgOrderByAggregateInput
+    _max?: CalendlyEventMaxOrderByAggregateInput
+    _min?: CalendlyEventMinOrderByAggregateInput
+    _sum?: CalendlyEventSumOrderByAggregateInput
+  }
+
+  export type CalendlyEventScalarWhereWithAggregatesInput = {
+    AND?: CalendlyEventScalarWhereWithAggregatesInput | CalendlyEventScalarWhereWithAggregatesInput[]
+    OR?: CalendlyEventScalarWhereWithAggregatesInput[]
+    NOT?: CalendlyEventScalarWhereWithAggregatesInput | CalendlyEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CalendlyEvent"> | string
+    leadId?: StringWithAggregatesFilter<"CalendlyEvent"> | string
+    eventId?: StringWithAggregatesFilter<"CalendlyEvent"> | string
+    eventType?: EnumECalendlyEventTypeWithAggregatesFilter<"CalendlyEvent"> | $Enums.ECalendlyEventType
+    title?: StringWithAggregatesFilter<"CalendlyEvent"> | string
+    description?: StringNullableWithAggregatesFilter<"CalendlyEvent"> | string | null
+    startTime?: DateTimeWithAggregatesFilter<"CalendlyEvent"> | Date | string
+    endTime?: DateTimeWithAggregatesFilter<"CalendlyEvent"> | Date | string
+    status?: EnumECalendlyStatusWithAggregatesFilter<"CalendlyEvent"> | $Enums.ECalendlyStatus
+    calendlyUri?: StringNullableWithAggregatesFilter<"CalendlyEvent"> | string | null
+    meetingLink?: StringNullableWithAggregatesFilter<"CalendlyEvent"> | string | null
+    location?: StringNullableWithAggregatesFilter<"CalendlyEvent"> | string | null
+    attendees?: IntWithAggregatesFilter<"CalendlyEvent"> | number
+    isRescheduled?: BoolWithAggregatesFilter<"CalendlyEvent"> | boolean
+    rescheduledFrom?: StringNullableWithAggregatesFilter<"CalendlyEvent"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CalendlyEvent"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CalendlyEvent"> | Date | string
+  }
+
   export type CampaignWhereInput = {
     AND?: CampaignWhereInput | CampaignWhereInput[]
     OR?: CampaignWhereInput[]
@@ -16956,6 +18804,7 @@ export namespace Prisma {
     name?: StringFilter<"Campaign"> | string
     description?: StringNullableFilter<"Campaign"> | string | null
     firstMessage?: StringNullableFilter<"Campaign"> | string | null
+    followUpMessage?: StringNullableFilter<"Campaign"> | string | null
     apifyDatasetId?: StringNullableFilter<"Campaign"> | string | null
     status?: EnumECampaignStatusFilter<"Campaign"> | $Enums.ECampaignStatus
     platform?: EnumEPlatformFilter<"Campaign"> | $Enums.EPlatform
@@ -16982,6 +18831,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     firstMessage?: SortOrderInput | SortOrder
+    followUpMessage?: SortOrderInput | SortOrder
     apifyDatasetId?: SortOrderInput | SortOrder
     status?: SortOrder
     platform?: SortOrder
@@ -17011,6 +18861,7 @@ export namespace Prisma {
     name?: StringFilter<"Campaign"> | string
     description?: StringNullableFilter<"Campaign"> | string | null
     firstMessage?: StringNullableFilter<"Campaign"> | string | null
+    followUpMessage?: StringNullableFilter<"Campaign"> | string | null
     apifyDatasetId?: StringNullableFilter<"Campaign"> | string | null
     status?: EnumECampaignStatusFilter<"Campaign"> | $Enums.ECampaignStatus
     platform?: EnumEPlatformFilter<"Campaign"> | $Enums.EPlatform
@@ -17037,6 +18888,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrderInput | SortOrder
     firstMessage?: SortOrderInput | SortOrder
+    followUpMessage?: SortOrderInput | SortOrder
     apifyDatasetId?: SortOrderInput | SortOrder
     status?: SortOrder
     platform?: SortOrder
@@ -17064,6 +18916,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Campaign"> | string
     description?: StringNullableWithAggregatesFilter<"Campaign"> | string | null
     firstMessage?: StringNullableWithAggregatesFilter<"Campaign"> | string | null
+    followUpMessage?: StringNullableWithAggregatesFilter<"Campaign"> | string | null
     apifyDatasetId?: StringNullableWithAggregatesFilter<"Campaign"> | string | null
     status?: EnumECampaignStatusWithAggregatesFilter<"Campaign"> | $Enums.ECampaignStatus
     platform?: EnumEPlatformWithAggregatesFilter<"Campaign"> | $Enums.EPlatform
@@ -17296,6 +19149,11 @@ export namespace Prisma {
     campaignId?: StringNullableFilter<"Lead"> | string | null
     scrapingJobId?: StringNullableFilter<"Lead"> | string | null
     gmailThreadId?: StringNullableFilter<"Lead"> | string | null
+    pendingFollowUpJobId?: StringNullableFilter<"Lead"> | string | null
+    followUpSentAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    calendlyEventId?: StringNullableFilter<"Lead"> | string | null
+    calendlyStatus?: EnumECalendlyStatusNullableFilter<"Lead"> | $Enums.ECalendlyStatus | null
+    calendlyUri?: StringNullableFilter<"Lead"> | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
     industry?: XOR<IndustryNullableScalarRelationFilter, IndustryWhereInput> | null
@@ -17304,6 +19162,7 @@ export namespace Prisma {
     scrapingJob?: XOR<ScrapingJobNullableScalarRelationFilter, ScrapingJobWhereInput> | null
     outreachMessages?: OutreachMessageListRelationFilter
     meetings?: MeetingListRelationFilter
+    calendlyEvents?: CalendlyEventListRelationFilter
   }
 
   export type LeadOrderByWithRelationInput = {
@@ -17326,6 +19185,11 @@ export namespace Prisma {
     campaignId?: SortOrderInput | SortOrder
     scrapingJobId?: SortOrderInput | SortOrder
     gmailThreadId?: SortOrderInput | SortOrder
+    pendingFollowUpJobId?: SortOrderInput | SortOrder
+    followUpSentAt?: SortOrderInput | SortOrder
+    calendlyEventId?: SortOrderInput | SortOrder
+    calendlyStatus?: SortOrderInput | SortOrder
+    calendlyUri?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     industry?: IndustryOrderByWithRelationInput
@@ -17334,11 +19198,13 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobOrderByWithRelationInput
     outreachMessages?: OutreachMessageOrderByRelationAggregateInput
     meetings?: MeetingOrderByRelationAggregateInput
+    calendlyEvents?: CalendlyEventOrderByRelationAggregateInput
   }
 
   export type LeadWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     gmailThreadId?: string
+    calendlyEventId?: string
     AND?: LeadWhereInput | LeadWhereInput[]
     OR?: LeadWhereInput[]
     NOT?: LeadWhereInput | LeadWhereInput[]
@@ -17359,6 +19225,10 @@ export namespace Prisma {
     locationId?: StringNullableFilter<"Lead"> | string | null
     campaignId?: StringNullableFilter<"Lead"> | string | null
     scrapingJobId?: StringNullableFilter<"Lead"> | string | null
+    pendingFollowUpJobId?: StringNullableFilter<"Lead"> | string | null
+    followUpSentAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    calendlyStatus?: EnumECalendlyStatusNullableFilter<"Lead"> | $Enums.ECalendlyStatus | null
+    calendlyUri?: StringNullableFilter<"Lead"> | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
     industry?: XOR<IndustryNullableScalarRelationFilter, IndustryWhereInput> | null
@@ -17367,7 +19237,8 @@ export namespace Prisma {
     scrapingJob?: XOR<ScrapingJobNullableScalarRelationFilter, ScrapingJobWhereInput> | null
     outreachMessages?: OutreachMessageListRelationFilter
     meetings?: MeetingListRelationFilter
-  }, "id" | "gmailThreadId">
+    calendlyEvents?: CalendlyEventListRelationFilter
+  }, "id" | "gmailThreadId" | "calendlyEventId">
 
   export type LeadOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17389,6 +19260,11 @@ export namespace Prisma {
     campaignId?: SortOrderInput | SortOrder
     scrapingJobId?: SortOrderInput | SortOrder
     gmailThreadId?: SortOrderInput | SortOrder
+    pendingFollowUpJobId?: SortOrderInput | SortOrder
+    followUpSentAt?: SortOrderInput | SortOrder
+    calendlyEventId?: SortOrderInput | SortOrder
+    calendlyStatus?: SortOrderInput | SortOrder
+    calendlyUri?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: LeadCountOrderByAggregateInput
@@ -17421,6 +19297,11 @@ export namespace Prisma {
     campaignId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     scrapingJobId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     gmailThreadId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+    pendingFollowUpJobId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+    followUpSentAt?: DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
+    calendlyEventId?: StringNullableWithAggregatesFilter<"Lead"> | string | null
+    calendlyStatus?: EnumECalendlyStatusNullableWithAggregatesFilter<"Lead"> | $Enums.ECalendlyStatus | null
+    calendlyUri?: StringNullableWithAggregatesFilter<"Lead"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Lead"> | Date | string
   }
@@ -17668,7 +19549,16 @@ export namespace Prisma {
     replyContent?: StringNullableFilter<"OutreachMessage"> | string | null
     isFollowUp?: BoolFilter<"OutreachMessage"> | boolean
     followUpCount?: IntFilter<"OutreachMessage"> | number
+    followUpSentAt?: DateTimeNullableFilter<"OutreachMessage"> | Date | string | null
+    followUpSourceMessageId?: StringNullableFilter<"OutreachMessage"> | string | null
     gmailThreadId?: StringNullableFilter<"OutreachMessage"> | string | null
+    providerMessageId?: StringNullableFilter<"OutreachMessage"> | string | null
+    aiClassification?: EnumEAIReplyClassificationNullableFilter<"OutreachMessage"> | $Enums.EAIReplyClassification | null
+    aiConfidence?: FloatNullableFilter<"OutreachMessage"> | number | null
+    aiGeneratedReply?: StringNullableFilter<"OutreachMessage"> | string | null
+    aiResponseStatus?: EnumEAIResponseStatusNullableFilter<"OutreachMessage"> | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: DateTimeNullableFilter<"OutreachMessage"> | Date | string | null
+    isAIGenerated?: BoolFilter<"OutreachMessage"> | boolean
     createdAt?: DateTimeFilter<"OutreachMessage"> | Date | string
     lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
     campaign?: XOR<CampaignScalarRelationFilter, CampaignWhereInput>
@@ -17687,7 +19577,16 @@ export namespace Prisma {
     replyContent?: SortOrderInput | SortOrder
     isFollowUp?: SortOrder
     followUpCount?: SortOrder
+    followUpSentAt?: SortOrderInput | SortOrder
+    followUpSourceMessageId?: SortOrderInput | SortOrder
     gmailThreadId?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    aiClassification?: SortOrderInput | SortOrder
+    aiConfidence?: SortOrderInput | SortOrder
+    aiGeneratedReply?: SortOrderInput | SortOrder
+    aiResponseStatus?: SortOrderInput | SortOrder
+    aiResponseSentAt?: SortOrderInput | SortOrder
+    isAIGenerated?: SortOrder
     createdAt?: SortOrder
     lead?: LeadOrderByWithRelationInput
     campaign?: CampaignOrderByWithRelationInput
@@ -17695,6 +19594,7 @@ export namespace Prisma {
 
   export type OutreachMessageWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    followUpSourceMessageId?: string
     AND?: OutreachMessageWhereInput | OutreachMessageWhereInput[]
     OR?: OutreachMessageWhereInput[]
     NOT?: OutreachMessageWhereInput | OutreachMessageWhereInput[]
@@ -17709,11 +19609,19 @@ export namespace Prisma {
     replyContent?: StringNullableFilter<"OutreachMessage"> | string | null
     isFollowUp?: BoolFilter<"OutreachMessage"> | boolean
     followUpCount?: IntFilter<"OutreachMessage"> | number
+    followUpSentAt?: DateTimeNullableFilter<"OutreachMessage"> | Date | string | null
     gmailThreadId?: StringNullableFilter<"OutreachMessage"> | string | null
+    providerMessageId?: StringNullableFilter<"OutreachMessage"> | string | null
+    aiClassification?: EnumEAIReplyClassificationNullableFilter<"OutreachMessage"> | $Enums.EAIReplyClassification | null
+    aiConfidence?: FloatNullableFilter<"OutreachMessage"> | number | null
+    aiGeneratedReply?: StringNullableFilter<"OutreachMessage"> | string | null
+    aiResponseStatus?: EnumEAIResponseStatusNullableFilter<"OutreachMessage"> | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: DateTimeNullableFilter<"OutreachMessage"> | Date | string | null
+    isAIGenerated?: BoolFilter<"OutreachMessage"> | boolean
     createdAt?: DateTimeFilter<"OutreachMessage"> | Date | string
     lead?: XOR<LeadScalarRelationFilter, LeadWhereInput>
     campaign?: XOR<CampaignScalarRelationFilter, CampaignWhereInput>
-  }, "id">
+  }, "id" | "followUpSourceMessageId">
 
   export type OutreachMessageOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17728,7 +19636,16 @@ export namespace Prisma {
     replyContent?: SortOrderInput | SortOrder
     isFollowUp?: SortOrder
     followUpCount?: SortOrder
+    followUpSentAt?: SortOrderInput | SortOrder
+    followUpSourceMessageId?: SortOrderInput | SortOrder
     gmailThreadId?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    aiClassification?: SortOrderInput | SortOrder
+    aiConfidence?: SortOrderInput | SortOrder
+    aiGeneratedReply?: SortOrderInput | SortOrder
+    aiResponseStatus?: SortOrderInput | SortOrder
+    aiResponseSentAt?: SortOrderInput | SortOrder
+    isAIGenerated?: SortOrder
     createdAt?: SortOrder
     _count?: OutreachMessageCountOrderByAggregateInput
     _avg?: OutreachMessageAvgOrderByAggregateInput
@@ -17753,7 +19670,16 @@ export namespace Prisma {
     replyContent?: StringNullableWithAggregatesFilter<"OutreachMessage"> | string | null
     isFollowUp?: BoolWithAggregatesFilter<"OutreachMessage"> | boolean
     followUpCount?: IntWithAggregatesFilter<"OutreachMessage"> | number
+    followUpSentAt?: DateTimeNullableWithAggregatesFilter<"OutreachMessage"> | Date | string | null
+    followUpSourceMessageId?: StringNullableWithAggregatesFilter<"OutreachMessage"> | string | null
     gmailThreadId?: StringNullableWithAggregatesFilter<"OutreachMessage"> | string | null
+    providerMessageId?: StringNullableWithAggregatesFilter<"OutreachMessage"> | string | null
+    aiClassification?: EnumEAIReplyClassificationNullableWithAggregatesFilter<"OutreachMessage"> | $Enums.EAIReplyClassification | null
+    aiConfidence?: FloatNullableWithAggregatesFilter<"OutreachMessage"> | number | null
+    aiGeneratedReply?: StringNullableWithAggregatesFilter<"OutreachMessage"> | string | null
+    aiResponseStatus?: EnumEAIResponseStatusNullableWithAggregatesFilter<"OutreachMessage"> | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: DateTimeNullableWithAggregatesFilter<"OutreachMessage"> | Date | string | null
+    isAIGenerated?: BoolWithAggregatesFilter<"OutreachMessage"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"OutreachMessage"> | Date | string
   }
 
@@ -18005,11 +19931,151 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CalendlyEventCreateInput = {
+    id?: string
+    eventId: string
+    eventType: $Enums.ECalendlyEventType
+    title: string
+    description?: string | null
+    startTime: Date | string
+    endTime: Date | string
+    status?: $Enums.ECalendlyStatus
+    calendlyUri?: string | null
+    meetingLink?: string | null
+    location?: string | null
+    attendees?: number
+    isRescheduled?: boolean
+    rescheduledFrom?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lead: LeadCreateNestedOneWithoutCalendlyEventsInput
+  }
+
+  export type CalendlyEventUncheckedCreateInput = {
+    id?: string
+    leadId: string
+    eventId: string
+    eventType: $Enums.ECalendlyEventType
+    title: string
+    description?: string | null
+    startTime: Date | string
+    endTime: Date | string
+    status?: $Enums.ECalendlyStatus
+    calendlyUri?: string | null
+    meetingLink?: string | null
+    location?: string | null
+    attendees?: number
+    isRescheduled?: boolean
+    rescheduledFrom?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CalendlyEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: EnumECalendlyEventTypeFieldUpdateOperationsInput | $Enums.ECalendlyEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: IntFieldUpdateOperationsInput | number
+    isRescheduled?: BoolFieldUpdateOperationsInput | boolean
+    rescheduledFrom?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lead?: LeadUpdateOneRequiredWithoutCalendlyEventsNestedInput
+  }
+
+  export type CalendlyEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadId?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: EnumECalendlyEventTypeFieldUpdateOperationsInput | $Enums.ECalendlyEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: IntFieldUpdateOperationsInput | number
+    isRescheduled?: BoolFieldUpdateOperationsInput | boolean
+    rescheduledFrom?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendlyEventCreateManyInput = {
+    id?: string
+    leadId: string
+    eventId: string
+    eventType: $Enums.ECalendlyEventType
+    title: string
+    description?: string | null
+    startTime: Date | string
+    endTime: Date | string
+    status?: $Enums.ECalendlyStatus
+    calendlyUri?: string | null
+    meetingLink?: string | null
+    location?: string | null
+    attendees?: number
+    isRescheduled?: boolean
+    rescheduledFrom?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CalendlyEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: EnumECalendlyEventTypeFieldUpdateOperationsInput | $Enums.ECalendlyEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: IntFieldUpdateOperationsInput | number
+    isRescheduled?: BoolFieldUpdateOperationsInput | boolean
+    rescheduledFrom?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendlyEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadId?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: EnumECalendlyEventTypeFieldUpdateOperationsInput | $Enums.ECalendlyEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: IntFieldUpdateOperationsInput | number
+    isRescheduled?: BoolFieldUpdateOperationsInput | boolean
+    rescheduledFrom?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CampaignCreateInput = {
     id?: string
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -18033,6 +20099,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -18056,6 +20123,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -18079,6 +20147,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -18102,6 +20171,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -18121,6 +20191,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -18137,6 +20208,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -18381,6 +20453,11 @@ export namespace Prisma {
     role?: string | null
     status?: $Enums.ELeadStatus
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     industry?: IndustryCreateNestedOneWithoutLeadsInput
@@ -18389,6 +20466,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobCreateNestedOneWithoutLeadsInput
     outreachMessages?: OutreachMessageCreateNestedManyWithoutLeadInput
     meetings?: MeetingCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateInput = {
@@ -18411,10 +20489,16 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     outreachMessages?: OutreachMessageUncheckedCreateNestedManyWithoutLeadInput
     meetings?: MeetingUncheckedCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUpdateInput = {
@@ -18433,6 +20517,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneWithoutLeadsNestedInput
@@ -18441,6 +20530,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobUpdateOneWithoutLeadsNestedInput
     outreachMessages?: OutreachMessageUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateInput = {
@@ -18463,10 +20553,16 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outreachMessages?: OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUncheckedUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadCreateManyInput = {
@@ -18489,6 +20585,11 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -18509,6 +20610,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18533,6 +20639,11 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18798,7 +20909,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
     lead: LeadCreateNestedOneWithoutOutreachMessagesInput
     campaign: CampaignCreateNestedOneWithoutOutreachMessagesInput
@@ -18817,7 +20937,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
   }
 
@@ -18832,7 +20961,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneRequiredWithoutOutreachMessagesNestedInput
     campaign?: CampaignUpdateOneRequiredWithoutOutreachMessagesNestedInput
@@ -18851,7 +20989,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18868,7 +21015,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
   }
 
@@ -18883,7 +21039,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18900,7 +21065,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -19212,6 +21386,13 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type EnumECalendlyEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyEventType | EnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyEventTypeFilter<$PrismaModel> | $Enums.ECalendlyEventType
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -19227,6 +21408,156 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type EnumECalendlyStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyStatusFilter<$PrismaModel> | $Enums.ECalendlyStatus
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type LeadScalarRelationFilter = {
+    is?: LeadWhereInput
+    isNot?: LeadWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type CalendlyEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    calendlyUri?: SortOrder
+    meetingLink?: SortOrder
+    location?: SortOrder
+    attendees?: SortOrder
+    isRescheduled?: SortOrder
+    rescheduledFrom?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CalendlyEventAvgOrderByAggregateInput = {
+    attendees?: SortOrder
+  }
+
+  export type CalendlyEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    calendlyUri?: SortOrder
+    meetingLink?: SortOrder
+    location?: SortOrder
+    attendees?: SortOrder
+    isRescheduled?: SortOrder
+    rescheduledFrom?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CalendlyEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    leadId?: SortOrder
+    eventId?: SortOrder
+    eventType?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    calendlyUri?: SortOrder
+    meetingLink?: SortOrder
+    location?: SortOrder
+    attendees?: SortOrder
+    isRescheduled?: SortOrder
+    rescheduledFrom?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CalendlyEventSumOrderByAggregateInput = {
+    attendees?: SortOrder
+  }
+
+  export type EnumECalendlyEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyEventType | EnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.ECalendlyEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumECalendlyEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumECalendlyEventTypeFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumECalendlyStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyStatusWithAggregatesFilter<$PrismaModel> | $Enums.ECalendlyStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumECalendlyStatusFilter<$PrismaModel>
+    _max?: NestedEnumECalendlyStatusFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type EnumECampaignStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ECampaignStatus | EnumECampaignStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
@@ -19239,17 +21570,6 @@ export namespace Prisma {
     in?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
     notIn?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
     not?: NestedEnumEPlatformFilter<$PrismaModel> | $Enums.EPlatform
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type IndustryNullableScalarRelationFilter = {
@@ -19291,11 +21611,6 @@ export namespace Prisma {
     none?: MeetingWhereInput
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type LeadOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -19317,6 +21632,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     firstMessage?: SortOrder
+    followUpMessage?: SortOrder
     apifyDatasetId?: SortOrder
     status?: SortOrder
     platform?: SortOrder
@@ -19340,6 +21656,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     firstMessage?: SortOrder
+    followUpMessage?: SortOrder
     apifyDatasetId?: SortOrder
     status?: SortOrder
     platform?: SortOrder
@@ -19359,6 +21676,7 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     firstMessage?: SortOrder
+    followUpMessage?: SortOrder
     apifyDatasetId?: SortOrder
     status?: SortOrder
     platform?: SortOrder
@@ -19375,24 +21693,6 @@ export namespace Prisma {
 
   export type CampaignSumOrderByAggregateInput = {
     followerThreshold?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type EnumECampaignStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -19413,22 +21713,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEPlatformFilter<$PrismaModel>
     _max?: NestedEnumEPlatformFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type ConfigCountOrderByAggregateInput = {
@@ -19564,6 +21848,24 @@ export namespace Prisma {
     not?: NestedEnumELeadStatusFilter<$PrismaModel> | $Enums.ELeadStatus
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type EnumECalendlyStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumECalendlyStatusNullableFilter<$PrismaModel> | $Enums.ECalendlyStatus | null
+  }
+
   export type CampaignNullableScalarRelationFilter = {
     is?: CampaignWhereInput | null
     isNot?: CampaignWhereInput | null
@@ -19572,6 +21874,16 @@ export namespace Prisma {
   export type ScrapingJobNullableScalarRelationFilter = {
     is?: ScrapingJobWhereInput | null
     isNot?: ScrapingJobWhereInput | null
+  }
+
+  export type CalendlyEventListRelationFilter = {
+    every?: CalendlyEventWhereInput
+    some?: CalendlyEventWhereInput
+    none?: CalendlyEventWhereInput
+  }
+
+  export type CalendlyEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type LeadCountOrderByAggregateInput = {
@@ -19594,6 +21906,11 @@ export namespace Prisma {
     campaignId?: SortOrder
     scrapingJobId?: SortOrder
     gmailThreadId?: SortOrder
+    pendingFollowUpJobId?: SortOrder
+    followUpSentAt?: SortOrder
+    calendlyEventId?: SortOrder
+    calendlyStatus?: SortOrder
+    calendlyUri?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19623,6 +21940,11 @@ export namespace Prisma {
     campaignId?: SortOrder
     scrapingJobId?: SortOrder
     gmailThreadId?: SortOrder
+    pendingFollowUpJobId?: SortOrder
+    followUpSentAt?: SortOrder
+    calendlyEventId?: SortOrder
+    calendlyStatus?: SortOrder
+    calendlyUri?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19647,6 +21969,11 @@ export namespace Prisma {
     campaignId?: SortOrder
     scrapingJobId?: SortOrder
     gmailThreadId?: SortOrder
+    pendingFollowUpJobId?: SortOrder
+    followUpSentAt?: SortOrder
+    calendlyEventId?: SortOrder
+    calendlyStatus?: SortOrder
+    calendlyUri?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19680,6 +22007,30 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumELeadStatusFilter<$PrismaModel>
     _max?: NestedEnumELeadStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumECalendlyStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumECalendlyStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.ECalendlyStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumECalendlyStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumECalendlyStatusNullableFilter<$PrismaModel>
   }
 
   export type LocationCityStateCountryCompoundUniqueInput = {
@@ -19780,11 +22131,6 @@ export namespace Prisma {
     not?: NestedEnumEMeetingStatusFilter<$PrismaModel> | $Enums.EMeetingStatus
   }
 
-  export type LeadScalarRelationFilter = {
-    is?: LeadWhereInput
-    isNot?: LeadWhereInput
-  }
-
   export type MeetingCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -19851,22 +22197,25 @@ export namespace Prisma {
     not?: NestedEnumEMessageSenderFilter<$PrismaModel> | $Enums.EMessageSender
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type EnumEReplyStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.EReplyStatus | EnumEReplyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.EReplyStatus[] | ListEnumEReplyStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.EReplyStatus[] | ListEnumEReplyStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumEReplyStatusFilter<$PrismaModel> | $Enums.EReplyStatus
+  }
+
+  export type EnumEAIReplyClassificationNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIReplyClassification | EnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIReplyClassificationNullableFilter<$PrismaModel> | $Enums.EAIReplyClassification | null
+  }
+
+  export type EnumEAIResponseStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIResponseStatus | EnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIResponseStatusNullableFilter<$PrismaModel> | $Enums.EAIResponseStatus | null
   }
 
   export type CampaignScalarRelationFilter = {
@@ -19887,12 +22236,22 @@ export namespace Prisma {
     replyContent?: SortOrder
     isFollowUp?: SortOrder
     followUpCount?: SortOrder
+    followUpSentAt?: SortOrder
+    followUpSourceMessageId?: SortOrder
     gmailThreadId?: SortOrder
+    providerMessageId?: SortOrder
+    aiClassification?: SortOrder
+    aiConfidence?: SortOrder
+    aiGeneratedReply?: SortOrder
+    aiResponseStatus?: SortOrder
+    aiResponseSentAt?: SortOrder
+    isAIGenerated?: SortOrder
     createdAt?: SortOrder
   }
 
   export type OutreachMessageAvgOrderByAggregateInput = {
     followUpCount?: SortOrder
+    aiConfidence?: SortOrder
   }
 
   export type OutreachMessageMaxOrderByAggregateInput = {
@@ -19908,7 +22267,16 @@ export namespace Prisma {
     replyContent?: SortOrder
     isFollowUp?: SortOrder
     followUpCount?: SortOrder
+    followUpSentAt?: SortOrder
+    followUpSourceMessageId?: SortOrder
     gmailThreadId?: SortOrder
+    providerMessageId?: SortOrder
+    aiClassification?: SortOrder
+    aiConfidence?: SortOrder
+    aiGeneratedReply?: SortOrder
+    aiResponseStatus?: SortOrder
+    aiResponseSentAt?: SortOrder
+    isAIGenerated?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -19925,12 +22293,22 @@ export namespace Prisma {
     replyContent?: SortOrder
     isFollowUp?: SortOrder
     followUpCount?: SortOrder
+    followUpSentAt?: SortOrder
+    followUpSourceMessageId?: SortOrder
     gmailThreadId?: SortOrder
+    providerMessageId?: SortOrder
+    aiClassification?: SortOrder
+    aiConfidence?: SortOrder
+    aiGeneratedReply?: SortOrder
+    aiResponseStatus?: SortOrder
+    aiResponseSentAt?: SortOrder
+    isAIGenerated?: SortOrder
     createdAt?: SortOrder
   }
 
   export type OutreachMessageSumOrderByAggregateInput = {
     followUpCount?: SortOrder
+    aiConfidence?: SortOrder
   }
 
   export type EnumEOutreachTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -19953,20 +22331,6 @@ export namespace Prisma {
     _max?: NestedEnumEMessageSenderFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type EnumEReplyStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.EReplyStatus | EnumEReplyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.EReplyStatus[] | ListEnumEReplyStatusFieldRefInput<$PrismaModel>
@@ -19975,6 +22339,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEReplyStatusFilter<$PrismaModel>
     _max?: NestedEnumEReplyStatusFilter<$PrismaModel>
+  }
+
+  export type EnumEAIReplyClassificationNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIReplyClassification | EnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIReplyClassificationNullableWithAggregatesFilter<$PrismaModel> | $Enums.EAIReplyClassification | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumEAIReplyClassificationNullableFilter<$PrismaModel>
+    _max?: NestedEnumEAIReplyClassificationNullableFilter<$PrismaModel>
+  }
+
+  export type EnumEAIResponseStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIResponseStatus | EnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIResponseStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.EAIResponseStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumEAIResponseStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumEAIResponseStatusNullableFilter<$PrismaModel>
   }
 
   export type EnumEScrapingJobStatusFilter<$PrismaModel = never> = {
@@ -20127,6 +22511,40 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type LeadCreateNestedOneWithoutCalendlyEventsInput = {
+    create?: XOR<LeadCreateWithoutCalendlyEventsInput, LeadUncheckedCreateWithoutCalendlyEventsInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutCalendlyEventsInput
+    connect?: LeadWhereUniqueInput
+  }
+
+  export type EnumECalendlyEventTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ECalendlyEventType
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type EnumECalendlyStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ECalendlyStatus
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type LeadUpdateOneRequiredWithoutCalendlyEventsNestedInput = {
+    create?: XOR<LeadCreateWithoutCalendlyEventsInput, LeadUncheckedCreateWithoutCalendlyEventsInput>
+    connectOrCreate?: LeadCreateOrConnectWithoutCalendlyEventsInput
+    upsert?: LeadUpsertWithoutCalendlyEventsInput
+    connect?: LeadWhereUniqueInput
+    update?: XOR<XOR<LeadUpdateToOneWithWhereWithoutCalendlyEventsInput, LeadUpdateWithoutCalendlyEventsInput>, LeadUncheckedUpdateWithoutCalendlyEventsInput>
+  }
+
   export type IndustryCreateNestedOneWithoutCampaignsInput = {
     create?: XOR<IndustryCreateWithoutCampaignsInput, IndustryUncheckedCreateWithoutCampaignsInput>
     connectOrCreate?: IndustryCreateOrConnectWithoutCampaignsInput
@@ -20201,24 +22619,12 @@ export namespace Prisma {
     connect?: MeetingWhereUniqueInput | MeetingWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type EnumECampaignStatusFieldUpdateOperationsInput = {
     set?: $Enums.ECampaignStatus
   }
 
   export type EnumEPlatformFieldUpdateOperationsInput = {
     set?: $Enums.EPlatform
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type IndustryUpdateOneWithoutCampaignsNestedInput = {
@@ -20539,6 +22945,13 @@ export namespace Prisma {
     connect?: MeetingWhereUniqueInput | MeetingWhereUniqueInput[]
   }
 
+  export type CalendlyEventCreateNestedManyWithoutLeadInput = {
+    create?: XOR<CalendlyEventCreateWithoutLeadInput, CalendlyEventUncheckedCreateWithoutLeadInput> | CalendlyEventCreateWithoutLeadInput[] | CalendlyEventUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CalendlyEventCreateOrConnectWithoutLeadInput | CalendlyEventCreateOrConnectWithoutLeadInput[]
+    createMany?: CalendlyEventCreateManyLeadInputEnvelope
+    connect?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+  }
+
   export type OutreachMessageUncheckedCreateNestedManyWithoutLeadInput = {
     create?: XOR<OutreachMessageCreateWithoutLeadInput, OutreachMessageUncheckedCreateWithoutLeadInput> | OutreachMessageCreateWithoutLeadInput[] | OutreachMessageUncheckedCreateWithoutLeadInput[]
     connectOrCreate?: OutreachMessageCreateOrConnectWithoutLeadInput | OutreachMessageCreateOrConnectWithoutLeadInput[]
@@ -20553,6 +22966,13 @@ export namespace Prisma {
     connect?: MeetingWhereUniqueInput | MeetingWhereUniqueInput[]
   }
 
+  export type CalendlyEventUncheckedCreateNestedManyWithoutLeadInput = {
+    create?: XOR<CalendlyEventCreateWithoutLeadInput, CalendlyEventUncheckedCreateWithoutLeadInput> | CalendlyEventCreateWithoutLeadInput[] | CalendlyEventUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CalendlyEventCreateOrConnectWithoutLeadInput | CalendlyEventCreateOrConnectWithoutLeadInput[]
+    createMany?: CalendlyEventCreateManyLeadInputEnvelope
+    connect?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+  }
+
   export type NullableFloatFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -20563,6 +22983,14 @@ export namespace Prisma {
 
   export type EnumELeadStatusFieldUpdateOperationsInput = {
     set?: $Enums.ELeadStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type NullableEnumECalendlyStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ECalendlyStatus | null
   }
 
   export type IndustryUpdateOneWithoutLeadsNestedInput = {
@@ -20633,6 +23061,20 @@ export namespace Prisma {
     deleteMany?: MeetingScalarWhereInput | MeetingScalarWhereInput[]
   }
 
+  export type CalendlyEventUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<CalendlyEventCreateWithoutLeadInput, CalendlyEventUncheckedCreateWithoutLeadInput> | CalendlyEventCreateWithoutLeadInput[] | CalendlyEventUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CalendlyEventCreateOrConnectWithoutLeadInput | CalendlyEventCreateOrConnectWithoutLeadInput[]
+    upsert?: CalendlyEventUpsertWithWhereUniqueWithoutLeadInput | CalendlyEventUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: CalendlyEventCreateManyLeadInputEnvelope
+    set?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    disconnect?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    delete?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    connect?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    update?: CalendlyEventUpdateWithWhereUniqueWithoutLeadInput | CalendlyEventUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: CalendlyEventUpdateManyWithWhereWithoutLeadInput | CalendlyEventUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: CalendlyEventScalarWhereInput | CalendlyEventScalarWhereInput[]
+  }
+
   export type OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput = {
     create?: XOR<OutreachMessageCreateWithoutLeadInput, OutreachMessageUncheckedCreateWithoutLeadInput> | OutreachMessageCreateWithoutLeadInput[] | OutreachMessageUncheckedCreateWithoutLeadInput[]
     connectOrCreate?: OutreachMessageCreateOrConnectWithoutLeadInput | OutreachMessageCreateOrConnectWithoutLeadInput[]
@@ -20659,6 +23101,20 @@ export namespace Prisma {
     update?: MeetingUpdateWithWhereUniqueWithoutLeadInput | MeetingUpdateWithWhereUniqueWithoutLeadInput[]
     updateMany?: MeetingUpdateManyWithWhereWithoutLeadInput | MeetingUpdateManyWithWhereWithoutLeadInput[]
     deleteMany?: MeetingScalarWhereInput | MeetingScalarWhereInput[]
+  }
+
+  export type CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput = {
+    create?: XOR<CalendlyEventCreateWithoutLeadInput, CalendlyEventUncheckedCreateWithoutLeadInput> | CalendlyEventCreateWithoutLeadInput[] | CalendlyEventUncheckedCreateWithoutLeadInput[]
+    connectOrCreate?: CalendlyEventCreateOrConnectWithoutLeadInput | CalendlyEventCreateOrConnectWithoutLeadInput[]
+    upsert?: CalendlyEventUpsertWithWhereUniqueWithoutLeadInput | CalendlyEventUpsertWithWhereUniqueWithoutLeadInput[]
+    createMany?: CalendlyEventCreateManyLeadInputEnvelope
+    set?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    disconnect?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    delete?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    connect?: CalendlyEventWhereUniqueInput | CalendlyEventWhereUniqueInput[]
+    update?: CalendlyEventUpdateWithWhereUniqueWithoutLeadInput | CalendlyEventUpdateWithWhereUniqueWithoutLeadInput[]
+    updateMany?: CalendlyEventUpdateManyWithWhereWithoutLeadInput | CalendlyEventUpdateManyWithWhereWithoutLeadInput[]
+    deleteMany?: CalendlyEventScalarWhereInput | CalendlyEventScalarWhereInput[]
   }
 
   export type LeadCreateNestedManyWithoutLocationInput = {
@@ -20817,12 +23273,16 @@ export namespace Prisma {
     set?: $Enums.EMessageSender
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type EnumEReplyStatusFieldUpdateOperationsInput = {
     set?: $Enums.EReplyStatus
+  }
+
+  export type NullableEnumEAIReplyClassificationFieldUpdateOperationsInput = {
+    set?: $Enums.EAIReplyClassification | null
+  }
+
+  export type NullableEnumEAIResponseStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EAIResponseStatus | null
   }
 
   export type LeadUpdateOneRequiredWithoutOutreachMessagesNestedInput = {
@@ -21069,6 +23529,13 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumECalendlyEventTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyEventType | EnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyEventTypeFilter<$PrismaModel> | $Enums.ECalendlyEventType
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -21083,18 +23550,21 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedEnumECampaignStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ECampaignStatus | EnumECampaignStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumECampaignStatusFilter<$PrismaModel> | $Enums.ECampaignStatus
+  export type NestedEnumECalendlyStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyStatusFilter<$PrismaModel> | $Enums.ECalendlyStatus
   }
 
-  export type NestedEnumEPlatformFilter<$PrismaModel = never> = {
-    equals?: $Enums.EPlatform | EnumEPlatformFieldRefInput<$PrismaModel>
-    in?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
-    notIn?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
-    not?: NestedEnumEPlatformFilter<$PrismaModel> | $Enums.EPlatform
+  export type NestedEnumECalendlyEventTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyEventType | EnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyEventType[] | ListEnumECalendlyEventTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyEventTypeWithAggregatesFilter<$PrismaModel> | $Enums.ECalendlyEventType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumECalendlyEventTypeFilter<$PrismaModel>
+    _max?: NestedEnumECalendlyEventTypeFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21125,24 +23595,14 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumECampaignStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ECampaignStatus | EnumECampaignStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumECampaignStatusWithAggregatesFilter<$PrismaModel> | $Enums.ECampaignStatus
+  export type NestedEnumECalendlyStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumECalendlyStatusWithAggregatesFilter<$PrismaModel> | $Enums.ECalendlyStatus
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumECampaignStatusFilter<$PrismaModel>
-    _max?: NestedEnumECampaignStatusFilter<$PrismaModel>
-  }
-
-  export type NestedEnumEPlatformWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.EPlatform | EnumEPlatformFieldRefInput<$PrismaModel>
-    in?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
-    notIn?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
-    not?: NestedEnumEPlatformWithAggregatesFilter<$PrismaModel> | $Enums.EPlatform
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumEPlatformFilter<$PrismaModel>
-    _max?: NestedEnumEPlatformFilter<$PrismaModel>
+    _min?: NestedEnumECalendlyStatusFilter<$PrismaModel>
+    _max?: NestedEnumECalendlyStatusFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -21172,6 +23632,40 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumECampaignStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECampaignStatus | EnumECampaignStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumECampaignStatusFilter<$PrismaModel> | $Enums.ECampaignStatus
+  }
+
+  export type NestedEnumEPlatformFilter<$PrismaModel = never> = {
+    equals?: $Enums.EPlatform | EnumEPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumEPlatformFilter<$PrismaModel> | $Enums.EPlatform
+  }
+
+  export type NestedEnumECampaignStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECampaignStatus | EnumECampaignStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ECampaignStatus[] | ListEnumECampaignStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumECampaignStatusWithAggregatesFilter<$PrismaModel> | $Enums.ECampaignStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumECampaignStatusFilter<$PrismaModel>
+    _max?: NestedEnumECampaignStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEPlatformWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EPlatform | EnumEPlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EPlatform[] | ListEnumEPlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumEPlatformWithAggregatesFilter<$PrismaModel> | $Enums.EPlatform
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEPlatformFilter<$PrismaModel>
+    _max?: NestedEnumEPlatformFilter<$PrismaModel>
+  }
+
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -21188,6 +23682,24 @@ export namespace Prisma {
     in?: $Enums.ELeadStatus[] | ListEnumELeadStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.ELeadStatus[] | ListEnumELeadStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumELeadStatusFilter<$PrismaModel> | $Enums.ELeadStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumECalendlyStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumECalendlyStatusNullableFilter<$PrismaModel> | $Enums.ECalendlyStatus | null
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21214,6 +23726,30 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumELeadStatusFilter<$PrismaModel>
     _max?: NestedEnumELeadStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumECalendlyStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ECalendlyStatus | EnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ECalendlyStatus[] | ListEnumECalendlyStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumECalendlyStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.ECalendlyStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumECalendlyStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumECalendlyStatusNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumEMediaPostStatusFilter<$PrismaModel = never> = {
@@ -21264,22 +23800,25 @@ export namespace Prisma {
     not?: NestedEnumEMessageSenderFilter<$PrismaModel> | $Enums.EMessageSender
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedEnumEReplyStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.EReplyStatus | EnumEReplyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.EReplyStatus[] | ListEnumEReplyStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.EReplyStatus[] | ListEnumEReplyStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumEReplyStatusFilter<$PrismaModel> | $Enums.EReplyStatus
+  }
+
+  export type NestedEnumEAIReplyClassificationNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIReplyClassification | EnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIReplyClassificationNullableFilter<$PrismaModel> | $Enums.EAIReplyClassification | null
+  }
+
+  export type NestedEnumEAIResponseStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIResponseStatus | EnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIResponseStatusNullableFilter<$PrismaModel> | $Enums.EAIResponseStatus | null
   }
 
   export type NestedEnumEOutreachTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -21302,20 +23841,6 @@ export namespace Prisma {
     _max?: NestedEnumEMessageSenderFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
   export type NestedEnumEReplyStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.EReplyStatus | EnumEReplyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.EReplyStatus[] | ListEnumEReplyStatusFieldRefInput<$PrismaModel>
@@ -21324,6 +23849,26 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEReplyStatusFilter<$PrismaModel>
     _max?: NestedEnumEReplyStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEAIReplyClassificationNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIReplyClassification | EnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIReplyClassification[] | ListEnumEAIReplyClassificationFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIReplyClassificationNullableWithAggregatesFilter<$PrismaModel> | $Enums.EAIReplyClassification | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumEAIReplyClassificationNullableFilter<$PrismaModel>
+    _max?: NestedEnumEAIReplyClassificationNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEAIResponseStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EAIResponseStatus | EnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.EAIResponseStatus[] | ListEnumEAIResponseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumEAIResponseStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.EAIResponseStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumEAIResponseStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumEAIResponseStatusNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumEScrapingJobStatusFilter<$PrismaModel = never> = {
@@ -21358,6 +23903,146 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumERoleFilter<$PrismaModel>
     _max?: NestedEnumERoleFilter<$PrismaModel>
+  }
+
+  export type LeadCreateWithoutCalendlyEventsInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    platform: $Enums.EPlatform
+    platformUrl?: string | null
+    profileUsername?: string | null
+    followerCount?: number
+    bio?: string | null
+    imageUrl?: string | null
+    website?: string | null
+    totalScore?: number | null
+    role?: string | null
+    status?: $Enums.ELeadStatus
+    gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    industry?: IndustryCreateNestedOneWithoutLeadsInput
+    location?: LocationCreateNestedOneWithoutLeadsInput
+    campaign?: CampaignCreateNestedOneWithoutLeadsInput
+    scrapingJob?: ScrapingJobCreateNestedOneWithoutLeadsInput
+    outreachMessages?: OutreachMessageCreateNestedManyWithoutLeadInput
+    meetings?: MeetingCreateNestedManyWithoutLeadInput
+  }
+
+  export type LeadUncheckedCreateWithoutCalendlyEventsInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    platform: $Enums.EPlatform
+    platformUrl?: string | null
+    profileUsername?: string | null
+    followerCount?: number
+    bio?: string | null
+    imageUrl?: string | null
+    website?: string | null
+    totalScore?: number | null
+    role?: string | null
+    status?: $Enums.ELeadStatus
+    industryId?: string | null
+    locationId?: string | null
+    campaignId?: string | null
+    scrapingJobId?: string | null
+    gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    outreachMessages?: OutreachMessageUncheckedCreateNestedManyWithoutLeadInput
+    meetings?: MeetingUncheckedCreateNestedManyWithoutLeadInput
+  }
+
+  export type LeadCreateOrConnectWithoutCalendlyEventsInput = {
+    where: LeadWhereUniqueInput
+    create: XOR<LeadCreateWithoutCalendlyEventsInput, LeadUncheckedCreateWithoutCalendlyEventsInput>
+  }
+
+  export type LeadUpsertWithoutCalendlyEventsInput = {
+    update: XOR<LeadUpdateWithoutCalendlyEventsInput, LeadUncheckedUpdateWithoutCalendlyEventsInput>
+    create: XOR<LeadCreateWithoutCalendlyEventsInput, LeadUncheckedCreateWithoutCalendlyEventsInput>
+    where?: LeadWhereInput
+  }
+
+  export type LeadUpdateToOneWithWhereWithoutCalendlyEventsInput = {
+    where?: LeadWhereInput
+    data: XOR<LeadUpdateWithoutCalendlyEventsInput, LeadUncheckedUpdateWithoutCalendlyEventsInput>
+  }
+
+  export type LeadUpdateWithoutCalendlyEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
+    platformUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    profileUsername?: NullableStringFieldUpdateOperationsInput | string | null
+    followerCount?: IntFieldUpdateOperationsInput | number
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    totalScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
+    gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    industry?: IndustryUpdateOneWithoutLeadsNestedInput
+    location?: LocationUpdateOneWithoutLeadsNestedInput
+    campaign?: CampaignUpdateOneWithoutLeadsNestedInput
+    scrapingJob?: ScrapingJobUpdateOneWithoutLeadsNestedInput
+    outreachMessages?: OutreachMessageUpdateManyWithoutLeadNestedInput
+    meetings?: MeetingUpdateManyWithoutLeadNestedInput
+  }
+
+  export type LeadUncheckedUpdateWithoutCalendlyEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
+    platformUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    profileUsername?: NullableStringFieldUpdateOperationsInput | string | null
+    followerCount?: IntFieldUpdateOperationsInput | number
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    totalScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
+    industryId?: NullableStringFieldUpdateOperationsInput | string | null
+    locationId?: NullableStringFieldUpdateOperationsInput | string | null
+    campaignId?: NullableStringFieldUpdateOperationsInput | string | null
+    scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outreachMessages?: OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput
+    meetings?: MeetingUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type IndustryCreateWithoutCampaignsInput = {
@@ -21463,6 +24148,11 @@ export namespace Prisma {
     role?: string | null
     status?: $Enums.ELeadStatus
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     industry?: IndustryCreateNestedOneWithoutLeadsInput
@@ -21470,6 +24160,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobCreateNestedOneWithoutLeadsInput
     outreachMessages?: OutreachMessageCreateNestedManyWithoutLeadInput
     meetings?: MeetingCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutCampaignInput = {
@@ -21491,10 +24182,16 @@ export namespace Prisma {
     locationId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     outreachMessages?: OutreachMessageUncheckedCreateNestedManyWithoutLeadInput
     meetings?: MeetingUncheckedCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutCampaignInput = {
@@ -21518,7 +24215,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
     lead: LeadCreateNestedOneWithoutOutreachMessagesInput
   }
@@ -21535,7 +24241,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
   }
 
@@ -21767,6 +24482,11 @@ export namespace Prisma {
     campaignId?: StringNullableFilter<"Lead"> | string | null
     scrapingJobId?: StringNullableFilter<"Lead"> | string | null
     gmailThreadId?: StringNullableFilter<"Lead"> | string | null
+    pendingFollowUpJobId?: StringNullableFilter<"Lead"> | string | null
+    followUpSentAt?: DateTimeNullableFilter<"Lead"> | Date | string | null
+    calendlyEventId?: StringNullableFilter<"Lead"> | string | null
+    calendlyStatus?: EnumECalendlyStatusNullableFilter<"Lead"> | $Enums.ECalendlyStatus | null
+    calendlyUri?: StringNullableFilter<"Lead"> | string | null
     createdAt?: DateTimeFilter<"Lead"> | Date | string
     updatedAt?: DateTimeFilter<"Lead"> | Date | string
   }
@@ -21803,7 +24523,16 @@ export namespace Prisma {
     replyContent?: StringNullableFilter<"OutreachMessage"> | string | null
     isFollowUp?: BoolFilter<"OutreachMessage"> | boolean
     followUpCount?: IntFilter<"OutreachMessage"> | number
+    followUpSentAt?: DateTimeNullableFilter<"OutreachMessage"> | Date | string | null
+    followUpSourceMessageId?: StringNullableFilter<"OutreachMessage"> | string | null
     gmailThreadId?: StringNullableFilter<"OutreachMessage"> | string | null
+    providerMessageId?: StringNullableFilter<"OutreachMessage"> | string | null
+    aiClassification?: EnumEAIReplyClassificationNullableFilter<"OutreachMessage"> | $Enums.EAIReplyClassification | null
+    aiConfidence?: FloatNullableFilter<"OutreachMessage"> | number | null
+    aiGeneratedReply?: StringNullableFilter<"OutreachMessage"> | string | null
+    aiResponseStatus?: EnumEAIResponseStatusNullableFilter<"OutreachMessage"> | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: DateTimeNullableFilter<"OutreachMessage"> | Date | string | null
+    isAIGenerated?: BoolFilter<"OutreachMessage"> | boolean
     createdAt?: DateTimeFilter<"OutreachMessage"> | Date | string
   }
 
@@ -22025,6 +24754,11 @@ export namespace Prisma {
     role?: string | null
     status?: $Enums.ELeadStatus
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     location?: LocationCreateNestedOneWithoutLeadsInput
@@ -22032,6 +24766,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobCreateNestedOneWithoutLeadsInput
     outreachMessages?: OutreachMessageCreateNestedManyWithoutLeadInput
     meetings?: MeetingCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutIndustryInput = {
@@ -22053,10 +24788,16 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     outreachMessages?: OutreachMessageUncheckedCreateNestedManyWithoutLeadInput
     meetings?: MeetingUncheckedCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutIndustryInput = {
@@ -22074,6 +24815,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22096,6 +24838,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22163,6 +24906,7 @@ export namespace Prisma {
     name?: StringFilter<"Campaign"> | string
     description?: StringNullableFilter<"Campaign"> | string | null
     firstMessage?: StringNullableFilter<"Campaign"> | string | null
+    followUpMessage?: StringNullableFilter<"Campaign"> | string | null
     apifyDatasetId?: StringNullableFilter<"Campaign"> | string | null
     status?: EnumECampaignStatusFilter<"Campaign"> | $Enums.ECampaignStatus
     platform?: EnumEPlatformFilter<"Campaign"> | $Enums.EPlatform
@@ -22234,6 +24978,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22256,6 +25001,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22322,7 +25068,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
     campaign: CampaignCreateNestedOneWithoutOutreachMessagesInput
   }
@@ -22339,7 +25094,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
   }
 
@@ -22386,6 +25150,54 @@ export namespace Prisma {
 
   export type MeetingCreateManyLeadInputEnvelope = {
     data: MeetingCreateManyLeadInput | MeetingCreateManyLeadInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CalendlyEventCreateWithoutLeadInput = {
+    id?: string
+    eventId: string
+    eventType: $Enums.ECalendlyEventType
+    title: string
+    description?: string | null
+    startTime: Date | string
+    endTime: Date | string
+    status?: $Enums.ECalendlyStatus
+    calendlyUri?: string | null
+    meetingLink?: string | null
+    location?: string | null
+    attendees?: number
+    isRescheduled?: boolean
+    rescheduledFrom?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CalendlyEventUncheckedCreateWithoutLeadInput = {
+    id?: string
+    eventId: string
+    eventType: $Enums.ECalendlyEventType
+    title: string
+    description?: string | null
+    startTime: Date | string
+    endTime: Date | string
+    status?: $Enums.ECalendlyStatus
+    calendlyUri?: string | null
+    meetingLink?: string | null
+    location?: string | null
+    attendees?: number
+    isRescheduled?: boolean
+    rescheduledFrom?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CalendlyEventCreateOrConnectWithoutLeadInput = {
+    where: CalendlyEventWhereUniqueInput
+    create: XOR<CalendlyEventCreateWithoutLeadInput, CalendlyEventUncheckedCreateWithoutLeadInput>
+  }
+
+  export type CalendlyEventCreateManyLeadInputEnvelope = {
+    data: CalendlyEventCreateManyLeadInput | CalendlyEventCreateManyLeadInput[]
     skipDuplicates?: boolean
   }
 
@@ -22469,6 +25281,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -22491,6 +25304,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -22579,6 +25393,45 @@ export namespace Prisma {
     data: XOR<MeetingUpdateManyMutationInput, MeetingUncheckedUpdateManyWithoutLeadInput>
   }
 
+  export type CalendlyEventUpsertWithWhereUniqueWithoutLeadInput = {
+    where: CalendlyEventWhereUniqueInput
+    update: XOR<CalendlyEventUpdateWithoutLeadInput, CalendlyEventUncheckedUpdateWithoutLeadInput>
+    create: XOR<CalendlyEventCreateWithoutLeadInput, CalendlyEventUncheckedCreateWithoutLeadInput>
+  }
+
+  export type CalendlyEventUpdateWithWhereUniqueWithoutLeadInput = {
+    where: CalendlyEventWhereUniqueInput
+    data: XOR<CalendlyEventUpdateWithoutLeadInput, CalendlyEventUncheckedUpdateWithoutLeadInput>
+  }
+
+  export type CalendlyEventUpdateManyWithWhereWithoutLeadInput = {
+    where: CalendlyEventScalarWhereInput
+    data: XOR<CalendlyEventUpdateManyMutationInput, CalendlyEventUncheckedUpdateManyWithoutLeadInput>
+  }
+
+  export type CalendlyEventScalarWhereInput = {
+    AND?: CalendlyEventScalarWhereInput | CalendlyEventScalarWhereInput[]
+    OR?: CalendlyEventScalarWhereInput[]
+    NOT?: CalendlyEventScalarWhereInput | CalendlyEventScalarWhereInput[]
+    id?: StringFilter<"CalendlyEvent"> | string
+    leadId?: StringFilter<"CalendlyEvent"> | string
+    eventId?: StringFilter<"CalendlyEvent"> | string
+    eventType?: EnumECalendlyEventTypeFilter<"CalendlyEvent"> | $Enums.ECalendlyEventType
+    title?: StringFilter<"CalendlyEvent"> | string
+    description?: StringNullableFilter<"CalendlyEvent"> | string | null
+    startTime?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    endTime?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    status?: EnumECalendlyStatusFilter<"CalendlyEvent"> | $Enums.ECalendlyStatus
+    calendlyUri?: StringNullableFilter<"CalendlyEvent"> | string | null
+    meetingLink?: StringNullableFilter<"CalendlyEvent"> | string | null
+    location?: StringNullableFilter<"CalendlyEvent"> | string | null
+    attendees?: IntFilter<"CalendlyEvent"> | number
+    isRescheduled?: BoolFilter<"CalendlyEvent"> | boolean
+    rescheduledFrom?: StringNullableFilter<"CalendlyEvent"> | string | null
+    createdAt?: DateTimeFilter<"CalendlyEvent"> | Date | string
+    updatedAt?: DateTimeFilter<"CalendlyEvent"> | Date | string
+  }
+
   export type LeadCreateWithoutLocationInput = {
     id?: string
     name: string
@@ -22595,6 +25448,11 @@ export namespace Prisma {
     role?: string | null
     status?: $Enums.ELeadStatus
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     industry?: IndustryCreateNestedOneWithoutLeadsInput
@@ -22602,6 +25460,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobCreateNestedOneWithoutLeadsInput
     outreachMessages?: OutreachMessageCreateNestedManyWithoutLeadInput
     meetings?: MeetingCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutLocationInput = {
@@ -22623,10 +25482,16 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     outreachMessages?: OutreachMessageUncheckedCreateNestedManyWithoutLeadInput
     meetings?: MeetingUncheckedCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutLocationInput = {
@@ -22644,6 +25509,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22666,6 +25532,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22805,6 +25672,11 @@ export namespace Prisma {
     role?: string | null
     status?: $Enums.ELeadStatus
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     industry?: IndustryCreateNestedOneWithoutLeadsInput
@@ -22812,6 +25684,7 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedOneWithoutLeadsInput
     scrapingJob?: ScrapingJobCreateNestedOneWithoutLeadsInput
     outreachMessages?: OutreachMessageCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutMeetingsInput = {
@@ -22834,9 +25707,15 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     outreachMessages?: OutreachMessageUncheckedCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutMeetingsInput = {
@@ -22849,6 +25728,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22871,6 +25751,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -22920,6 +25801,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneWithoutLeadsNestedInput
@@ -22927,6 +25813,7 @@ export namespace Prisma {
     campaign?: CampaignUpdateOneWithoutLeadsNestedInput
     scrapingJob?: ScrapingJobUpdateOneWithoutLeadsNestedInput
     outreachMessages?: OutreachMessageUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutMeetingsInput = {
@@ -22949,9 +25836,15 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outreachMessages?: OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type CampaignUpsertWithoutMeetingsInput = {
@@ -22970,6 +25863,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -22992,6 +25886,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -23025,6 +25920,11 @@ export namespace Prisma {
     role?: string | null
     status?: $Enums.ELeadStatus
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     industry?: IndustryCreateNestedOneWithoutLeadsInput
@@ -23032,6 +25932,7 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedOneWithoutLeadsInput
     scrapingJob?: ScrapingJobCreateNestedOneWithoutLeadsInput
     meetings?: MeetingCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutOutreachMessagesInput = {
@@ -23054,9 +25955,15 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     meetings?: MeetingUncheckedCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutOutreachMessagesInput = {
@@ -23069,6 +25976,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -23091,6 +25999,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -23140,6 +26049,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneWithoutLeadsNestedInput
@@ -23147,6 +26061,7 @@ export namespace Prisma {
     campaign?: CampaignUpdateOneWithoutLeadsNestedInput
     scrapingJob?: ScrapingJobUpdateOneWithoutLeadsNestedInput
     meetings?: MeetingUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutOutreachMessagesInput = {
@@ -23169,9 +26084,15 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     meetings?: MeetingUncheckedUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type CampaignUpsertWithoutOutreachMessagesInput = {
@@ -23190,6 +26111,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -23212,6 +26134,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -23234,6 +26157,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -23256,6 +26180,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -23294,6 +26219,11 @@ export namespace Prisma {
     role?: string | null
     status?: $Enums.ELeadStatus
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     industry?: IndustryCreateNestedOneWithoutLeadsInput
@@ -23301,6 +26231,7 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedOneWithoutLeadsInput
     outreachMessages?: OutreachMessageCreateNestedManyWithoutLeadInput
     meetings?: MeetingCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventCreateNestedManyWithoutLeadInput
   }
 
   export type LeadUncheckedCreateWithoutScrapingJobInput = {
@@ -23322,10 +26253,16 @@ export namespace Prisma {
     locationId?: string | null
     campaignId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     outreachMessages?: OutreachMessageUncheckedCreateNestedManyWithoutLeadInput
     meetings?: MeetingUncheckedCreateNestedManyWithoutLeadInput
+    calendlyEvents?: CalendlyEventUncheckedCreateNestedManyWithoutLeadInput
   }
 
   export type LeadCreateOrConnectWithoutScrapingJobInput = {
@@ -23354,6 +26291,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -23376,6 +26314,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -23414,6 +26353,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -23436,6 +26376,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -23563,6 +26504,11 @@ export namespace Prisma {
     locationId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23579,7 +26525,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
   }
 
@@ -23625,6 +26580,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneWithoutLeadsNestedInput
@@ -23632,6 +26592,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobUpdateOneWithoutLeadsNestedInput
     outreachMessages?: OutreachMessageUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutCampaignInput = {
@@ -23653,10 +26614,16 @@ export namespace Prisma {
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outreachMessages?: OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUncheckedUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutCampaignInput = {
@@ -23678,6 +26645,11 @@ export namespace Prisma {
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23693,7 +26665,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneRequiredWithoutOutreachMessagesNestedInput
   }
@@ -23710,7 +26691,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23726,7 +26716,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23869,6 +26868,11 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23878,6 +26882,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -23907,6 +26912,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: LocationUpdateOneWithoutLeadsNestedInput
@@ -23914,6 +26924,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobUpdateOneWithoutLeadsNestedInput
     outreachMessages?: OutreachMessageUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutIndustryInput = {
@@ -23935,10 +26946,16 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outreachMessages?: OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUncheckedUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutIndustryInput = {
@@ -23960,6 +26977,11 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23969,6 +26991,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -23991,6 +27014,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -24013,6 +27037,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -24038,7 +27063,16 @@ export namespace Prisma {
     replyContent?: string | null
     isFollowUp?: boolean
     followUpCount?: number
+    followUpSentAt?: Date | string | null
+    followUpSourceMessageId?: string | null
     gmailThreadId?: string | null
+    providerMessageId?: string | null
+    aiClassification?: $Enums.EAIReplyClassification | null
+    aiConfidence?: number | null
+    aiGeneratedReply?: string | null
+    aiResponseStatus?: $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: Date | string | null
+    isAIGenerated?: boolean
     createdAt?: Date | string
   }
 
@@ -24055,6 +27089,25 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type CalendlyEventCreateManyLeadInput = {
+    id?: string
+    eventId: string
+    eventType: $Enums.ECalendlyEventType
+    title: string
+    description?: string | null
+    startTime: Date | string
+    endTime: Date | string
+    status?: $Enums.ECalendlyStatus
+    calendlyUri?: string | null
+    meetingLink?: string | null
+    location?: string | null
+    attendees?: number
+    isRescheduled?: boolean
+    rescheduledFrom?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type OutreachMessageUpdateWithoutLeadInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumEOutreachTypeFieldUpdateOperationsInput | $Enums.EOutreachType
@@ -24066,7 +27119,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     campaign?: CampaignUpdateOneRequiredWithoutOutreachMessagesNestedInput
   }
@@ -24083,7 +27145,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24099,7 +27170,16 @@ export namespace Prisma {
     replyContent?: NullableStringFieldUpdateOperationsInput | string | null
     isFollowUp?: BoolFieldUpdateOperationsInput | boolean
     followUpCount?: IntFieldUpdateOperationsInput | number
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    followUpSourceMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    aiClassification?: NullableEnumEAIReplyClassificationFieldUpdateOperationsInput | $Enums.EAIReplyClassification | null
+    aiConfidence?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiGeneratedReply?: NullableStringFieldUpdateOperationsInput | string | null
+    aiResponseStatus?: NullableEnumEAIResponseStatusFieldUpdateOperationsInput | $Enums.EAIResponseStatus | null
+    aiResponseSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isAIGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24142,6 +27222,63 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CalendlyEventUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: EnumECalendlyEventTypeFieldUpdateOperationsInput | $Enums.ECalendlyEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: IntFieldUpdateOperationsInput | number
+    isRescheduled?: BoolFieldUpdateOperationsInput | boolean
+    rescheduledFrom?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendlyEventUncheckedUpdateWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: EnumECalendlyEventTypeFieldUpdateOperationsInput | $Enums.ECalendlyEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: IntFieldUpdateOperationsInput | number
+    isRescheduled?: BoolFieldUpdateOperationsInput | boolean
+    rescheduledFrom?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CalendlyEventUncheckedUpdateManyWithoutLeadInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: EnumECalendlyEventTypeFieldUpdateOperationsInput | $Enums.ECalendlyEventType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    attendees?: IntFieldUpdateOperationsInput | number
+    isRescheduled?: BoolFieldUpdateOperationsInput | boolean
+    rescheduledFrom?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type LeadCreateManyLocationInput = {
     id?: string
     name: string
@@ -24161,6 +27298,11 @@ export namespace Prisma {
     campaignId?: string | null
     scrapingJobId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24170,6 +27312,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -24199,6 +27342,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneWithoutLeadsNestedInput
@@ -24206,6 +27354,7 @@ export namespace Prisma {
     scrapingJob?: ScrapingJobUpdateOneWithoutLeadsNestedInput
     outreachMessages?: OutreachMessageUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutLocationInput = {
@@ -24227,10 +27376,16 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outreachMessages?: OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUncheckedUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutLocationInput = {
@@ -24252,6 +27407,11 @@ export namespace Prisma {
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     scrapingJobId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24261,6 +27421,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -24283,6 +27444,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -24305,6 +27467,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -24337,6 +27500,11 @@ export namespace Prisma {
     locationId?: string | null
     campaignId?: string | null
     gmailThreadId?: string | null
+    pendingFollowUpJobId?: string | null
+    followUpSentAt?: Date | string | null
+    calendlyEventId?: string | null
+    calendlyStatus?: $Enums.ECalendlyStatus | null
+    calendlyUri?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24357,6 +27525,11 @@ export namespace Prisma {
     role?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumELeadStatusFieldUpdateOperationsInput | $Enums.ELeadStatus
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     industry?: IndustryUpdateOneWithoutLeadsNestedInput
@@ -24364,6 +27537,7 @@ export namespace Prisma {
     campaign?: CampaignUpdateOneWithoutLeadsNestedInput
     outreachMessages?: OutreachMessageUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateWithoutScrapingJobInput = {
@@ -24385,10 +27559,16 @@ export namespace Prisma {
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     outreachMessages?: OutreachMessageUncheckedUpdateManyWithoutLeadNestedInput
     meetings?: MeetingUncheckedUpdateManyWithoutLeadNestedInput
+    calendlyEvents?: CalendlyEventUncheckedUpdateManyWithoutLeadNestedInput
   }
 
   export type LeadUncheckedUpdateManyWithoutScrapingJobInput = {
@@ -24410,6 +27590,11 @@ export namespace Prisma {
     locationId?: NullableStringFieldUpdateOperationsInput | string | null
     campaignId?: NullableStringFieldUpdateOperationsInput | string | null
     gmailThreadId?: NullableStringFieldUpdateOperationsInput | string | null
+    pendingFollowUpJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calendlyEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    calendlyStatus?: NullableEnumECalendlyStatusFieldUpdateOperationsInput | $Enums.ECalendlyStatus | null
+    calendlyUri?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24419,6 +27604,7 @@ export namespace Prisma {
     name: string
     description?: string | null
     firstMessage?: string | null
+    followUpMessage?: string | null
     apifyDatasetId?: string | null
     status?: $Enums.ECampaignStatus
     platform?: $Enums.EPlatform
@@ -24448,6 +27634,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -24470,6 +27657,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform
@@ -24492,6 +27680,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     firstMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    followUpMessage?: NullableStringFieldUpdateOperationsInput | string | null
     apifyDatasetId?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumECampaignStatusFieldUpdateOperationsInput | $Enums.ECampaignStatus
     platform?: EnumEPlatformFieldUpdateOperationsInput | $Enums.EPlatform

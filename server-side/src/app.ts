@@ -11,11 +11,11 @@ app.use(cors({
   origin: (origin, callback) => {
     const allowedOrigins = [
       config.FRONTEND_URL,
-      "http://localhost:3000",
-      "http://localhost:5173",
+      config.DEV_FRONTEND_URL,
+      config.DEV_VITE_URL,
       "http://172.252.13.90:8042",
       "http://172.252.13.90",
-      "https://qcexclusive-full-stack.vercel.app"
+      config.PRODUCTION_FRONTEND_URL
     ].filter(Boolean) as string[];
 
     if (!origin || allowedOrigins.includes(origin)) {

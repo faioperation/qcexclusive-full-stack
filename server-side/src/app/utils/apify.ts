@@ -91,7 +91,7 @@ export const triggerApifyScraper = async (
   console.log(`[Apify] Triggering ${params.platform} actor (${actorId})`);
   console.log("[Apify] Input:", JSON.stringify(actorInput, null, 2));
 
-  const url  = `https://api.apify.com/v2/acts/${actorId}/runs?token=${token}`;
+  const url  = `${config.APIFY_API_BASE_URL}/v2/acts/${actorId}/runs?token=${token}`;
   const resp = await fetch(url, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
@@ -126,7 +126,7 @@ export const waitForApifyRun = async (
   const deadline = Date.now() + maxWaitMs;
 
   while (Date.now() < deadline) {
-    const resp = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${token}`);
+    const resp = await fetch(`${config.APIFY_API_BASE_URL}/v2/actor-runs/${runId}?token=${token}`);
     if (!resp.ok) throw new Error(`Failed to poll Apify run: ${resp.statusText}`);
 
     const data   = await resp.json();
@@ -148,7 +148,7 @@ export const waitForApifyRun = async (
 // ─── Get dataset items ────────────────────────────────────────────────────────
 export const getDatasetItems = async (datasetId: string): Promise<any[]> => {
   const token = getToken();
-  const url   = `https://api.apify.com/v2/datasets/${datasetId}/items?token=${token}&clean=true&format=json`;
+  const url   = `${config.APIFY_API_BASE_URL}/v2/datasets/${datasetId}/items?token=${token}&clean=true&format=json`;
 
   console.log(`[Apify] Fetching dataset: ${datasetId}`);
   const resp = await fetch(url);
@@ -161,7 +161,7 @@ export const getDatasetItems = async (datasetId: string): Promise<any[]> => {
 
 export const getApifyRunStatus = async (runId: string): Promise<string> => {
   const token = getToken();
-  const resp  = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${token}`);
+  const resp  = await fetch(`${config.APIFY_API_BASE_URL}/v2/actor-runs/${runId}?token=${token}`);
   if (!resp.ok) return "UNKNOWN";
   const data  = await resp.json();
   return data?.data?.status ?? "UNKNOWN";

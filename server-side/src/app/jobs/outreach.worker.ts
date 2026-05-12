@@ -5,6 +5,7 @@ import { prisma } from "../db_connection/prisma";
 import { sendEmail } from "../utils/sendEmail";
 import { ELeadStatus } from "../../../generated/prisma";
 import { parsePlaceholders } from "../utils/placeholderParser";
+import { scheduleSevenDayFollowUp } from "../modules/followup/followup.scheduler";
 
 const db = prisma as any;
 
@@ -39,25 +40,31 @@ export const outreachWorker = new Worker(
 
     // Parse placeholders (e.g. {{firstName}})
     const messageBody = parsePlaceholders(rawMessage, { name: lead.name });
+    const subject = lead.campaign
+      ? `Message from ${lead.campaign.name}`
+      : "Outreach Message";
 
-    // 3. Send the email
+    // 3. Send the email (throws on failure → BullMQ retries)
     try {
-      await sendEmail({
+      const { messageId } = await sendEmail({
         to: lead.email,
-        subject: lead.campaign ? `Message from ${lead.campaign.name}` : "Outreach Message",
+        subject,
         tempName: "outreach",
         tempData: { leadName: lead.name, body: messageBody },
       });
 
       // 4. Record outreach message
-      await db.outreachMessage.create({
+      const outreach = await db.outreachMessage.create({
         data: {
           campaignId: lead.campaignId || undefined,
           leadId: lead.id,
+          subject,
           body: messageBody,
           type: "Email",
           sentAt: new Date(),
+          providerMessageId: messageId,
         },
+        select: { id: true },
       });
 
       // 5. Update lead status
@@ -65,6 +72,23 @@ export const outreachWorker = new Worker(
         where: { id: leadId },
         data: { status: ELeadStatus.Contacted },
       });
+
+      if (lead.campaignId) {
+        try {
+          await scheduleSevenDayFollowUp({
+            leadId: lead.id,
+            campaignId: lead.campaignId,
+            initialOutreachMessageId: outreach.id,
+          });
+        } catch (scheduleErr: unknown) {
+          const m =
+            scheduleErr instanceof Error ? scheduleErr.message : String(scheduleErr);
+          console.error(
+            `[Worker] Outreach succeeded but follow-up schedule failed lead=${leadId}:`,
+            m
+          );
+        }
+      }
 
       return { success: true };
     } catch (error: any) {

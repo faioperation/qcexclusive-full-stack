@@ -130,11 +130,32 @@ exports.Prisma.AIPromptConfigScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CalendlyEventScalarFieldEnum = {
+  id: 'id',
+  leadId: 'leadId',
+  eventId: 'eventId',
+  eventType: 'eventType',
+  title: 'title',
+  description: 'description',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  status: 'status',
+  calendlyUri: 'calendlyUri',
+  meetingLink: 'meetingLink',
+  location: 'location',
+  attendees: 'attendees',
+  isRescheduled: 'isRescheduled',
+  rescheduledFrom: 'rescheduledFrom',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CampaignScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
   firstMessage: 'firstMessage',
+  followUpMessage: 'followUpMessage',
   apifyDatasetId: 'apifyDatasetId',
   status: 'status',
   platform: 'platform',
@@ -198,6 +219,11 @@ exports.Prisma.LeadScalarFieldEnum = {
   campaignId: 'campaignId',
   scrapingJobId: 'scrapingJobId',
   gmailThreadId: 'gmailThreadId',
+  pendingFollowUpJobId: 'pendingFollowUpJobId',
+  followUpSentAt: 'followUpSentAt',
+  calendlyEventId: 'calendlyEventId',
+  calendlyStatus: 'calendlyStatus',
+  calendlyUri: 'calendlyUri',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -250,7 +276,16 @@ exports.Prisma.OutreachMessageScalarFieldEnum = {
   replyContent: 'replyContent',
   isFollowUp: 'isFollowUp',
   followUpCount: 'followUpCount',
+  followUpSentAt: 'followUpSentAt',
+  followUpSourceMessageId: 'followUpSourceMessageId',
   gmailThreadId: 'gmailThreadId',
+  providerMessageId: 'providerMessageId',
+  aiClassification: 'aiClassification',
+  aiConfidence: 'aiConfidence',
+  aiGeneratedReply: 'aiGeneratedReply',
+  aiResponseStatus: 'aiResponseStatus',
+  aiResponseSentAt: 'aiResponseSentAt',
+  isAIGenerated: 'isAIGenerated',
   createdAt: 'createdAt'
 };
 
@@ -296,6 +331,19 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.ECalendlyEventType = exports.$Enums.ECalendlyEventType = {
+  Meeting: 'Meeting',
+  Call: 'Call',
+  Webinar: 'Webinar'
+};
+
+exports.ECalendlyStatus = exports.$Enums.ECalendlyStatus = {
+  Pending: 'Pending',
+  Scheduled: 'Scheduled',
+  Confirmed: 'Confirmed',
+  Cancelled: 'Cancelled'
+};
+
 exports.ECampaignStatus = exports.$Enums.ECampaignStatus = {
   Draft: 'Draft',
   Active: 'Active',
@@ -355,6 +403,21 @@ exports.EReplyStatus = exports.$Enums.EReplyStatus = {
   Neutral: 'Neutral'
 };
 
+exports.EAIReplyClassification = exports.$Enums.EAIReplyClassification = {
+  Interested: 'Interested',
+  NotInterested: 'NotInterested',
+  Neutral: 'Neutral',
+  MeetingRequest: 'MeetingRequest',
+  PricingRequest: 'PricingRequest',
+  Spam: 'Spam'
+};
+
+exports.EAIResponseStatus = exports.$Enums.EAIResponseStatus = {
+  Pending: 'Pending',
+  Sent: 'Sent',
+  Skipped: 'Skipped'
+};
+
 exports.EScrapingJobStatus = exports.$Enums.EScrapingJobStatus = {
   Pending: 'Pending',
   Running: 'Running',
@@ -369,6 +432,7 @@ exports.ERole = exports.$Enums.ERole = {
 
 exports.Prisma.ModelName = {
   AIPromptConfig: 'AIPromptConfig',
+  CalendlyEvent: 'CalendlyEvent',
   Campaign: 'Campaign',
   Config: 'Config',
   DocsLink: 'DocsLink',
