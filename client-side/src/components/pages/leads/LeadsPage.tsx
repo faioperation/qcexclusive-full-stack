@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   Search,
   Filter,
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { useForm } from "react-hook-form";
-import { getAllLeads, deleteLead, sendEmailToLead, bulkSendEmailToLeads } from "@/services/lead/lead.apis";
+import { getAllLeads, deleteLead, sendEmailToLead, bulkSendEmailToLeads, getOutreachQueueStatus } from "@/services/lead/lead.apis";
 import { createCampaign } from "@/services/campaign/campaign.apis";
 
 interface CampaignForm {
@@ -65,6 +66,7 @@ const EMPTY_FILTERS: IFilters = {
 // removed PAGE_SIZE constant
 
 export function LeadsPage() {
+  const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -88,6 +90,7 @@ export function LeadsPage() {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkMessage, setBulkMessage] = useState("");
   const [isBulkSending, setIsBulkSending] = useState(false);
+  const [queueStatus, setQueueStatus] = useState<{ waiting: number; active: number; completed: number; failed: number; total: number } | null>(null);
 
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm<CampaignForm>({
     defaultValues: { platform: "GoogleMaps" },
@@ -107,12 +110,12 @@ export function LeadsPage() {
       const result = await getAllLeads({
         page,
         limit,
-        searchTerm: debouncedSearch || undefined,
-        city: appliedFilters.city || undefined,
-        industryName: appliedFilters.industryName || undefined,
-        campaignName: appliedFilters.campaignName || undefined,
-        platform: appliedFilters.platform || undefined,
-        status: appliedFilters.status || undefined,
+        searchTerm: debouncedSearch,
+        city: appliedFilters.city,
+        industryName: appliedFilters.industryName,
+        campaignName: appliedFilters.campaignName,
+        platform: appliedFilters.platform,
+        status: appliedFilters.status,
       });
       if (result?.success) {
         setLeads(result.data?.data ?? result.data ?? []);
@@ -128,6 +131,40 @@ export function LeadsPage() {
   useEffect(() => {
     fetchLeads();
   }, [fetchLeads]);
+
+  // Polling for queue status
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    const updateStatus = async () => {
+      try {
+        const result = await getOutreachQueueStatus();
+        if (result?.success) {
+          const status = result.data;
+          setQueueStatus(status);
+          
+          // Stop polling if nothing is waiting or active
+          if (status.waiting === 0 && status.active === 0) {
+            // Give it one more fetch for leads to show updated 'Contacted' status
+            fetchLeads();
+            // Optional: hide after a delay
+            setTimeout(() => setQueueStatus(null), 10000);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to poll queue status", err);
+      }
+    };
+
+    if (isBulkSending || (queueStatus && (queueStatus.waiting > 0 || queueStatus.active > 0))) {
+      updateStatus(); // Immediate first call
+      interval = setInterval(updateStatus, 3000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isBulkSending, queueStatus?.waiting, queueStatus?.active, fetchLeads]);
 
   const handleApplyFilters = () => {
     setPage(1);
@@ -179,6 +216,10 @@ export function LeadsPage() {
 
   const handleBulkSend = () => {
     if (selectedIds.length === 0) return;
+    if (selectedIds.length > 100) {
+      alert("You can only select up to 100 leads for bulk outreach at a time.");
+      return;
+    }
     setBulkMessage("");
     setIsBulkModalOpen(true);
   };
@@ -193,16 +234,19 @@ export function LeadsPage() {
     try {
       const result = await bulkSendEmailToLeads(selectedIds, bulkMessage);
       if (result?.success) {
-        alert("Bulk outreach process completed.");
+        // We don't alert "completed" anymore because it's just queued
         setSelectedIds([]);
         setIsBulkModalOpen(false);
-        fetchLeads();
+        // Start polling if not already
+        setIsBulkSending(true);
+        // Reset after a tiny bit so the effect triggers
+        setTimeout(() => setIsBulkSending(false), 500);
       } else {
         alert(result?.message || "Failed to process bulk outreach.");
+        setIsBulkSending(false);
       }
     } catch {
       alert("Something went wrong during bulk outreach.");
-    } finally {
       setIsBulkSending(false);
     }
   };
@@ -267,50 +311,11 @@ export function LeadsPage() {
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   const renderEmailButton = (lead: Lead) => {
-    const status = emailStatusMap[lead.id] ?? "idle";
-    const hasEmail = !!lead.email;
-
-    if (!hasEmail) {
-      return (
-        <button
-          disabled
-          title="No email address available"
-          className="text-gray-200 cursor-not-allowed"
-        >
-          <Mail size={18} />
-        </button>
-      );
-    }
-
-    if (status === "sending") {
-      return (
-        <button disabled title="Sending…" className="text-[#00A651] cursor-wait">
-          <Loader2 size={18} className="animate-spin" />
-        </button>
-      );
-    }
-
-    if (status === "sent") {
-      return (
-        <button disabled title="Email sent!" className="text-[#00A651]">
-          <MailCheck size={18} />
-        </button>
-      );
-    }
-
-    if (status === "error") {
-      return (
-        <button disabled title="Send failed" className="text-red-500">
-          <MailX size={18} />
-        </button>
-      );
-    }
-
     return (
       <button
-        onClick={() => handleSendEmail(lead.id)}
+        onClick={() => router.push(`/inbox?leadId=${lead.id}`)}
         className="text-gray-400 hover:text-[#00A651] transition-colors"
-        title={`Send outreach email to ${lead.email}`}
+        title="View Conversation"
       >
         <Mail size={18} />
       </button>
@@ -318,7 +323,55 @@ export function LeadsPage() {
   };
 
   return (
-    <div className="p-6 md:p-8 w-full max-w-[1400px] mx-auto">
+    <div className="p-6 md:p-8 w-full max-w-[1400px] mx-auto relative">
+      {/* Floating Queue Progress Notification */}
+      {queueStatus && (queueStatus.waiting > 0 || queueStatus.active > 0 || queueStatus.completed > 0 || queueStatus.failed > 0) && (
+        <div className="fixed bottom-8 right-8 z-[100] bg-white border border-gray-100 shadow-2xl rounded-[20px] p-5 w-80 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+              Outreach Progress
+            </h4>
+            {(queueStatus.waiting === 0 && queueStatus.active === 0) && (
+               <button onClick={() => setQueueStatus(null)} className="text-gray-400 hover:text-gray-600">
+                 <X size={16} />
+               </button>
+            )}
+          </div>
+          
+          <div className="space-y-3">
+             <div className="flex justify-between text-xs font-bold">
+                <span className="text-gray-500">Sent Successfully</span>
+                <span className="text-[#00A651]">{queueStatus.completed}</span>
+             </div>
+             <div className="flex justify-between text-xs font-bold">
+                <span className="text-gray-500">Processing / Waiting</span>
+                <span className="text-orange-500">{queueStatus.active + queueStatus.waiting}</span>
+             </div>
+             {queueStatus.failed > 0 && (
+               <div className="flex justify-between text-xs font-bold">
+                  <span className="text-gray-500">Failed</span>
+                  <span className="text-red-500">{queueStatus.failed}</span>
+               </div>
+             )}
+             
+             {/* Simple Progress Bar */}
+             <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-4">
+                <div 
+                  className="h-full bg-[#00A651] transition-all duration-500" 
+                  style={{ width: `${(queueStatus.completed / queueStatus.total) * 100}%` }}
+                ></div>
+             </div>
+             
+             {(queueStatus.waiting === 0 && queueStatus.active === 0) ? (
+               <p className="text-[11px] text-center text-gray-400 font-medium mt-2">All jobs completed!</p>
+             ) : (
+               <p className="text-[11px] text-center text-gray-400 font-medium mt-2">Sending emails in background...</p>
+             )}
+          </div>
+        </div>
+      )}
+
       {/* Top Header Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
         <div className="flex items-center gap-3 w-full sm:w-auto">

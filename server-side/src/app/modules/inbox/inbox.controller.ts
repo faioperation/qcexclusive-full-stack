@@ -17,6 +17,17 @@ const getMessagesByThreadId = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
+const getMessagesByLeadId = catchAsync(async (req: Request, res: Response) => {
+  const { leadId } = req.params;
+  const result = await InboxService.getMessagesByLeadIdFromDB(leadId as string);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Messages fetched successfully",
+    data: result,
+  });
+});
+
 const getAllConversations = catchAsync(async (req: Request, res: Response) => {
   const result = await InboxService.getAllConversationsFromDB();
   sendResponse(res, {
@@ -39,6 +50,7 @@ const syncInbox = catchAsync(async (req: Request, res: Response) => {
 
 export const InboxController = {
   getMessagesByThreadId,
+  getMessagesByLeadId,
   getAllConversations,
   syncInbox,
 };

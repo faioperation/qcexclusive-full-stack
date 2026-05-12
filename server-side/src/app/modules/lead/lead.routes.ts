@@ -31,6 +31,12 @@ router.post(
     LeadController.bulkSendEmailToLeads
 );
 
+router.get(
+    "/outreach-status",
+    auth(ERole.Admin, ERole.User),
+    LeadController.getOutreachQueueStatus
+);
+
 router.patch(
     "/:id", 
     auth(ERole.Admin, ERole.User), 

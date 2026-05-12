@@ -64,6 +64,16 @@ const bulkSendEmailToLeads = catchAsync(async (req, res) => {
   });
 });
 
+const getOutreachQueueStatus = catchAsync(async (req, res) => {
+  const result = await LeadService.getOutreachQueueStatus();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Outreach queue status fetched successfully",
+    data: result,
+  });
+});
+
 export const LeadController = {
   getAllLeads,
   getSingleLead,
@@ -71,5 +81,5 @@ export const LeadController = {
   deleteLead,
   sendEmailToLead,
   bulkSendEmailToLeads,
+  getOutreachQueueStatus,
 };
-

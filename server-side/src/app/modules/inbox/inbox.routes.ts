@@ -17,6 +17,12 @@ router.get(
 );
 
 router.get(
+  "/lead/:leadId",
+  auth("Admin", "User"),
+  InboxController.getMessagesByLeadId
+);
+
+router.get(
   "/sync",
   auth("Admin", "User"),
   InboxController.syncInbox

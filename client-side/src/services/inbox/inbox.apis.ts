@@ -65,6 +65,30 @@ export const getMessagesByThreadId = async (threadId: string) => {
   }
 };
 
+/**
+ * GET /inbox/lead/:leadId
+ * Retrieve the message history for a lead (even if no gmailThreadId exists yet).
+ */
+export const getMessagesByLeadId = async (leadId: string) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND}/inbox/lead/${leadId}`,
+      {
+        method: "GET",
+        headers: await getAuthHeader(),
+        next: {
+          tags: ["inbox", `lead-msgs-${leadId}`],
+        },
+      }
+    );
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
 // ─── Sync Inbox ───────────────────────────────────────────────────────────────
 
 /**

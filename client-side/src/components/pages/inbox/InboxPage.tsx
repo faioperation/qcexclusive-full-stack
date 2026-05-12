@@ -1,21 +1,23 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { Search, MoreVertical, Paperclip, Send, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { getAllConversations } from "@/services/inbox/inbox.apis";
+import { getAllConversations, getMessagesByThreadId, getMessagesByLeadId } from "@/services/inbox/inbox.apis";
 
 interface Conversation {
   id: string;
-  lead: {
-    id: string;
-    name: string;
-    platform?: string;
-    industry?: { name: string };
-  };
+  name: string;
+  email?: string;
+  platform: string;
+  gmailThreadId?: string;
+  imageUrl?: string;
+  industry?: { name: string };
   lastMessage?: string;
   updatedAt: string;
   unreadCount?: number;
+  outreachMessages?: { body: string; createdAt: string }[];
 }
 
 interface Message {
@@ -26,12 +28,16 @@ interface Message {
 }
 
 export function InboxPage() {
+  const searchParams = useSearchParams();
+  const leadIdFromQuery = searchParams.get("leadId");
+
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConv, setSelectedConv] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoadingConvs, setIsLoadingConvs] = useState(true);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchConversations = useCallback(async () => {
@@ -41,7 +47,14 @@ export function InboxPage() {
       if (result?.success) {
         const convs = result.data?.data ?? result.data ?? [];
         setConversations(convs);
-        if (!selectedConv && convs.length > 0) {
+        
+        // If we have a leadId in query, find it in conversations
+        if (leadIdFromQuery) {
+          const matched = convs.find((c: Conversation) => c.id === leadIdFromQuery);
+          if (matched) {
+            setSelectedConv(matched);
+          }
+        } else if (!selectedConv && convs.length > 0) {
           setSelectedConv(convs[0]);
         }
       }
@@ -50,11 +63,41 @@ export function InboxPage() {
     } finally {
       setIsLoadingConvs(false);
     }
-  }, [selectedConv]);
+  }, [leadIdFromQuery, selectedConv]);
 
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
+
+  // Fetch messages when selectedConv changes
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!selectedConv && !leadIdFromQuery) return;
+      
+      setIsLoadingMessages(true);
+      try {
+        let result;
+        if (selectedConv?.gmailThreadId) {
+          result = await getMessagesByThreadId(selectedConv.gmailThreadId);
+        } else if (selectedConv?.id) {
+          result = await getMessagesByLeadId(selectedConv.id);
+        } else if (leadIdFromQuery) {
+          result = await getMessagesByLeadId(leadIdFromQuery);
+        }
+
+        if (result?.success) {
+          const msgs = result.data?.data ?? result.data ?? [];
+          setMessages(msgs);
+        }
+      } catch {
+        // fail silently
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    fetchMessages();
+  }, [selectedConv, leadIdFromQuery]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -117,6 +160,9 @@ export function InboxPage() {
           ) : (
             conversations.map((chat) => {
               const isActive = selectedConv?.id === chat.id;
+              const initials = (chat.name || "U").split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+              const lastMsg = chat.outreachMessages?.[0]?.body || chat.lastMessage || "No messages yet";
+
               return (
                 <div
                   key={chat.id}
@@ -127,22 +173,38 @@ export function InboxPage() {
                       : "hover:bg-gray-50 border-l-4 border-l-transparent"
                   }`}
                 >
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
-                    <Image
-                      src={`https://ui-avatars.com/api/?name=${encodeURIComponent(chat.lead?.name || "U")}&background=random`}
-                      alt={chat.lead?.name}
-                      fill
-                      className="object-cover"
-                    />
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100 bg-[#E8F5EE] flex items-center justify-center">
+                    {chat.imageUrl ? (
+                      <Image
+                        src={chat.imageUrl}
+                        alt={chat.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-[#1A7A4A] font-bold text-sm">{initials}</span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-semibold text-gray-900 truncate pr-2">{chat.lead?.name}</h4>
+                    <div className="flex justify-between items-start mb-0.5">
+                      <div className="flex flex-col min-w-0">
+                        <h4 className="font-semibold text-gray-900 truncate pr-2">{chat.name}</h4>
+                        <div className="flex items-center gap-2">
+                           <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-tight ${
+                             chat.platform === 'Instagram' ? 'bg-pink-50 text-pink-600' :
+                             chat.platform === 'Facebook' ? 'bg-blue-50 text-blue-600' :
+                             chat.platform === 'GoogleMaps' ? 'bg-yellow-50 text-yellow-700' :
+                             'bg-gray-100 text-gray-500'
+                           }`}>
+                             {chat.platform}
+                           </span>
+                        </div>
+                      </div>
                       <span className="text-xs text-gray-400 shrink-0 mt-0.5">{formatTime(chat.updatedAt)}</span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mt-1">
                       <p className="text-sm text-gray-500 truncate mr-2">
-                        {chat.lastMessage || chat.lead?.industry?.name || "No messages yet"}
+                        {lastMsg}
                       </p>
                       {(chat.unreadCount ?? 0) > 0 && (
                         <span className="w-5 h-5 bg-[#00A651] text-white text-[10px] font-bold flex items-center justify-center rounded-full shrink-0">
@@ -166,17 +228,23 @@ export function InboxPage() {
             {/* Chat Header */}
             <div className="h-[76px] px-6 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-100 relative">
-                  <Image
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(activeContact.lead?.name || "U")}&background=random`}
-                    alt={activeContact.lead?.name}
-                    fill
-                    className="object-cover"
-                  />
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-100 relative bg-[#E8F5EE] flex items-center justify-center">
+                  {activeContact.imageUrl ? (
+                    <Image
+                      src={activeContact.imageUrl}
+                      alt={activeContact.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="text-[#1A7A4A] font-bold text-sm">
+                      {(activeContact.name || "U").split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)}
+                    </span>
+                  )}
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 leading-tight">{activeContact.lead?.name}</h3>
-                  <p className="text-sm text-gray-500">{activeContact.lead?.industry?.name || activeContact.lead?.platform || "Lead"}</p>
+                  <h3 className="font-bold text-gray-900 leading-tight">{activeContact.name}</h3>
+                  <p className="text-sm text-gray-500">{activeContact.email || activeContact.platform || "Lead"}</p>
                 </div>
               </div>
               <button className="text-gray-400 hover:text-gray-700 transition-colors p-2">
@@ -186,7 +254,11 @@ export function InboxPage() {
 
             {/* Messages Flow */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#FAFAFA]">
-              {messages.length === 0 ? (
+              {isLoadingMessages ? (
+                <div className="flex items-center justify-center h-full">
+                  <Loader2 className="w-8 h-8 animate-spin text-[#00A651]" />
+                </div>
+              ) : messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full">
                   <p className="text-gray-400 text-sm font-medium">No messages yet. Start the conversation!</p>
                 </div>
@@ -197,8 +269,8 @@ export function InboxPage() {
                       Today
                     </span>
                   </div>
-                  {messages.map((msg, idx) => {
-                    const isMe = msg.sender === "me";
+                  {messages.map((msg: any, idx) => {
+                    const isMe = msg.sender === "me" || msg.type === "Email"; // Outreach messages from us are 'me'
                     return (
                       <div key={idx} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                         <div className={`flex flex-col max-w-[70%] ${isMe ? "items-end" : "items-start"}`}>
@@ -209,10 +281,10 @@ export function InboxPage() {
                                 : "bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm"
                             }`}
                           >
-                            {msg.content}
+                            {msg.body || msg.content}
                           </div>
                           <span className="text-[11px] text-gray-400 font-medium px-1">
-                            {formatTime(msg.createdAt)}
+                            {formatTime(msg.sentAt || msg.createdAt)}
                           </span>
                         </div>
                       </div>

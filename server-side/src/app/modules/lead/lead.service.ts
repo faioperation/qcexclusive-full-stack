@@ -2,8 +2,10 @@ import { Prisma, ELeadStatus } from "../../../../generated/prisma";
 import { prisma } from "../../db_connection/prisma";
 import { QueryBuilder, TQueryInput, TRelationConfig, TSearchConfig } from "../../utils/QueryBuilder";
 import { sendEmail } from "../../utils/sendEmail";
+import { outreachQueue } from "../../jobs/outreach.job";
 import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
+import { parsePlaceholders } from "../../utils/placeholderParser";
 
 const db = prisma as any;
 
@@ -127,11 +129,14 @@ const sendEmailToLeadInDB = async (leadId: string, message?: string) => {
   }
 
   // Determine the message to send
-  const messageBody = message || lead.campaign?.firstMessage;
+  const rawMessage = message || lead.campaign?.firstMessage;
 
-  if (!messageBody) {
+  if (!rawMessage) {
     throw new ApiError(httpStatus.BAD_REQUEST, "No message content provided and campaign has no default first message");
   }
+
+  // Parse placeholders (e.g. {{firstName}})
+  const messageBody = parsePlaceholders(rawMessage, { name: lead.name });
 
   // Send the outreach email
   await sendEmail({
@@ -162,16 +167,41 @@ const sendEmailToLeadInDB = async (leadId: string, message?: string) => {
 };
 
 const bulkSendEmailToLeadsInDB = async (leadIds: string[], message?: string) => {
-  const results = [];
-  for (const id of leadIds) {
-    try {
-      const result = await sendEmailToLeadInDB(id, message);
-      results.push({ id, success: true, result });
-    } catch (error: any) {
-      results.push({ id, success: false, message: error.message });
-    }
+  // Validate bulk limit
+  if (leadIds.length > 100) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "You can only select up to 100 leads for bulk outreach at a time.");
   }
-  return results;
+
+  // Add jobs to the queue for each lead with deduplication (jobId)
+  const jobs = leadIds.map((id) => ({
+    name: `outreach-${id}`,
+    data: { leadId: id, message },
+    opts: { jobId: `outreach-${id}-${new Date().toISOString().split('T')[0]}` } // Daily deduplication
+  }));
+
+  await outreachQueue.addBulk(jobs);
+
+  return { 
+    message: `Successfully queued ${leadIds.length} outreach emails`,
+    queueCount: leadIds.length 
+  };
+};
+
+const getOutreachQueueStatus = async () => {
+  const [waiting, active, completed, failed] = await Promise.all([
+    outreachQueue.getWaitingCount(),
+    outreachQueue.getActiveCount(),
+    outreachQueue.getCompletedCount(),
+    outreachQueue.getFailedCount(),
+  ]);
+
+  return {
+    waiting,
+    active,
+    completed,
+    failed,
+    total: waiting + active + completed + failed,
+  };
 };
 
 export const LeadService = {
@@ -181,5 +211,6 @@ export const LeadService = {
   deleteLeadFromDB,
   sendEmailToLeadInDB,
   bulkSendEmailToLeadsInDB,
+  getOutreachQueueStatus,
 };
 

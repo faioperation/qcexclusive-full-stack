@@ -31,9 +31,13 @@ export interface IUpdateLeadPayload {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const getAuthHeader = async () => ({
-  Authorization: `Bearer ${(await cookies()).get("accessToken")!.value}`,
-});
+const getAuthHeader = async () => {
+  const token = (await cookies()).get("accessToken")?.value;
+  if (!token) return {};
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
 
 // ─── Get All Leads ────────────────────────────────────────────────────────────
 
@@ -49,7 +53,7 @@ export const getAllLeads = async (query?: ILeadQuery) => {
     const params = new URLSearchParams();
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
+        if (value !== undefined && value !== null && value !== "" && value !== "$undefined") {
           params.set(key, String(value));
         }
       });
@@ -207,6 +211,24 @@ export const bulkSendEmailToLeads = async (leadIds: string[], message?: string) 
       }
     );
     revalidateTag("lead", "default");
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+/**
+ * GET /lead/outreach-status
+ * Retrieve current BullMQ status counts (waiting, active, completed, failed).
+ */
+export const getOutreachQueueStatus = async () => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}/lead/outreach-status`, {
+      method: "GET",
+      headers: await getAuthHeader(),
+    });
     const result = await res.json();
     return result;
   } catch (err) {
