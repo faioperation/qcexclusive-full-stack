@@ -242,16 +242,21 @@ model Location {
 }
 
 model MediaPost {
-  id         String           @id @default(uuid())
-  heading    String
-  body       String
-  postTime   DateTime         @default(now())
-  status     EMediaPostStatus @default(Draft)
-  docsLinkId String
-  docsLink   DocsLink         @relation(fields: [docsLinkId], references: [id], onDelete: Cascade)
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  id           String           @id @default(uuid())
+  heading      String
+  body         String
+  postTime     DateTime         @default(now())
+  status       EMediaPostStatus @default(Draft)
+  imageUrl     String?
+  thumbnailUrl String?
+  imageAlt     String?
+  docsLinkId   String
+  docsLink     DocsLink         @relation(fields: [docsLinkId], references: [id], onDelete: Cascade)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 
+  @@index([status])
+  @@index([docsLinkId])
   @@map("media_posts")
 }
 

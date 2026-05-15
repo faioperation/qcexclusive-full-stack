@@ -244,6 +244,9 @@ exports.Prisma.MediaPostScalarFieldEnum = {
   body: 'body',
   postTime: 'postTime',
   status: 'status',
+  imageUrl: 'imageUrl',
+  thumbnailUrl: 'thumbnailUrl',
+  imageAlt: 'imageAlt',
   docsLinkId: 'docsLinkId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

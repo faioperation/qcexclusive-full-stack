@@ -2,7 +2,7 @@ import {
   ECampaignStatus, EScrapingJobStatus, EPlatform, ELeadStatus,
 } from "../../../../generated/prisma";
 import { prisma } from "../../db_connection/prisma";
-import { triggerApifyScraper, waitForApifyRun, getDatasetItems } from "../../utils/apify";
+import { triggerApifyScraper, waitForApifyRun, getDatasetItems, triggerInstagramScrapers, triggerFacebookScrapers } from "../../utils/apify";
 import { QueryBuilder, TQueryInput } from "../../utils/QueryBuilder";
 import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
@@ -86,49 +86,145 @@ const mapItemToLead = (item: any, platform: "GoogleMaps" | "Instagram" | "Facebo
 
 // ─── Create Campaign ──────────────────────────────────────────────────────────
 const createCampaignInDB = async (payload: any, userId: string) => {
+
   const campaign = await db.campaign.create({
-    data: { ...payload, createdById: userId, status: ECampaignStatus.Active },
+    data: {
+      ...payload,
+      createdById: userId,
+      status: ECampaignStatus.Active,
+    },
   });
 
-  // ✅ Read the platform FROM the campaign, don't hardcode GoogleMaps
-  const { apifyPlatform, dbPlatform } = resolvePlatform(campaign.platform);
-  console.log(`[Campaign ${campaign.id}] Platform resolved: ${apifyPlatform}`);
+  const { apifyPlatform, dbPlatform } =
+    resolvePlatform(campaign.platform);
+
+  console.log(
+    `[Campaign ${campaign.id}] Platform resolved: ${apifyPlatform}`
+  );
 
   try {
-    const apifyRun = await triggerApifyScraper({
-      platform: apifyPlatform,
-      location: campaign.location,
-      industry: campaign.industry,
-      specification: campaign.specification,
-      maxItems: 100,
-    });
 
-    console.log(`[Campaign ${campaign.id}] Apify run: ${apifyRun.runId}`);
+    let profileRun: any = null;
+    let emailRun: any = null;
 
-    if (apifyRun.datasetId && apifyRun.datasetId !== "unknown") {
-      await db.campaign.update({
-        where: { id: campaign.id },
-        data: { apifyDatasetId: apifyRun.datasetId },
+    // ─────────────────────────────────────────────
+    // GOOGLE MAPS
+    // ─────────────────────────────────────────────
+
+    if (apifyPlatform === "GoogleMaps") {
+
+      profileRun = await triggerApifyScraper({
+        platform: "GoogleMaps",
+        location: campaign.location,
+        industry: campaign.industry,
+        specification: campaign.specification,
+        maxItems: 100,
       });
     }
 
-    const scrapingJob = await db.scrapingJob.create({
-      data: {
-        campaignId: campaign.id,
-        platform: dbPlatform,              // ✅ use resolved platform
-        status: EScrapingJobStatus.Running,
-        targetQuery: [campaign.industry, campaign.specification, campaign.location]
-          .filter(Boolean).join(" in "),
-        startedAt: new Date(),
-      },
-    });
+    // ─────────────────────────────────────────────
+    // INSTAGRAM
+    // ─────────────────────────────────────────────
 
-    // Non-blocking background processing
-    processScrapingResults(campaign.id, scrapingJob.id, apifyRun.runId, apifyPlatform);
+    else if (apifyPlatform === "Instagram") {
+
+      const runs =
+        await triggerInstagramScrapers({
+          platform: "Instagram",
+          location: campaign.location,
+          industry: campaign.industry,
+          specification: campaign.specification,
+          maxItems: 100,
+        });
+
+      profileRun = runs.profileRun;
+      emailRun = runs.emailRun;
+    }
+
+    // ─────────────────────────────────────────────
+    // FACEBOOK
+    // ─────────────────────────────────────────────
+
+    else if (apifyPlatform === "Facebook") {
+
+      const runs =
+        await triggerFacebookScrapers({
+          platform: "Facebook",
+          location: campaign.location,
+          industry: campaign.industry,
+          specification: campaign.specification,
+          maxItems: 100,
+        });
+
+      profileRun = runs.profileRun;
+      emailRun = runs.emailRun;
+    }
+
+    console.log(
+      `[Campaign ${campaign.id}] Profile Run: ${profileRun?.runId}`
+    );
+
+    if (emailRun) {
+      console.log(
+        `[Campaign ${campaign.id}] Email Run: ${emailRun?.runId}`
+      );
+    }
+
+    // Save dataset
+    if (
+      profileRun?.datasetId &&
+      profileRun.datasetId !== "unknown"
+    ) {
+      await db.campaign.update({
+        where: {
+          id: campaign.id,
+        },
+        data: {
+          apifyDatasetId: profileRun.datasetId,
+        },
+      });
+    }
+
+    // Create scraping job
+    const scrapingJob =
+      await db.scrapingJob.create({
+        data: {
+          campaignId: campaign.id,
+          platform: dbPlatform,
+          status: EScrapingJobStatus.Running,
+          targetQuery: [
+            campaign.industry,
+            campaign.specification,
+            campaign.location,
+          ]
+            .filter(Boolean)
+            .join(" in "),
+
+          startedAt: new Date(),
+        },
+      });
+
+    // Background processing
+    processScrapingResults(
+      campaign.id,
+      scrapingJob.id,
+      {
+        profileRunId: profileRun.runId,
+        emailRunId: emailRun?.runId ?? null,
+      },
+
+      apifyPlatform
+    );
 
     return campaign;
+
   } catch (error: any) {
-    console.error(`[Campaign ${campaign.id}] Failed to trigger Apify:`, error.message);
+
+    console.error(
+      `[Campaign ${campaign.id}] Failed to trigger Apify:`,
+      error.message
+    );
+
     return campaign;
   }
 };
@@ -137,21 +233,41 @@ const createCampaignInDB = async (payload: any, userId: string) => {
 const processScrapingResults = async (
   campaignId: string,
   jobId: string,
-  runId: string,
+  runData: {
+    profileRunId: string;
+    emailRunId?: string | null;
+  },
+
   apifyPlatform: "GoogleMaps" | "Instagram" | "Facebook"
 ) => {
   try {
-    console.log(`[Job ${jobId}] Waiting for Apify run ${runId} (${apifyPlatform})...`);
-    const runResult = await waitForApifyRun(runId);
-    console.log(`[Job ${jobId}] Run finished: ${runResult.status}`);
+    console.log(
+      `[Job ${jobId}] Waiting for Apify profile run ${runData.profileRunId} (${apifyPlatform})...`
+    );
+
+    const profileRunResult =
+      await waitForApifyRun(runData.profileRunId);
+
+    let emailRunResult: any = null;
+
+    if (runData.emailRunId) {
+
+      console.log(
+        `[Job ${jobId}] Waiting for Apify email run ${runData.emailRunId}`
+      );
+
+      emailRunResult =
+        await waitForApifyRun(runData.emailRunId);
+    }
+    console.log(`[Job ${jobId}] Run finished: ${profileRunResult.status}`);
 
     const campaignRecord = await db.campaign.findUnique({ where: { id: campaignId } });
 
-    if (runResult.status !== "SUCCEEDED") {
+    if (profileRunResult.status !== "SUCCEEDED") {
       if (!campaignRecord?.apifyDatasetId) {
         await db.scrapingJob.update({
           where: { id: jobId },
-          data: { status: EScrapingJobStatus.Failed, errorLog: `Run status: ${runResult.status}`, completedAt: new Date() },
+          data: { status: EScrapingJobStatus.Failed, errorLog: `Run status: ${profileRunResult.status}`, completedAt: new Date() },
         });
         return;
       }
@@ -160,8 +276,8 @@ const processScrapingResults = async (
 
     // Fetch items — prefer run's datasetId, fallback to saved one
     let items: any[] = [];
-    const primaryDatasetId = runResult.status === "SUCCEEDED"
-      ? runResult.datasetId
+    const primaryDatasetId = profileRunResult.status === "SUCCEEDED"
+      ? profileRunResult.datasetId
       : campaignRecord?.apifyDatasetId;
 
     try {

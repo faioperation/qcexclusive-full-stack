@@ -8,9 +8,9 @@ export default {
   DATABASE: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
   JWT_ACCESS_TOKEN: process.env.JWT_ACCESS_TOKEN,
-  JWT_ACCESS_EXPIRES: process.env.JWT_ACCESS_EXPIRES,
+  JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_TOKEN: process.env.JWT_REFRESH_TOKEN,
-  JWT_REFRESH_EXPIRES: process.env.JWT_REFRESH_EXPIRES,
+  JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
   /** Resend API (transactional email) */
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   /** Verified sender, e.g. "QC Exclusive <mail@yourdomain.com>" */

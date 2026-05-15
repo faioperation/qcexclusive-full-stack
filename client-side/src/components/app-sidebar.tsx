@@ -37,7 +37,7 @@ const data = {
     { title: "Leads", icon: <Users size={20} />, url: "/leads" },
     { title: "Inbox", icon: <Inbox size={20} />, url: "/inbox" },
     { title: "Calendar", icon: <CalendarDays size={20} />, url: "/calendar" },
-    { title: "Config", icon: <TableProperties size={20} />, url: "/config" },
+    // { title: "Config", icon: <TableProperties size={20} />, url: "/config" },
     { title: "Docs Link", icon: <LinkIcon size={20} />, url: "/docs-link" },
     { title: "Media Post", icon: <ImagePlay size={20} />, url: "/media-post" },
   ],

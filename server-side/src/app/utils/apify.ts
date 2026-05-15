@@ -4,10 +4,25 @@ import config from "../config";
 // Google Maps: faisalrjbd~google-maps-phone-email-extractor
 // Instagram:   scraper-mind~instagram-email-scraper  (keyword + location → emails)
 // Facebook:    apify~facebook-search-scraper         (keyword + location → page emails)
+// const ACTORS = {
+//   GoogleMaps: "faisalrjbd~google-maps-phone-email-extractor",
+//   Instagram:  "scraper-mind~instagram-email-scraper",
+//   Facebook:   "apify~facebook-search-scraper",
+// } as const;
 const ACTORS = {
-  GoogleMaps: "faisalrjbd~google-maps-phone-email-extractor",
-  Instagram:  "scraper-mind~instagram-email-scraper",
-  Facebook:   "apify~facebook-search-scraper",
+  GoogleMaps: {
+    profile: "faisalrjbd~google-maps-phone-email-extractor",
+  },
+
+  Instagram: {
+    profile: "apify/instagram-profile-scraper",
+    email: "scraper-mind~instagram-email-scraper",
+  },
+
+  Facebook: {
+    profile: "apify/facebook-pages-scraper",
+    email: "apify~facebook-search-scraper",
+  },
 } as const;
 
 const getToken = () => {
@@ -36,19 +51,19 @@ const buildActorInput = (params: TApifyScrapeParams): object => {
 
   // Keywords: combine industry + specification
   const keywords: string[] = [];
-  if (params.industry)      keywords.push(params.industry);
+  if (params.industry) keywords.push(params.industry);
   if (params.specification) keywords.push(params.specification);
   if (keywords.length === 0) keywords.push("business");
 
   if (params.platform === "GoogleMaps") {
     // ✅ Verified input schema from Apify actor UI (Image 3 in original context)
     return {
-      searchStringsArray:      keywords,
-      locationQuery:           params.location ?? "",
-      maxPlacesPerSearch:      maxItems,
-      language:                "en",
-      skipClosedPlaces:        false,
-      placeMinimumStars:       0,
+      searchStringsArray: keywords,
+      locationQuery: params.location ?? "",
+      maxPlacesPerSearch: maxItems,
+      language: "en",
+      skipClosedPlaces: false,
+      placeMinimumStars: 0,
       scrapeEmailsFromWebsites: true,
     };
   }
@@ -57,9 +72,9 @@ const buildActorInput = (params: TApifyScrapeParams): object => {
     // ✅ Verified input schema: scraper-mind~instagram-email-scraper
     // Fields: keywords (array), location (string), platform (string)
     return {
-      keywords:   keywords,
-      location:   params.location ?? "",
-      platform:   "Instagram",
+      keywords: keywords,
+      location: params.location ?? "",
+      platform: "Instagram",
       proxyConfiguration: { useApifyProxy: true },
     };
   }
@@ -70,7 +85,7 @@ const buildActorInput = (params: TApifyScrapeParams): object => {
     // Extracts: page URL, address, email, website, phone, category, followers
     return {
       queries: keywords.map((kw) => ({
-        query:    params.location ? `${kw} ${params.location}` : kw,
+        query: params.location ? `${kw} ${params.location}` : kw,
         location: params.location ?? "",
       })),
       maxResults: maxItems,
@@ -84,18 +99,18 @@ const buildActorInput = (params: TApifyScrapeParams): object => {
 export const triggerApifyScraper = async (
   params: TApifyScrapeParams
 ): Promise<TApifyRunResult> => {
-  const token     = getToken();
-  const actorId   = ACTORS[params.platform];
+  const token = getToken();
+  const actorId = ACTORS[params.platform];
   const actorInput = buildActorInput(params);
 
   console.log(`[Apify] Triggering ${params.platform} actor (${actorId})`);
   console.log("[Apify] Input:", JSON.stringify(actorInput, null, 2));
 
-  const url  = `${config.APIFY_API_BASE_URL}/v2/acts/${actorId}/runs?token=${token}`;
+  const url = `${config.APIFY_API_BASE_URL}/v2/acts/${actorId}/runs?token=${token}`;
   const resp = await fetch(url, {
-    method:  "POST",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify(actorInput),
+    body: JSON.stringify(actorInput),
   });
 
   if (!resp.ok) {
@@ -105,32 +120,32 @@ export const triggerApifyScraper = async (
   }
 
   const result = await resp.json();
-  const run    = result?.data;
+  const run = result?.data;
 
   console.log(`[Apify] Run created: runId=${run?.id}, datasetId=${run?.defaultDatasetId}, status=${run?.status}`);
 
   return {
-    runId:     run?.id                ?? "unknown",
-    datasetId: run?.defaultDatasetId  ?? "unknown",
-    status:    run?.status            ?? "CREATED",
+    runId: run?.id ?? "unknown",
+    datasetId: run?.defaultDatasetId ?? "unknown",
+    status: run?.status ?? "CREATED",
   };
 };
 
 // ─── Wait for run to finish ───────────────────────────────────────────────────
 // Google Maps needs up to 20 min. Instagram/Facebook are faster (~5 min).
 export const waitForApifyRun = async (
-  runId:     string,
+  runId: string,
   maxWaitMs: number = 20 * 60 * 1000
 ): Promise<{ status: string; datasetId: string }> => {
-  const token    = getToken();
+  const token = getToken();
   const deadline = Date.now() + maxWaitMs;
 
   while (Date.now() < deadline) {
     const resp = await fetch(`${config.APIFY_API_BASE_URL}/v2/actor-runs/${runId}?token=${token}`);
     if (!resp.ok) throw new Error(`Failed to poll Apify run: ${resp.statusText}`);
 
-    const data   = await resp.json();
-    const run    = data?.data;
+    const data = await resp.json();
+    const run = data?.data;
     const status = run?.status ?? "UNKNOWN";
 
     console.log(`[Apify] Run ${runId} status: ${status}`);
@@ -148,7 +163,7 @@ export const waitForApifyRun = async (
 // ─── Get dataset items ────────────────────────────────────────────────────────
 export const getDatasetItems = async (datasetId: string): Promise<any[]> => {
   const token = getToken();
-  const url   = `${config.APIFY_API_BASE_URL}/v2/datasets/${datasetId}/items?token=${token}&clean=true&format=json`;
+  const url = `${config.APIFY_API_BASE_URL}/v2/datasets/${datasetId}/items?token=${token}&clean=true&format=json`;
 
   console.log(`[Apify] Fetching dataset: ${datasetId}`);
   const resp = await fetch(url);
@@ -161,8 +176,110 @@ export const getDatasetItems = async (datasetId: string): Promise<any[]> => {
 
 export const getApifyRunStatus = async (runId: string): Promise<string> => {
   const token = getToken();
-  const resp  = await fetch(`${config.APIFY_API_BASE_URL}/v2/actor-runs/${runId}?token=${token}`);
+  const resp = await fetch(`${config.APIFY_API_BASE_URL}/v2/actor-runs/${runId}?token=${token}`);
   if (!resp.ok) return "UNKNOWN";
-  const data  = await resp.json();
+  const data = await resp.json();
   return data?.data?.status ?? "UNKNOWN";
+};
+
+// ─── trigger Instagram Scrapers ────────────────────────────────────────────────────────
+export const triggerInstagramScrapers = async (
+  params: TApifyScrapeParams
+) => {
+  const profileRun = await triggerActorRun(
+    ACTORS.Instagram.profile,
+    {
+      usernames: [],
+      search: params.industry,
+      resultsLimit: params.maxItems ?? 50,
+    }
+  );
+
+  const emailRun = await triggerActorRun(
+    ACTORS.Instagram.email,
+    {
+      keywords: [
+        params.industry,
+        params.specification,
+      ].filter(Boolean),
+
+      location: params.location ?? "",
+      platform: "Instagram",
+
+      proxyConfiguration: {
+        useApifyProxy: true,
+      },
+    }
+  );
+
+  return {
+    profileRun,
+    emailRun,
+  };
+};
+
+// ─── trigger Facebook Scrapers ────────────────────────────────────────────────────────
+export const triggerFacebookScrapers = async (
+  params: TApifyScrapeParams
+) => {
+  const profileRun = await triggerActorRun(
+    ACTORS.Facebook.profile,
+    {
+      searchTerms: [
+        params.industry,
+      ].filter(Boolean),
+
+      maxItems: params.maxItems ?? 50,
+    }
+  );
+
+  const emailRun = await triggerActorRun(
+    ACTORS.Facebook.email,
+    {
+      queries: [
+        {
+          query: `${params.industry} ${params.location ?? ""}`,
+        },
+      ],
+
+      maxResults: params.maxItems ?? 50,
+    }
+  );
+
+  return {
+    profileRun,
+    emailRun,
+  };
+};
+
+// ─── trigger Actor Run function ────────────────────────────────────────────────────────
+const triggerActorRun = async (
+  actorId: string,
+  input: object
+): Promise<TApifyRunResult> => {
+
+  const token = getToken();
+
+  const url =
+    `${config.APIFY_API_BASE_URL}/v2/acts/${actorId}/runs?token=${token}`;
+
+  const resp = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!resp.ok) {
+    throw new Error(await resp.text());
+  }
+
+  const result = await resp.json();
+
+  return {
+    runId: result.data.id,
+    datasetId: result.data.defaultDatasetId,
+    status: result.data.status,
+  };
 };

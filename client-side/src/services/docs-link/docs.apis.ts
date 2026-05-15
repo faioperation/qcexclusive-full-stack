@@ -32,6 +32,9 @@ export interface IAllPostsResponse {
   heading: string;
   body: string;
   status: string;
+  imageUrl: string | null;
+  thumbnailUrl: string | null;
+  imageAlt: string | null;
   createdAt: string;
   docsLink: {
     id: string;

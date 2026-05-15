@@ -12108,6 +12108,9 @@ export namespace Prisma {
     body: string | null
     postTime: Date | null
     status: $Enums.EMediaPostStatus | null
+    imageUrl: string | null
+    thumbnailUrl: string | null
+    imageAlt: string | null
     docsLinkId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -12119,6 +12122,9 @@ export namespace Prisma {
     body: string | null
     postTime: Date | null
     status: $Enums.EMediaPostStatus | null
+    imageUrl: string | null
+    thumbnailUrl: string | null
+    imageAlt: string | null
     docsLinkId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -12130,6 +12136,9 @@ export namespace Prisma {
     body: number
     postTime: number
     status: number
+    imageUrl: number
+    thumbnailUrl: number
+    imageAlt: number
     docsLinkId: number
     createdAt: number
     updatedAt: number
@@ -12143,6 +12152,9 @@ export namespace Prisma {
     body?: true
     postTime?: true
     status?: true
+    imageUrl?: true
+    thumbnailUrl?: true
+    imageAlt?: true
     docsLinkId?: true
     createdAt?: true
     updatedAt?: true
@@ -12154,6 +12166,9 @@ export namespace Prisma {
     body?: true
     postTime?: true
     status?: true
+    imageUrl?: true
+    thumbnailUrl?: true
+    imageAlt?: true
     docsLinkId?: true
     createdAt?: true
     updatedAt?: true
@@ -12165,6 +12180,9 @@ export namespace Prisma {
     body?: true
     postTime?: true
     status?: true
+    imageUrl?: true
+    thumbnailUrl?: true
+    imageAlt?: true
     docsLinkId?: true
     createdAt?: true
     updatedAt?: true
@@ -12249,6 +12267,9 @@ export namespace Prisma {
     body: string
     postTime: Date
     status: $Enums.EMediaPostStatus
+    imageUrl: string | null
+    thumbnailUrl: string | null
+    imageAlt: string | null
     docsLinkId: string
     createdAt: Date
     updatedAt: Date
@@ -12277,6 +12298,9 @@ export namespace Prisma {
     body?: boolean
     postTime?: boolean
     status?: boolean
+    imageUrl?: boolean
+    thumbnailUrl?: boolean
+    imageAlt?: boolean
     docsLinkId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -12289,6 +12313,9 @@ export namespace Prisma {
     body?: boolean
     postTime?: boolean
     status?: boolean
+    imageUrl?: boolean
+    thumbnailUrl?: boolean
+    imageAlt?: boolean
     docsLinkId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -12301,6 +12328,9 @@ export namespace Prisma {
     body?: boolean
     postTime?: boolean
     status?: boolean
+    imageUrl?: boolean
+    thumbnailUrl?: boolean
+    imageAlt?: boolean
     docsLinkId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -12313,12 +12343,15 @@ export namespace Prisma {
     body?: boolean
     postTime?: boolean
     status?: boolean
+    imageUrl?: boolean
+    thumbnailUrl?: boolean
+    imageAlt?: boolean
     docsLinkId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type MediaPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "heading" | "body" | "postTime" | "status" | "docsLinkId" | "createdAt" | "updatedAt", ExtArgs["result"]["mediaPost"]>
+  export type MediaPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "heading" | "body" | "postTime" | "status" | "imageUrl" | "thumbnailUrl" | "imageAlt" | "docsLinkId" | "createdAt" | "updatedAt", ExtArgs["result"]["mediaPost"]>
   export type MediaPostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     docsLink?: boolean | DocsLinkDefaultArgs<ExtArgs>
   }
@@ -12340,6 +12373,9 @@ export namespace Prisma {
       body: string
       postTime: Date
       status: $Enums.EMediaPostStatus
+      imageUrl: string | null
+      thumbnailUrl: string | null
+      imageAlt: string | null
       docsLinkId: string
       createdAt: Date
       updatedAt: Date
@@ -12772,6 +12808,9 @@ export namespace Prisma {
     readonly body: FieldRef<"MediaPost", 'String'>
     readonly postTime: FieldRef<"MediaPost", 'DateTime'>
     readonly status: FieldRef<"MediaPost", 'EMediaPostStatus'>
+    readonly imageUrl: FieldRef<"MediaPost", 'String'>
+    readonly thumbnailUrl: FieldRef<"MediaPost", 'String'>
+    readonly imageAlt: FieldRef<"MediaPost", 'String'>
     readonly docsLinkId: FieldRef<"MediaPost", 'String'>
     readonly createdAt: FieldRef<"MediaPost", 'DateTime'>
     readonly updatedAt: FieldRef<"MediaPost", 'DateTime'>
@@ -18238,6 +18277,9 @@ export namespace Prisma {
     body: 'body',
     postTime: 'postTime',
     status: 'status',
+    imageUrl: 'imageUrl',
+    thumbnailUrl: 'thumbnailUrl',
+    imageAlt: 'imageAlt',
     docsLinkId: 'docsLinkId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -19384,6 +19426,9 @@ export namespace Prisma {
     body?: StringFilter<"MediaPost"> | string
     postTime?: DateTimeFilter<"MediaPost"> | Date | string
     status?: EnumEMediaPostStatusFilter<"MediaPost"> | $Enums.EMediaPostStatus
+    imageUrl?: StringNullableFilter<"MediaPost"> | string | null
+    thumbnailUrl?: StringNullableFilter<"MediaPost"> | string | null
+    imageAlt?: StringNullableFilter<"MediaPost"> | string | null
     docsLinkId?: StringFilter<"MediaPost"> | string
     createdAt?: DateTimeFilter<"MediaPost"> | Date | string
     updatedAt?: DateTimeFilter<"MediaPost"> | Date | string
@@ -19396,6 +19441,9 @@ export namespace Prisma {
     body?: SortOrder
     postTime?: SortOrder
     status?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    thumbnailUrl?: SortOrderInput | SortOrder
+    imageAlt?: SortOrderInput | SortOrder
     docsLinkId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -19411,6 +19459,9 @@ export namespace Prisma {
     body?: StringFilter<"MediaPost"> | string
     postTime?: DateTimeFilter<"MediaPost"> | Date | string
     status?: EnumEMediaPostStatusFilter<"MediaPost"> | $Enums.EMediaPostStatus
+    imageUrl?: StringNullableFilter<"MediaPost"> | string | null
+    thumbnailUrl?: StringNullableFilter<"MediaPost"> | string | null
+    imageAlt?: StringNullableFilter<"MediaPost"> | string | null
     docsLinkId?: StringFilter<"MediaPost"> | string
     createdAt?: DateTimeFilter<"MediaPost"> | Date | string
     updatedAt?: DateTimeFilter<"MediaPost"> | Date | string
@@ -19423,6 +19474,9 @@ export namespace Prisma {
     body?: SortOrder
     postTime?: SortOrder
     status?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    thumbnailUrl?: SortOrderInput | SortOrder
+    imageAlt?: SortOrderInput | SortOrder
     docsLinkId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -19440,6 +19494,9 @@ export namespace Prisma {
     body?: StringWithAggregatesFilter<"MediaPost"> | string
     postTime?: DateTimeWithAggregatesFilter<"MediaPost"> | Date | string
     status?: EnumEMediaPostStatusWithAggregatesFilter<"MediaPost"> | $Enums.EMediaPostStatus
+    imageUrl?: StringNullableWithAggregatesFilter<"MediaPost"> | string | null
+    thumbnailUrl?: StringNullableWithAggregatesFilter<"MediaPost"> | string | null
+    imageAlt?: StringNullableWithAggregatesFilter<"MediaPost"> | string | null
     docsLinkId?: StringWithAggregatesFilter<"MediaPost"> | string
     createdAt?: DateTimeWithAggregatesFilter<"MediaPost"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MediaPost"> | Date | string
@@ -20732,6 +20789,9 @@ export namespace Prisma {
     body: string
     postTime?: Date | string
     status?: $Enums.EMediaPostStatus
+    imageUrl?: string | null
+    thumbnailUrl?: string | null
+    imageAlt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     docsLink: DocsLinkCreateNestedOneWithoutPostsInput
@@ -20743,6 +20803,9 @@ export namespace Prisma {
     body: string
     postTime?: Date | string
     status?: $Enums.EMediaPostStatus
+    imageUrl?: string | null
+    thumbnailUrl?: string | null
+    imageAlt?: string | null
     docsLinkId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20754,6 +20817,9 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     postTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEMediaPostStatusFieldUpdateOperationsInput | $Enums.EMediaPostStatus
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     docsLink?: DocsLinkUpdateOneRequiredWithoutPostsNestedInput
@@ -20765,6 +20831,9 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     postTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEMediaPostStatusFieldUpdateOperationsInput | $Enums.EMediaPostStatus
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     docsLinkId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20776,6 +20845,9 @@ export namespace Prisma {
     body: string
     postTime?: Date | string
     status?: $Enums.EMediaPostStatus
+    imageUrl?: string | null
+    thumbnailUrl?: string | null
+    imageAlt?: string | null
     docsLinkId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20787,6 +20859,9 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     postTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEMediaPostStatusFieldUpdateOperationsInput | $Enums.EMediaPostStatus
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20797,6 +20872,9 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     postTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEMediaPostStatusFieldUpdateOperationsInput | $Enums.EMediaPostStatus
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     docsLinkId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22087,6 +22165,9 @@ export namespace Prisma {
     body?: SortOrder
     postTime?: SortOrder
     status?: SortOrder
+    imageUrl?: SortOrder
+    thumbnailUrl?: SortOrder
+    imageAlt?: SortOrder
     docsLinkId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -22098,6 +22179,9 @@ export namespace Prisma {
     body?: SortOrder
     postTime?: SortOrder
     status?: SortOrder
+    imageUrl?: SortOrder
+    thumbnailUrl?: SortOrder
+    imageAlt?: SortOrder
     docsLinkId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -22109,6 +22193,9 @@ export namespace Prisma {
     body?: SortOrder
     postTime?: SortOrder
     status?: SortOrder
+    imageUrl?: SortOrder
+    thumbnailUrl?: SortOrder
+    imageAlt?: SortOrder
     docsLinkId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -24643,6 +24730,9 @@ export namespace Prisma {
     body: string
     postTime?: Date | string
     status?: $Enums.EMediaPostStatus
+    imageUrl?: string | null
+    thumbnailUrl?: string | null
+    imageAlt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24653,6 +24743,9 @@ export namespace Prisma {
     body: string
     postTime?: Date | string
     status?: $Enums.EMediaPostStatus
+    imageUrl?: string | null
+    thumbnailUrl?: string | null
+    imageAlt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24733,6 +24826,9 @@ export namespace Prisma {
     body?: StringFilter<"MediaPost"> | string
     postTime?: DateTimeFilter<"MediaPost"> | Date | string
     status?: EnumEMediaPostStatusFilter<"MediaPost"> | $Enums.EMediaPostStatus
+    imageUrl?: StringNullableFilter<"MediaPost"> | string | null
+    thumbnailUrl?: StringNullableFilter<"MediaPost"> | string | null
+    imageAlt?: StringNullableFilter<"MediaPost"> | string | null
     docsLinkId?: StringFilter<"MediaPost"> | string
     createdAt?: DateTimeFilter<"MediaPost"> | Date | string
     updatedAt?: DateTimeFilter<"MediaPost"> | Date | string
@@ -26815,6 +26911,9 @@ export namespace Prisma {
     body: string
     postTime?: Date | string
     status?: $Enums.EMediaPostStatus
+    imageUrl?: string | null
+    thumbnailUrl?: string | null
+    imageAlt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -26825,6 +26924,9 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     postTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEMediaPostStatusFieldUpdateOperationsInput | $Enums.EMediaPostStatus
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26835,6 +26937,9 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     postTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEMediaPostStatusFieldUpdateOperationsInput | $Enums.EMediaPostStatus
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26845,6 +26950,9 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     postTime?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumEMediaPostStatusFieldUpdateOperationsInput | $Enums.EMediaPostStatus
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    thumbnailUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imageAlt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

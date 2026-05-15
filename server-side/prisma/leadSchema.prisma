@@ -7,6 +7,9 @@ model Lead {
   platformUrl          String?
   profileUsername      String?
   followerCount        Int               @default(0)
+  followingCount       Int               @default(0)
+  postCount            Int               @default(0)
+  likesCount           Int               @default(0)
   bio                  String?
   imageUrl             String? // business logo / profile picture from scraper
   website              String? // business website URL

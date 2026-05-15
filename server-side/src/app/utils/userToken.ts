@@ -12,12 +12,12 @@ export const createUserToken = (payload: Partial<TJwtPayload>) => {
   const accessToken = generateToken(
     data,
     config.JWT_ACCESS_TOKEN as string,
-    config.JWT_ACCESS_EXPIRES as string,
+    config.JWT_ACCESS_EXPIRES_IN as string,
   );
   const refreshToken = generateToken(
     data,
     config.JWT_REFRESH_TOKEN as string,
-    config.JWT_REFRESH_EXPIRES as string,
+    config.JWT_REFRESH_EXPIRES_IN as string,
   );
 
   return { accessToken, refreshToken };
