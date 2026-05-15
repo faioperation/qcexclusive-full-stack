@@ -25,6 +25,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(userData);
     } catch {
       setUser(null);
+
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
     } finally {
       setIsLoading(false);
     }

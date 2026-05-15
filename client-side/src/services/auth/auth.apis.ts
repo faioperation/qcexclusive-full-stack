@@ -172,11 +172,27 @@ export const changePassword = async (payload: {
  * Decodes the accessToken cookie to return the currently logged-in user.
  * No network call — reads from the JWT payload directly.
  */
+
+interface IDecodedUser extends IUser {
+  exp: number;
+}
+
 export const getCurrentUser = async (): Promise<IUser | null> => {
   try {
     const token = (await cookies()).get("accessToken")?.value;
+
     if (!token) return null;
-    const decoded = jwtDecode<IUser>(token);
+
+    const decoded = jwtDecode<IDecodedUser>(token);
+
+    // token expired
+    if (decoded.exp * 1000 < Date.now()) {
+      (await cookies()).delete("accessToken");
+      (await cookies()).delete("refreshToken");
+
+      return null;
+    }
+
     return decoded;
   } catch (err) {
     console.log(err);
