@@ -1,11 +1,19 @@
 /**
- * Transactional email entry point (Resend + EJS).
- * Re-exports the service so existing imports (`../../utils/sendEmail`) stay stable.
+ * Transactional email entry point
+ * SMTP enabled
+ * Resend kept for future usage
  */
+
 export type {
   SendEmailParams,
   SendEmailResult,
   SendEmailAttachment,
 } from "../services/email/email.types";
 
-export { sendEmailViaResend as sendEmail } from "../services/email/resendEmail.service";
+// SMTP ACTIVE
+export { sendEmailViaSMTP as sendEmail } 
+from "../services/email/smtp.service";
+
+// RESEND TEMPORARILY DISABLED
+// export { sendEmailViaResend as sendEmail }
+// from "../services/email/resendEmail.service";

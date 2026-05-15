@@ -22,6 +22,8 @@ export const outreachWorker = new Worker(
     });
 
     if (!lead) {
+      console.log("DATABASE URL from outreach worker:", process.env.DATABASE_URL);
+      console.log("Lead ID Received:", leadId);
       console.warn(`[Worker] Lead ${leadId} not found. Skipping.`);
       return { success: false, error: "Lead not found" };
     }

@@ -25,26 +25,29 @@ const getSingleLead = catchAsync(async (req, res) => {
 });
 
 const updateLead = catchAsync(async (req, res) => {
-    const result = await LeadService.updateLeadInDB(req.params.id as string, req.body);
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Lead updated successfully",
-      data: result,
-    });
+  const result = await LeadService.updateLeadInDB(req.params.id as string, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Lead updated successfully",
+    data: result,
+  });
 });
 
 const deleteLead = catchAsync(async (req, res) => {
-    const result = await LeadService.deleteLeadFromDB(req.params.id as string);
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Lead deleted successfully",
-      data: result,
-    });
+  const result = await LeadService.deleteLeadFromDB(req.params.id as string);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Lead deleted successfully",
+    data: result,
+  });
 });
 
 const sendEmailToLead = catchAsync(async (req, res) => {
+
+  console.log("[Controller] Lead ID:", req.params.id);
+  console.log("[Controller] Body:", req.body);
   const result = await LeadService.sendEmailToLeadInDB(req.params.id as string, req.body.message);
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -47,14 +47,14 @@ const getAllLeadsFromDB = async (query: TQueryInput) => {
     prismaQuery.where.campaign.name = prismaQuery.where.campaign.campaignName;
     delete prismaQuery.where.campaign.campaignName;
   }
-  
+
   // Include relations by default for the table view
   const finalQuery = {
     ...prismaQuery,
     include: {
-        campaign: { select: { name: true } },
-        industry: { select: { name: true } },
-        location: { select: { city: true, state: true, country: true } }
+      campaign: { select: { name: true } },
+      industry: { select: { name: true } },
+      location: { select: { city: true, state: true, country: true } }
     }
   };
 
@@ -80,13 +80,15 @@ const getSingleLeadFromDB = async (id: string) => {
   const lead = await db.lead.findUnique({
     where: { id },
     include: {
-        campaign: true,
-        industry: true,
-        location: true,
-        outreachMessages: true
+      campaign: true,
+      industry: true,
+      location: true,
+      outreachMessages: true
     }
   });
   if (!lead) {
+    console.log("DATABASE URL from getSingleLeadFromDB:", process.env.DATABASE_URL);
+    console.log("Lead ID Received:", id);
     throw new ApiError(httpStatus.NOT_FOUND, "Lead not found");
   }
   return lead;
@@ -95,6 +97,8 @@ const getSingleLeadFromDB = async (id: string) => {
 const updateLeadInDB = async (id: string, payload: Partial<Prisma.LeadUpdateInput>) => {
   const isExist = await db.lead.findUnique({ where: { id } });
   if (!isExist) {
+    console.log("DATABASE URL from updateLeadInDB:", process.env.DATABASE_URL);
+    console.log("Lead ID Received:", id);
     throw new ApiError(httpStatus.NOT_FOUND, "Lead not found");
   }
   const result = await db.lead.update({
@@ -107,6 +111,8 @@ const updateLeadInDB = async (id: string, payload: Partial<Prisma.LeadUpdateInpu
 const deleteLeadFromDB = async (id: string) => {
   const isExist = await db.lead.findUnique({ where: { id } });
   if (!isExist) {
+    console.log("DATABASE URL from deleteLeadFromDB:", process.env.DATABASE_URL);
+    console.log("Lead ID Received:", id);
     throw new ApiError(httpStatus.NOT_FOUND, "Lead not found");
   }
   await db.lead.delete({ where: { id } });
@@ -116,12 +122,19 @@ const deleteLeadFromDB = async (id: string) => {
 // ─── Manual Send Email ────────────────────────────────────────────────────────
 const sendEmailToLeadInDB = async (leadId: string, message?: string) => {
   // Fetch lead with its associated campaign
+  console.log("DATABASE URL:", process.env.DATABASE_URL);
+  console.log("Lead ID Received:", leadId);
+
   const lead = await db.lead.findUnique({
     where: { id: leadId },
     include: { campaign: true },
   });
 
+  console.log("[LeadService] Found lead:", lead);
+
   if (!lead) {
+    console.log("DATABASE URL from sendEmailToLeadInDB:", process.env.DATABASE_URL);
+    console.log("Lead ID Received:", leadId);
     throw new ApiError(httpStatus.NOT_FOUND, "Lead not found");
   }
 
@@ -205,9 +218,9 @@ const bulkSendEmailToLeadsInDB = async (leadIds: string[], message?: string) => 
 
   await outreachQueue.addBulk(jobs);
 
-  return { 
+  return {
     message: `Successfully queued ${leadIds.length} outreach emails`,
-    queueCount: leadIds.length 
+    queueCount: leadIds.length
   };
 };
 

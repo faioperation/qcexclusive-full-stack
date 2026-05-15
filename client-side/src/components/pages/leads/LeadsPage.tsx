@@ -142,7 +142,7 @@ export function LeadsPage() {
         if (result?.success) {
           const status = result.data;
           setQueueStatus(status);
-          
+
           // Stop polling if nothing is waiting or active
           if (status.waiting === 0 && status.active === 0) {
             // Give it one more fetch for leads to show updated 'Contacted' status
@@ -189,7 +189,17 @@ export function LeadsPage() {
   };
 
   const handleSendEmail = async (leadId: string) => {
-    setEmailStatusMap((prev) => ({ ...prev, [leadId]: "sending" }));
+    console.log("========= SEND EMAIL DEBUG =========");
+    console.log("Lead ID:", leadId);
+
+    const selectedLead = leads.find((l) => l.id === leadId);
+
+    console.log("Selected Lead:", selectedLead);
+
+    setEmailStatusMap((prev) => ({
+      ...prev,
+      [leadId]: "sending"
+    }));
     try {
       const result = await sendEmailToLead(leadId);
       if (result?.success) {
@@ -225,6 +235,13 @@ export function LeadsPage() {
   };
 
   const confirmBulkSend = async () => {
+    console.log("Bulk Selected IDs:", selectedIds);
+
+    console.log(
+      "Selected Lead Objects:",
+      leads.filter((l) => selectedIds.includes(l.id))
+    );
+
     if (!bulkMessage.trim()) {
       alert("Please enter a message.");
       return;
@@ -333,41 +350,41 @@ export function LeadsPage() {
               Outreach Progress
             </h4>
             {(queueStatus.waiting === 0 && queueStatus.active === 0) && (
-               <button onClick={() => setQueueStatus(null)} className="text-gray-400 hover:text-gray-600">
-                 <X size={16} />
-               </button>
+              <button onClick={() => setQueueStatus(null)} className="text-gray-400 hover:text-gray-600">
+                <X size={16} />
+              </button>
             )}
           </div>
-          
+
           <div className="space-y-3">
-             <div className="flex justify-between text-xs font-bold">
-                <span className="text-gray-500">Sent Successfully</span>
-                <span className="text-[#00A651]">{queueStatus.completed}</span>
-             </div>
-             <div className="flex justify-between text-xs font-bold">
-                <span className="text-gray-500">Processing / Waiting</span>
-                <span className="text-orange-500">{queueStatus.active + queueStatus.waiting}</span>
-             </div>
-             {queueStatus.failed > 0 && (
-               <div className="flex justify-between text-xs font-bold">
-                  <span className="text-gray-500">Failed</span>
-                  <span className="text-red-500">{queueStatus.failed}</span>
-               </div>
-             )}
-             
-             {/* Simple Progress Bar */}
-             <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-4">
-                <div 
-                  className="h-full bg-[#00A651] transition-all duration-500" 
-                  style={{ width: `${(queueStatus.completed / queueStatus.total) * 100}%` }}
-                ></div>
-             </div>
-             
-             {(queueStatus.waiting === 0 && queueStatus.active === 0) ? (
-               <p className="text-[11px] text-center text-gray-400 font-medium mt-2">All jobs completed!</p>
-             ) : (
-               <p className="text-[11px] text-center text-gray-400 font-medium mt-2">Sending emails in background...</p>
-             )}
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-gray-500">Sent Successfully</span>
+              <span className="text-[#00A651]">{queueStatus.completed}</span>
+            </div>
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-gray-500">Processing / Waiting</span>
+              <span className="text-orange-500">{queueStatus.active + queueStatus.waiting}</span>
+            </div>
+            {queueStatus.failed > 0 && (
+              <div className="flex justify-between text-xs font-bold">
+                <span className="text-gray-500">Failed</span>
+                <span className="text-red-500">{queueStatus.failed}</span>
+              </div>
+            )}
+
+            {/* Simple Progress Bar */}
+            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mt-4">
+              <div
+                className="h-full bg-[#00A651] transition-all duration-500"
+                style={{ width: `${(queueStatus.completed / queueStatus.total) * 100}%` }}
+              ></div>
+            </div>
+
+            {(queueStatus.waiting === 0 && queueStatus.active === 0) ? (
+              <p className="text-[11px] text-center text-gray-400 font-medium mt-2">All jobs completed!</p>
+            ) : (
+              <p className="text-[11px] text-center text-gray-400 font-medium mt-2">Sending emails in background...</p>
+            )}
           </div>
         </div>
       )}
@@ -392,11 +409,10 @@ export function LeadsPage() {
               setDraftFilters({ ...appliedFilters });
               setFilterOpen((v) => !v);
             }}
-            className={`relative flex items-center justify-center w-10 h-10 border rounded-[8px] transition-colors shrink-0 ${
-              filterOpen || activeFilterCount > 0
-                ? "bg-[#00A651] border-[#00A651] text-white"
-                : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-            }`}
+            className={`relative flex items-center justify-center w-10 h-10 border rounded-[8px] transition-colors shrink-0 ${filterOpen || activeFilterCount > 0
+              ? "bg-[#00A651] border-[#00A651] text-white"
+              : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+              }`}
             title="Toggle filters"
           >
             <Filter size={18} />
@@ -619,8 +635,8 @@ export function LeadsPage() {
             <thead className="bg-[#FAFBFD] text-gray-600 font-medium border-b border-gray-100">
               <tr>
                 <th className="px-4 py-4 font-semibold w-12 text-center">
-                   <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     className="w-4 h-4 rounded border-gray-300 text-[#00A651] focus:ring-[#00A651] cursor-pointer"
                     checked={leads.length > 0 && selectedIds.length === leads.length}
                     onChange={toggleSelectAll}
@@ -653,8 +669,8 @@ export function LeadsPage() {
                 leads.map((lead, idx) => (
                   <tr key={lead.id} className={`hover:bg-gray-50 transition-colors ${selectedIds.includes(lead.id) ? 'bg-green-50/50' : ''}`}>
                     <td className="px-4 py-4 text-center">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         className="w-4 h-4 rounded border-gray-300 text-[#00A651] focus:ring-[#00A651] cursor-pointer"
                         checked={selectedIds.includes(lead.id)}
                         onChange={() => toggleSelect(lead.id)}
@@ -718,10 +734,10 @@ export function LeadsPage() {
               of{" "}
               <span className="font-medium text-gray-900">{total}</span> entries
             </p>
-            
+
             <div className="hidden sm:flex items-center gap-2">
               <span className="text-sm text-gray-400">|</span>
-              <select 
+              <select
                 value={limit}
                 onChange={(e) => {
                   setLimit(Number(e.target.value));
@@ -750,11 +766,10 @@ export function LeadsPage() {
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={`w-8 h-8 rounded text-sm font-medium flex items-center justify-center transition-colors ${
-                  page === p
-                    ? "bg-[#00A651] text-white"
-                    : "hover:bg-gray-100 text-gray-600"
-                }`}
+                className={`w-8 h-8 rounded text-sm font-medium flex items-center justify-center transition-colors ${page === p
+                  ? "bg-[#00A651] text-white"
+                  : "hover:bg-gray-100 text-gray-600"
+                  }`}
               >
                 {p}
               </button>
@@ -864,7 +879,7 @@ export function LeadsPage() {
                 <code className="text-[11px] font-mono font-bold text-[#00A651] bg-green-50 px-1 rounded">{`{name}`}</code>
               </div>
             </div>
-            
+
             <textarea
               value={bulkMessage}
               onChange={(e) => setBulkMessage(e.target.value)}
@@ -872,7 +887,7 @@ export function LeadsPage() {
               placeholder="Write your personalized outreach message here..."
               className="w-full p-5 bg-white border border-gray-200 rounded-[12px] text-[15px] leading-relaxed text-gray-700 resize-none focus:outline-none focus:border-[#00A651] focus:ring-4 focus:ring-green-50 transition-all placeholder:text-gray-300 shadow-sm"
             />
-            
+
             <div className="mt-4 flex items-start gap-2.5 p-3 bg-blue-50/50 rounded-lg border border-blue-100/50">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 shrink-0" />
               <p className="text-xs text-blue-600 font-medium leading-normal">
@@ -885,7 +900,7 @@ export function LeadsPage() {
             <p className="text-xs text-gray-400 font-medium">
               Targeting <span className="text-gray-900 font-bold">{selectedIds.length}</span> verified leads
             </p>
-            
+
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsBulkModalOpen(false)}
