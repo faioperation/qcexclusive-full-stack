@@ -16,7 +16,6 @@ exports.CampaignService = void 0;
 const prisma_1 = require("../../../../generated/prisma");
 const prisma_2 = require("../../db_connection/prisma");
 const apify_1 = require("../../utils/apify");
-const sendEmail_1 = require("../../utils/sendEmail");
 const QueryBuilder_1 = require("../../utils/QueryBuilder");
 const http_status_1 = __importDefault(require("http-status"));
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
@@ -90,39 +89,92 @@ const mapItemToLead = (item, platform) => {
 };
 // ─── Create Campaign ──────────────────────────────────────────────────────────
 const createCampaignInDB = (payload, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const campaign = yield db.campaign.create({
         data: Object.assign(Object.assign({}, payload), { createdById: userId, status: prisma_1.ECampaignStatus.Active }),
     });
-    // ✅ Read the platform FROM the campaign, don't hardcode GoogleMaps
     const { apifyPlatform, dbPlatform } = resolvePlatform(campaign.platform);
     console.log(`[Campaign ${campaign.id}] Platform resolved: ${apifyPlatform}`);
     try {
-        const apifyRun = yield (0, apify_1.triggerApifyScraper)({
-            platform: apifyPlatform,
-            location: campaign.location,
-            industry: campaign.industry,
-            specification: campaign.specification,
-            maxItems: 100,
-        });
-        console.log(`[Campaign ${campaign.id}] Apify run: ${apifyRun.runId}`);
-        if (apifyRun.datasetId && apifyRun.datasetId !== "unknown") {
-            yield db.campaign.update({
-                where: { id: campaign.id },
-                data: { apifyDatasetId: apifyRun.datasetId },
+        let profileRun = null;
+        let emailRun = null;
+        // ─────────────────────────────────────────────
+        // GOOGLE MAPS
+        // ─────────────────────────────────────────────
+        if (apifyPlatform === "GoogleMaps") {
+            profileRun = yield (0, apify_1.triggerApifyScraper)({
+                platform: "GoogleMaps",
+                location: campaign.location,
+                industry: campaign.industry,
+                specification: campaign.specification,
+                maxItems: 100,
             });
         }
+        // ─────────────────────────────────────────────
+        // INSTAGRAM
+        // ─────────────────────────────────────────────
+        else if (apifyPlatform === "Instagram") {
+            const runs = yield (0, apify_1.triggerInstagramScrapers)({
+                platform: "Instagram",
+                location: campaign.location,
+                industry: campaign.industry,
+                specification: campaign.specification,
+                maxItems: 100,
+            });
+            profileRun = runs.profileRun;
+            emailRun = runs.emailRun;
+        }
+        // ─────────────────────────────────────────────
+        // FACEBOOK
+        // ─────────────────────────────────────────────
+        else if (apifyPlatform === "Facebook") {
+            const runs = yield (0, apify_1.triggerFacebookScrapers)({
+                platform: "Facebook",
+                location: campaign.location,
+                industry: campaign.industry,
+                specification: campaign.specification,
+                maxItems: 100,
+            });
+            profileRun = runs.profileRun;
+            emailRun = runs.emailRun;
+        }
+        console.log(`[Campaign ${campaign.id}] Profile Run: ${profileRun === null || profileRun === void 0 ? void 0 : profileRun.runId}`);
+        if (emailRun) {
+            console.log(`[Campaign ${campaign.id}] Email Run: ${emailRun === null || emailRun === void 0 ? void 0 : emailRun.runId}`);
+        }
+        // Save dataset
+        if ((profileRun === null || profileRun === void 0 ? void 0 : profileRun.datasetId) &&
+            profileRun.datasetId !== "unknown") {
+            yield db.campaign.update({
+                where: {
+                    id: campaign.id,
+                },
+                data: {
+                    apifyDatasetId: profileRun.datasetId,
+                },
+            });
+        }
+        // Create scraping job
         const scrapingJob = yield db.scrapingJob.create({
             data: {
                 campaignId: campaign.id,
-                platform: dbPlatform, // ✅ use resolved platform
+                platform: dbPlatform,
                 status: prisma_1.EScrapingJobStatus.Running,
-                targetQuery: [campaign.industry, campaign.specification, campaign.location]
-                    .filter(Boolean).join(" in "),
+                targetQuery: [
+                    campaign.industry,
+                    campaign.specification,
+                    campaign.location,
+                ]
+                    .filter(Boolean)
+                    .join(" in "),
                 startedAt: new Date(),
             },
         });
-        // Non-blocking background processing
-        processScrapingResults(campaign.id, scrapingJob.id, apifyRun.runId, apifyPlatform);
+        // Background processing
+        processScrapingResults(campaign.id, scrapingJob.id, {
+            profileRunId: profileRun.runId,
+            emailRunId: (_a = emailRun === null || emailRun === void 0 ? void 0 : emailRun.runId) !== null && _a !== void 0 ? _a : null,
+        }, apifyPlatform);
         return campaign;
     }
     catch (error) {
@@ -131,18 +183,24 @@ const createCampaignInDB = (payload, userId) => __awaiter(void 0, void 0, void 0
     }
 });
 // ─── Background: poll → fetch → create leads ─────────────────────────────────
-const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __awaiter(void 0, void 0, void 0, function* () {
+const processScrapingResults = (campaignId, jobId, runData, apifyPlatform) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        console.log(`[Job ${jobId}] Waiting for Apify run ${runId} (${apifyPlatform})...`);
-        const runResult = yield (0, apify_1.waitForApifyRun)(runId);
-        console.log(`[Job ${jobId}] Run finished: ${runResult.status}`);
+        console.log(`[Job ${jobId}] Waiting for Apify profile run ${runData.profileRunId} (${apifyPlatform})...`);
+        const profileRunResult = yield (0, apify_1.waitForApifyRun)(runData.profileRunId);
+        let emailRunResult = null;
+        if (runData.emailRunId) {
+            console.log(`[Job ${jobId}] Waiting for Apify email run ${runData.emailRunId}`);
+            emailRunResult =
+                yield (0, apify_1.waitForApifyRun)(runData.emailRunId);
+        }
+        console.log(`[Job ${jobId}] Run finished: ${profileRunResult.status}`);
         const campaignRecord = yield db.campaign.findUnique({ where: { id: campaignId } });
-        if (runResult.status !== "SUCCEEDED") {
+        if (profileRunResult.status !== "SUCCEEDED") {
             if (!(campaignRecord === null || campaignRecord === void 0 ? void 0 : campaignRecord.apifyDatasetId)) {
                 yield db.scrapingJob.update({
                     where: { id: jobId },
-                    data: { status: prisma_1.EScrapingJobStatus.Failed, errorLog: `Run status: ${runResult.status}`, completedAt: new Date() },
+                    data: { status: prisma_1.EScrapingJobStatus.Failed, errorLog: `Run status: ${profileRunResult.status}`, completedAt: new Date() },
                 });
                 return;
             }
@@ -150,8 +208,8 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
         }
         // Fetch items — prefer run's datasetId, fallback to saved one
         let items = [];
-        const primaryDatasetId = runResult.status === "SUCCEEDED"
-            ? runResult.datasetId
+        const primaryDatasetId = profileRunResult.status === "SUCCEEDED"
+            ? profileRunResult.datasetId
             : campaignRecord === null || campaignRecord === void 0 ? void 0 : campaignRecord.apifyDatasetId;
         try {
             items = yield (0, apify_1.getDatasetItems)(primaryDatasetId);
@@ -227,33 +285,6 @@ const processScrapingResults = (campaignId, jobId, runId, apifyPlatform) => __aw
                 });
                 leadsExtracted++;
                 console.log(`[Job ${jobId}] Lead: ${lead.name} | ${(_a = mapped.email) !== null && _a !== void 0 ? _a : "no email"} | ${apifyPlatform}`);
-                // Send outreach email if available
-                if (mapped.email && (campaignRecord === null || campaignRecord === void 0 ? void 0 : campaignRecord.firstMessage)) {
-                    try {
-                        yield (0, sendEmail_1.sendEmail)({
-                            to: mapped.email,
-                            subject: `Message from ${campaignRecord.name}`,
-                            tempName: "outreach",
-                            tempData: { leadName: lead.name, body: campaignRecord.firstMessage },
-                        });
-                        yield db.outreachMessage.create({
-                            data: {
-                                campaignId,
-                                leadId: lead.id,
-                                body: campaignRecord.firstMessage,
-                                type: "Email",
-                                sentAt: new Date(),
-                            },
-                        });
-                        yield db.lead.update({
-                            where: { id: lead.id },
-                            data: { status: prisma_1.ELeadStatus.Contacted },
-                        });
-                    }
-                    catch (mailErr) {
-                        console.error(`[Job ${jobId}] Email send failed to ${mapped.email}:`, mailErr.message);
-                    }
-                }
             }
             catch (leadErr) {
                 console.error(`[Job ${jobId}] Lead create failed for "${mapped.name}":`, leadErr.message);

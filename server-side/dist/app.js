@@ -16,10 +16,11 @@ app.use((0, cors_1.default)({
     origin: (origin, callback) => {
         const allowedOrigins = [
             config_1.default.FRONTEND_URL,
-            "http://localhost:3000",
-            "http://localhost:5173",
+            config_1.default.DEV_FRONTEND_URL,
+            config_1.default.DEV_VITE_URL,
             "http://172.252.13.90:8042",
             "http://172.252.13.90",
+            config_1.default.PRODUCTION_FRONTEND_URL
         ].filter(Boolean);
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);

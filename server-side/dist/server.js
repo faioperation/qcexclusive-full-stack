@@ -16,6 +16,10 @@ const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./app/config"));
 const redisConfig_1 = require("./app/config/redisConfig");
 const prisma_1 = require("./app/db_connection/prisma");
+const outreach_worker_1 = require("./app/jobs/outreach.worker");
+const followup_worker_1 = require("./app/jobs/followup.worker");
+require("./app/jobs/outreach.worker");
+require("./app/jobs/followup.worker");
 let server;
 const PORT = config_1.default.PORT || 5000;
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -64,6 +68,8 @@ process.on("uncaughtException", (err) => __awaiter(void 0, void 0, void 0, funct
 }));
 process.on("SIGTERM", () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("SIGTERM signal received... shutting down gracefully");
+    yield (0, outreach_worker_1.gracefulShutdown)();
+    yield (0, followup_worker_1.gracefulShutdownFollowUpWorker)();
     if (server) {
         server.close(() => __awaiter(void 0, void 0, void 0, function* () {
             yield prisma_1.prisma.$disconnect();
@@ -73,6 +79,8 @@ process.on("SIGTERM", () => __awaiter(void 0, void 0, void 0, function* () {
 }));
 process.on("SIGINT", () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("SIGINT signal received... shutting down gracefully");
+    yield (0, outreach_worker_1.gracefulShutdown)();
+    yield (0, followup_worker_1.gracefulShutdownFollowUpWorker)();
     if (server) {
         server.close(() => __awaiter(void 0, void 0, void 0, function* () {
             yield prisma_1.prisma.$disconnect();

@@ -54,9 +54,41 @@ const deleteLead = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+const sendEmailToLead = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("[Controller] Lead ID:", req.params.id);
+    console.log("[Controller] Body:", req.body);
+    const result = yield lead_service_1.LeadService.sendEmailToLeadInDB(req.params.id, req.body.message);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Outreach email sent successfully",
+        data: result,
+    });
+}));
+const bulkSendEmailToLeads = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield lead_service_1.LeadService.bulkSendEmailToLeadsInDB(req.body.leadIds, req.body.message);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Bulk outreach emails processed",
+        data: result,
+    });
+}));
+const getOutreachQueueStatus = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield lead_service_1.LeadService.getOutreachQueueStatus();
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Outreach queue status fetched successfully",
+        data: result,
+    });
+}));
 exports.LeadController = {
     getAllLeads,
     getSingleLead,
     updateLead,
     deleteLead,
+    sendEmailToLead,
+    bulkSendEmailToLeads,
+    getOutreachQueueStatus,
 };

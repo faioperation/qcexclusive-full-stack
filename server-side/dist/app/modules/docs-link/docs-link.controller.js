@@ -22,7 +22,7 @@ const createDocsLink = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
-        message: "Docs link created and sample posts generated successfully",
+        message: "Docs link created and AI posts generated successfully",
         data: result,
     });
 }));

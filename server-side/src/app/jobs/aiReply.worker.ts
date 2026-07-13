@@ -29,7 +29,7 @@ export const aiReplyWorker = new Worker<AIReplyJobPayload>(
       const cooldownCheck = await checkAIReplyCooldown(leadId);
       if (!cooldownCheck.canSend) {
         console.log(`${logCtx} — skipped (${cooldownCheck.reason})`);
-        await markAIReplyAsSkipped(messageId, cooldownCheck.reason);
+        await markAIReplyAsSkipped(messageId, cooldownCheck.reason ?? 'AI reply cooldown active');
         return;
       }
 
@@ -37,7 +37,7 @@ export const aiReplyWorker = new Worker<AIReplyJobPayload>(
       const dailyLimitCheck = await checkDailyAIReplyLimit(leadId);
       if (!dailyLimitCheck.canSend) {
         console.log(`${logCtx} — skipped (${dailyLimitCheck.reason})`);
-        await markAIReplyAsSkipped(messageId, dailyLimitCheck.reason);
+        await markAIReplyAsSkipped(messageId, dailyLimitCheck.reason ?? 'Daily AI reply limit reached');
         return;
       }
 
@@ -45,7 +45,7 @@ export const aiReplyWorker = new Worker<AIReplyJobPayload>(
       const recentReplyCheck = await checkRecentAIReplies(leadId);
       if (!recentReplyCheck.canSend) {
         console.log(`${logCtx} — skipped (${recentReplyCheck.reason})`);
-        await markAIReplyAsSkipped(messageId, recentReplyCheck.reason);
+        await markAIReplyAsSkipped(messageId, recentReplyCheck.reason ?? 'Recent AI reply detected');
         return;
       }
 
@@ -210,7 +210,7 @@ async function updateLeadStatusForAIReply(leadId: string, classification: string
   }
 }
 
-async function markAIReplyAsSkipped(messageId: string, reason: string): Promise<void> {
+async function markAIReplyAsSkipped(messageId: string, _reason: string): Promise<void> {
   await db.outreachMessage.update({
     where: { id: messageId },
     data: { 
@@ -220,7 +220,7 @@ async function markAIReplyAsSkipped(messageId: string, reason: string): Promise<
   });
 }
 
-async function markAIReplyAsFailed(messageId: string, error: string): Promise<void> {
+async function markAIReplyAsFailed(messageId: string, _error: string): Promise<void> {
   await db.outreachMessage.update({
     where: { id: messageId },
     data: { 

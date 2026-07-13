@@ -13,8 +13,8 @@ const createUserToken = (payload) => {
         name: payload.name,
         role: payload.role,
     };
-    const accessToken = (0, jwt_1.generateToken)(data, config_1.default.JWT_ACCESS_TOKEN, config_1.default.JWT_ACCESS_EXPIRES);
-    const refreshToken = (0, jwt_1.generateToken)(data, config_1.default.JWT_REFRESH_TOKEN, config_1.default.JWT_REFRESH_EXPIRES);
+    const accessToken = (0, jwt_1.generateToken)(data, config_1.default.JWT_ACCESS_TOKEN, config_1.default.JWT_ACCESS_EXPIRES_IN);
+    const refreshToken = (0, jwt_1.generateToken)(data, config_1.default.JWT_REFRESH_TOKEN, config_1.default.JWT_REFRESH_EXPIRES_IN);
     return { accessToken, refreshToken };
 };
 exports.createUserToken = createUserToken;

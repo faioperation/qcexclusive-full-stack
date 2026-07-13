@@ -37,22 +37,45 @@ const getMessagesByThreadIdFromDB = (threadId) => __awaiter(void 0, void 0, void
 const getAllConversationsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     const leads = yield db.lead.findMany({
         where: {
-            gmailThreadId: { not: null },
+            OR: [
+                { gmailThreadId: { not: null } },
+                { outreachMessages: { some: {} } }
+            ]
         },
         select: {
             id: true,
             name: true,
+            email: true,
             gmailThreadId: true,
             imageUrl: true,
+            updatedAt: true,
             outreachMessages: {
                 orderBy: { createdAt: "desc" },
                 take: 1,
             },
         },
+        orderBy: { updatedAt: "desc" }
     });
     return leads;
 });
+const getMessagesByLeadIdFromDB = (leadId) => __awaiter(void 0, void 0, void 0, function* () {
+    const messages = yield db.outreachMessage.findMany({
+        where: { leadId },
+        orderBy: { createdAt: "asc" },
+        include: {
+            lead: {
+                select: {
+                    name: true,
+                    email: true,
+                    imageUrl: true,
+                },
+            },
+        },
+    });
+    return messages;
+});
 exports.InboxService = {
     getMessagesByThreadIdFromDB,
+    getMessagesByLeadIdFromDB,
     getAllConversationsFromDB,
 };

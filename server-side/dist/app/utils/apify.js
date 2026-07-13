@@ -12,16 +12,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getApifyRunStatus = exports.getDatasetItems = exports.waitForApifyRun = exports.triggerApifyScraper = void 0;
+exports.triggerFacebookScrapers = exports.triggerInstagramScrapers = exports.getApifyRunStatus = exports.getDatasetItems = exports.waitForApifyRun = exports.triggerApifyScraper = void 0;
 const config_1 = __importDefault(require("../config"));
 // ─── Actor IDs ────────────────────────────────────────────────────────────────
 // Google Maps: faisalrjbd~google-maps-phone-email-extractor
 // Instagram:   scraper-mind~instagram-email-scraper  (keyword + location → emails)
 // Facebook:    apify~facebook-search-scraper         (keyword + location → page emails)
+// const ACTORS = {
+//   GoogleMaps: "faisalrjbd~google-maps-phone-email-extractor",
+//   Instagram:  "scraper-mind~instagram-email-scraper",
+//   Facebook:   "apify~facebook-search-scraper",
+// } as const;
 const ACTORS = {
-    GoogleMaps: "faisalrjbd~google-maps-phone-email-extractor",
-    Instagram: "scraper-mind~instagram-email-scraper",
-    Facebook: "apify~facebook-search-scraper",
+    GoogleMaps: {
+        profile: "faisalrjbd~google-maps-phone-email-extractor",
+    },
+    Instagram: {
+        profile: "apify/instagram-profile-scraper",
+        email: "scraper-mind~instagram-email-scraper",
+    },
+    Facebook: {
+        profile: "apify/facebook-pages-scraper",
+        email: "apify~facebook-search-scraper",
+    },
 };
 const getToken = () => {
     const token = config_1.default.APIFY_TOKEN;
@@ -88,7 +101,7 @@ const triggerApifyScraper = (params) => __awaiter(void 0, void 0, void 0, functi
     const actorInput = buildActorInput(params);
     console.log(`[Apify] Triggering ${params.platform} actor (${actorId})`);
     console.log("[Apify] Input:", JSON.stringify(actorInput, null, 2));
-    const url = `https://api.apify.com/v2/acts/${actorId}/runs?token=${token}`;
+    const url = `${config_1.default.APIFY_API_BASE_URL}/v2/acts/${actorId}/runs?token=${token}`;
     const resp = yield fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -116,7 +129,7 @@ const waitForApifyRun = (runId_1, ...args_1) => __awaiter(void 0, [runId_1, ...a
     const token = getToken();
     const deadline = Date.now() + maxWaitMs;
     while (Date.now() < deadline) {
-        const resp = yield fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${token}`);
+        const resp = yield fetch(`${config_1.default.APIFY_API_BASE_URL}/v2/actor-runs/${runId}?token=${token}`);
         if (!resp.ok)
             throw new Error(`Failed to poll Apify run: ${resp.statusText}`);
         const data = yield resp.json();
@@ -135,7 +148,7 @@ exports.waitForApifyRun = waitForApifyRun;
 const getDatasetItems = (datasetId) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const token = getToken();
-    const url = `https://api.apify.com/v2/datasets/${datasetId}/items?token=${token}&clean=true&format=json`;
+    const url = `${config_1.default.APIFY_API_BASE_URL}/v2/datasets/${datasetId}/items?token=${token}&clean=true&format=json`;
     console.log(`[Apify] Fetching dataset: ${datasetId}`);
     const resp = yield fetch(url);
     if (!resp.ok)
@@ -148,10 +161,79 @@ exports.getDatasetItems = getDatasetItems;
 const getApifyRunStatus = (runId) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const token = getToken();
-    const resp = yield fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${token}`);
+    const resp = yield fetch(`${config_1.default.APIFY_API_BASE_URL}/v2/actor-runs/${runId}?token=${token}`);
     if (!resp.ok)
         return "UNKNOWN";
     const data = yield resp.json();
     return (_b = (_a = data === null || data === void 0 ? void 0 : data.data) === null || _a === void 0 ? void 0 : _a.status) !== null && _b !== void 0 ? _b : "UNKNOWN";
 });
 exports.getApifyRunStatus = getApifyRunStatus;
+// ─── trigger Instagram Scrapers ────────────────────────────────────────────────────────
+const triggerInstagramScrapers = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const profileRun = yield triggerActorRun(ACTORS.Instagram.profile, {
+        usernames: [],
+        search: params.industry,
+        resultsLimit: (_a = params.maxItems) !== null && _a !== void 0 ? _a : 50,
+    });
+    const emailRun = yield triggerActorRun(ACTORS.Instagram.email, {
+        keywords: [
+            params.industry,
+            params.specification,
+        ].filter(Boolean),
+        location: (_b = params.location) !== null && _b !== void 0 ? _b : "",
+        platform: "Instagram",
+        proxyConfiguration: {
+            useApifyProxy: true,
+        },
+    });
+    return {
+        profileRun,
+        emailRun,
+    };
+});
+exports.triggerInstagramScrapers = triggerInstagramScrapers;
+// ─── trigger Facebook Scrapers ────────────────────────────────────────────────────────
+const triggerFacebookScrapers = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
+    const profileRun = yield triggerActorRun(ACTORS.Facebook.profile, {
+        searchTerms: [
+            params.industry,
+        ].filter(Boolean),
+        maxItems: (_a = params.maxItems) !== null && _a !== void 0 ? _a : 50,
+    });
+    const emailRun = yield triggerActorRun(ACTORS.Facebook.email, {
+        queries: [
+            {
+                query: `${params.industry} ${(_b = params.location) !== null && _b !== void 0 ? _b : ""}`,
+            },
+        ],
+        maxResults: (_c = params.maxItems) !== null && _c !== void 0 ? _c : 50,
+    });
+    return {
+        profileRun,
+        emailRun,
+    };
+});
+exports.triggerFacebookScrapers = triggerFacebookScrapers;
+// ─── trigger Actor Run function ────────────────────────────────────────────────────────
+const triggerActorRun = (actorId, input) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = getToken();
+    const url = `${config_1.default.APIFY_API_BASE_URL}/v2/acts/${actorId}/runs?token=${token}`;
+    const resp = yield fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(input),
+    });
+    if (!resp.ok) {
+        throw new Error(yield resp.text());
+    }
+    const result = yield resp.json();
+    return {
+        runId: result.data.id,
+        datasetId: result.data.defaultDatasetId,
+        status: result.data.status,
+    };
+});

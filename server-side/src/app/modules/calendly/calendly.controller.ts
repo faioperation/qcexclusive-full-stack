@@ -68,7 +68,8 @@ const createEvent = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateEvent = catchAsync(async (req: Request, res: Response) => {
-  const { eventId } = req.params;
+  const raw = req.params['eventId'];
+  const eventId = Array.isArray(raw) ? raw[0] : raw;
   const updates = req.body as CalendlyUpdateData;
 
   if (!eventId) {
@@ -100,7 +101,8 @@ const updateEvent = catchAsync(async (req: Request, res: Response) => {
 });
 
 const cancelEvent = catchAsync(async (req: Request, res: Response) => {
-  const { eventId } = req.params;
+  const rawCancel = req.params['eventId'];
+  const eventId = Array.isArray(rawCancel) ? rawCancel[0] : rawCancel;
 
   if (!eventId) {
     return sendResponse(res, {
@@ -131,7 +133,8 @@ const cancelEvent = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getEvent = catchAsync(async (req: Request, res: Response) => {
-  const { eventId } = req.params;
+  const rawGet = req.params['eventId'];
+  const eventId = Array.isArray(rawGet) ? rawGet[0] : rawGet;
 
   if (!eventId) {
     return sendResponse(res, {

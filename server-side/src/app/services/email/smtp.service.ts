@@ -3,13 +3,7 @@ import ejs from "ejs";
 import fs from "fs";
 import path from "path";
 import config from "../../config";
-
-type SendEmailParams = {
-  to: string;
-  subject: string;
-  tempName: string;
-  tempData?: Record<string, unknown>;
-};
+import type { SendEmailParams } from "./email.types";
 
 function resolveTemplatePath(tempName: string): string {
   const file = `${tempName}.ejs`;
