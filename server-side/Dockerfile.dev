@@ -1,0 +1,20 @@
+# ─── Dev Dockerfile for Backend (Hot Reload) ──────────────────────────────────
+FROM node:20-alpine
+
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY prisma.config.ts tsconfig.json ./
+COPY prisma ./prisma
+COPY src ./src
+
+# Generate Prisma client
+RUN node_modules/.bin/prisma generate
+
+EXPOSE 5000
+
+CMD ["node_modules/.bin/ts-node-dev", "--respawn", "--transpile-only", "./src/server.ts"]
